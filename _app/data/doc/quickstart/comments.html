@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html class="nette-doc">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Nette Foundation; c 2008">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Comments | Nette Framework</title>
+
+	<link rel="stylesheet" href="https://files.nette.org/css/combined.css?v=1468405828">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://nette.org/opensearch.xml" title="Nette Framework">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://forum.nette.org/opensearch.xml" title="Nette Framework forum">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://api.nette.org/opensearch.xml" title="Nette Framework API">
+	<link rel="canonical" href="/en/2.4/quickstart/comments">
+	<link rel="image_src" href="https://files.nette.org/images/fb-preview.png">
+
+		<link rel="alternate" hreflang="cs" href="/cs/2.4/quickstart/comments">
+	<link rel="alternate" hreflang="en" href="/en/2.4/quickstart/comments">
+</head>
+
+
+<body>
+<script>
+	ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-95238-14','auto'); ga('send','pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+<script src="https://api.nette.org/2.4/elementlist.js" async></script>
+<script src="https://files.nette.org/js/combined.js?v=1468489896" async></script>
+
+<div class="page">
+	<header class="main">
+		<a class="logo" title="Homepage" href="https://nette.org/en/"><span>Homepage</span></a>
+
+		<nav class="main">
+			<ul>
+	<li><a href="//nette.org/en/download">Download</a></li>
+
+	<li class="item-doc"><a href="/en/">Documentation</a></li>
+
+	<li><a href="https://api.nette.org">API</a></li>
+
+	<li><a href="https://github.com/nette">GitHub</a></li>
+</ul>
+
+		</nav>
+	</header>
+
+		<div class="wikimenu">
+	<div>
+		<div><a href="https://github.com/nette/web-content/blob/doc-2.4/en/quickstart/comments.texy">Edit</a></div>
+		<ul>
+			<li><a href="https://nette.org/en/writing">How to write?</a></li>
+
+			<li><a href="/en/2.4/quickstart/comments?view=links">Backlinks</a></li>
+
+			<li>Languages: <a href="/cs/2.4/quickstart/comments">cs</a> <a href="/en/2.4/quickstart/comments">en</a> </li>
+
+			<li>changed 11. 7. 2016</li>
+
+			<li><a href="/special/sitemap?lang=en">All pages</a></li>
+
+			<li><a href="/special/broken-links?lang=en">Broken links</a></li>
+		</ul>
+	</div>
+
+	<div>
+		<div>Lang</div>
+		<ul>
+			<li><a href="/cs/2.4/quickstart/comments">cs</a></li>
+			<li><a href="/en/2.4/quickstart/comments">en</a></li>
+		</ul>
+	</div>
+
+	<div class=versionmenu>
+		<div>Version 2.4</div>
+		<ul>
+			<li><a href="/en/2.3/quickstart/comments">Version 2.3</a></li>
+			<li><a href="/en/2.2/quickstart/comments">Version 2.2</a></li>
+			<li><a href="/en/2.1/quickstart/comments">Version 2.1</a></li>
+			<li><a href="/en/2.0/quickstart/comments">Version 2.0</a></li>
+		</ul>
+	</div>
+</div>
+
+
+	<div class="main">
+		<div class="content has-sidebar">
+			
+
+			<ul class="breadcrumbs">
+				<li><a href="/en/2.4/">Documentation</a></li>
+				<li><a href="/en/2.4/quickstart">QuickStart</a></li>
+				<li>Comments</li>
+			</ul>
+
+
+<h1 id="toc-comments">Comments</h1>
+
+<p>The blog has been deployed, we’ve written some very good blog posts and published them via Adminer. People are reading the
+blog and they’re very passionate about our ideas. We’re receiving many emails with praise each day. But what is all the praise
+for when we’ve got it only in the email, so no one else can read it? Wouldn’t it be better if people could comment directly on
+the blog so that everyone else could read how awesome we are?</p>
+
+<p>Let’s make all the articles commentable.</p>
+
+<h2 id="toc-creating-a-new-table">Creating a new Table</h2>
+
+<p>Fire up Adminer again and create a new table named <code>comments</code> with these columns:</p>
+
+<ul>
+	<li><code>id</code> int, check autoincrement (AI)</li>
+
+	<li><code>post_id</code>, a foreign key that references the <code>posts</code> table</li>
+
+	<li><code>name</code> varchar, length 255</li>
+
+	<li><code>email</code> varchar, length 255</li>
+
+	<li><code>content</code> text</li>
+
+	<li><code>created_at</code> timestamp</li>
+</ul>
+
+<p>It should look like this:</p>
+
+<div><img src="//files.nette.org/git/doc-2.4/adminer-comments.png" alt=""></div>
+
+<p>Don’t forget to use InnoDB table storage and hit Save.</p>
+
+<pre class="src-sql"><code><span class="sql-keyword1">CREATE</span> <span class="sql-keyword1">TABLE</span> <span
+class="sql-value">`comments`</span> (
+  <span class="sql-value">`id`</span> <span class="sql-keyword3">int</span> <span
+class="sql-keyword1">NOT</span> <span class="sql-keyword1">NULL</span> AUTO_INCREMENT <span
+class="sql-keyword1">PRIMARY</span> <span class="sql-keyword1">KEY</span>,
+  <span class="sql-value">`post_id`</span> <span
+class="sql-keyword3">int</span>(<span class="sql-num">11</span>) <span class="sql-keyword1">NOT</span> <span
+class="sql-keyword1">NULL</span>,
+  <span class="sql-value">`name`</span> <span class="sql-keyword3">varchar</span>(<span
+class="sql-num">250</span>) <span class="sql-keyword1">NOT</span> <span class="sql-keyword1">NULL</span>,
+  <span
+class="sql-value">`email`</span> <span class="sql-keyword3">varchar</span>(<span class="sql-num">250</span>) <span
+class="sql-keyword1">NOT</span> <span class="sql-keyword1">NULL</span>,
+  <span class="sql-value">`content`</span> <span
+class="sql-keyword3">text</span> <span class="sql-keyword1">NOT</span> <span class="sql-keyword1">NULL</span>,
+  <span
+class="sql-value">`created_at`</span> <span class="sql-keyword3">timestamp</span> <span class="sql-keyword1">NOT</span> <span
+class="sql-keyword1">NULL</span> <span class="sql-keyword1">DEFAULT</span> CURRENT_TIMESTAMP,
+  <span
+class="sql-keyword1">FOREIGN</span> <span class="sql-keyword1">KEY</span> (<span class="sql-value">`post_id`</span>) <span
+class="sql-keyword1">REFERENCES</span> <span class="sql-value">`posts`</span> (<span
+class="sql-value">`id`</span>)
+) ENGINE=InnoDB CHARSET=utf8;</code></pre>
+
+<h2 id="toc-form-for-commenting">Form for Commenting</h2>
+
+<p>First, we need to create a form, that will allow the users to comment on our page. Nette Framework has awesome support for
+forms. They can be configured in a presenter and rendered in a template.</p>
+
+<p>Nette Framework has a concept of <i>components</i>. A <b>component</b> is a reusable class or piece of code, that can be
+attached to another component. Even a presenter is a component. Each component is created using the component factory. So
+let’s define the comments form factory in <code>PostPresenter</code>.</p>
+
+<pre class="src-php"><code><span class="php-keyword1">protected</span> <span
+class="php-keyword1">function</span> createComponentCommentForm()
+{
+    <span class="php-var">$form</span> = <span
+class="php-keyword1">new</span> Form;
+
+    <span class="php-var">$form</span>-&gt;addText(<span
+class="php-quote">'name'</span>, <span class="php-quote">'Your name:'</span>)
+        -&gt;setRequired();
+
+    <span
+class="php-var">$form</span>-&gt;addEmail(<span class="php-quote">'email'</span>, <span
+class="php-quote">'Email:'</span>);
+
+    <span class="php-var">$form</span>-&gt;addTextArea(<span
+class="php-quote">'content'</span>, <span class="php-quote">'Comment:'</span>)
+        -&gt;setRequired();
+
+    <span
+class="php-var">$form</span>-&gt;addSubmit(<span class="php-quote">'send'</span>, <span
+class="php-quote">'Publish comment'</span>);
+
+    <span class="php-keyword1">return</span> <span
+class="php-var">$form</span>;
+}</code></pre>
+
+<p>Let’s explain it a little bit. The first line creates a new instance of <code>Form</code> component. The following methods
+are attaching HTML inputs into the form definition. <code>-&gt;addText</code> will render as
+<code>&lt;input type=text name=name&gt;</code>, with <code>&lt;label&gt;Your name:&lt;/label&gt;</code>. As you might have already
+guessed right now, the <code>-&gt;addTextArea</code> attaches a <code>&lt;textarea&gt;</code> and <code>-&gt;addSubmit</code> adds
+an <code>&lt;input type=submit&gt;</code>. There are more methods like that, but this is all you have to know right now. You can
+<a href="/en/2.4/forms">learn more in the documentation</a>.</p>
+
+<p>Once the form component is defined in a presenter, we can render (display) it in a template. To do so, place the macro
+<code>{control}</code> at the end of the post detail template, in <code>app/presenters/templates/Post/show.latte</code>. Because
+the component's name is <code>commentForm</code> (it's derived from the name of the method
+<code>createComponentCommentForm</code>), the macro will look like this</p>
+
+<pre class="src-html"><code>...
+<span class="html-tag">&lt;h2&gt;</span>Post new comment<span
+class="html-tag">&lt;/h2&gt;</span>
+
+{<span class="php-keyword1">control</span> commentForm}
+...</code></pre>
+
+<p>Now if you check out the detail of some post, there will be a new form for posting comments.</p>
+
+<h2 id="toc-saving-to-database">Saving to Database</h2>
+
+<p>Have you tried to submit some data? You might have noticed, that the form is not performing any action. It’s just there,
+looking cool and doing nothing. We have to attach a callback method to it, that will save the submitted data.</p>
+
+<p>Place the following line before the <code>return</code> line in the component factory for the <code>commentForm</code>:</p>
+
+<pre class="src-php"><code><span class="php-var">$form</span>-&gt;onSuccess[] = [<span class="php-var">$this</span>, <span
+class="php-quote">'commentFormSucceeded'</span>];</code></pre>
+
+<p>It means “after the form is successfully submitted, call the method <code>commentFormSucceeded</code> of the current
+presenter”. This method does not exist yet, so let’s create it.</p>
+
+<pre class="src-php"><code><span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> commentFormSucceeded(<span class="php-var">$form</span>, <span
+class="php-var">$values</span>)
+{
+    <span class="php-var">$postId</span> = <span
+class="php-var">$this</span>-&gt;getParameter(<span class="php-quote">'postId'</span>);
+
+    <span
+class="php-var">$this</span>-&gt;database-&gt;table(<span class="php-quote">'comments'</span>)-&gt;insert([
+        <span
+class="php-quote">'post_id'</span> =&gt; <span class="php-var">$postId</span>,
+        <span
+class="php-quote">'name'</span> =&gt; <span class="php-var">$values</span>-&gt;name,
+        <span
+class="php-quote">'email'</span> =&gt; <span class="php-var">$values</span>-&gt;email,
+        <span
+class="php-quote">'content'</span> =&gt; <span class="php-var">$values</span>-&gt;content,
+    ]);
+
+    <span
+class="php-var">$this</span>-&gt;flashMessage(<span class="php-quote">'Thank you for your comment'</span>, <span
+class="php-quote">'success'</span>);
+    <span class="php-var">$this</span>-&gt;redirect(<span
+class="php-quote">'this'</span>);
+}</code></pre>
+
+<p>You should place it right after the <code>commentForm</code> component factory.</p>
+
+<p>The new method has one argument which is the instance of the form being submitted, created by the component factory. We receive
+submitted values in <code>$values</code>. And then we insert the data into the database table <code>comments</code>.</p>
+
+<p>There are two more method calls to explain. The redirect literally redirects to the current page. You should do that every time
+when the form is submitted, valid, and the callback operation did what it should have done. Also, when you redirect the page after
+submitting the form, you won’t see the well known <code>Would you like to submit the post data again?</code> message that you
+can sometimes see in the browser. (In general, after submitting a form by <code>POST</code> method, you should always redirect the
+user to a <code>GET</code> action.)</p>
+
+<p>The <code>flashMessage</code> is for informing the user about the result of some operation. Because we’re redirecting, the
+message cannot be directly passed to template and rendered. So there is this method, that will store it and make it available on
+the next page load. The flash messages are rendered in the default <code>app/presenters/templates/@layout.latte</code> file, and
+it looks like this</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;div</span><span class="html-tagin"> n:foreach=</span><span
+class="html-quote">&quot;$flashes as $flash&quot;</span><span class="html-tagin"> n:class=</span><span
+class="html-quote">&quot;flash, $flash-&gt;type&quot;</span><span class="html-tag">&gt;</span>{<span
+class="php-var">$flash</span>-&gt;message}<span class="html-tag">&lt;/div&gt;</span></code></pre>
+
+<p>As we already know, they are passed automatically to the template, so you don’t have to think about it too much, it just
+works. For more details <a href="/en/2.4/presenters#toc-flash-messages">check the documentation</a>.</p>
+
+<h2 id="toc-rendering-the-comments">Rendering the Comments</h2>
+
+<p>This is one of the things you will just love. Nette\Database has this cool feature named <em>Selection API</em>. Do you
+remember that we’ve created the tables as InnoDB? Adminer has created the so called <a
+href="http://dev.mysql.com/doc/refman/5.5/en/innodb-foreign-key-constraints.html">foreign keys</a> that will save us a ton
+of work.</p>
+
+<p>Nette\Database uses the foreign keys to resolve relations between tables, and knowing the relations, it can automatically
+create queries for you.</p>
+
+<p>As you may remember, we’ve passed the <code>$post</code> variable to the template in <code>PostPresenter::renderShow()</code>
+and now we want to iterate through all the comments that have the column <code>post_id</code> equal to our
+<code>$post-&gt;id</code>. You can do it by calling <code>$post-&gt;related('comments')</code>. It’s that simple. Look at the
+resulting code.</p>
+
+<pre class="src-php"><code><span class="php-keyword1">public</span> <span class="php-keyword1">function</span> renderShow(<span
+class="php-var">$postId</span>)
+{
+    ...
+    <span class="php-var">$this</span>-&gt;template-&gt;post = <span
+class="php-var">$post</span>;
+    <span class="php-var">$this</span>-&gt;template-&gt;comments = <span
+class="php-var">$post</span>-&gt;related(<span class="php-quote">'comments'</span>)-&gt;order(<span
+class="php-quote">'created_at'</span>);
+}</code></pre>
+
+<p>And the template:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;h2&gt;</span>Comments<span class="html-tag">&lt;/h2&gt;</span>
+
+<span
+class="html-tag">&lt;div</span><span class="html-tagin"> class=</span><span class="html-quote">&quot;comments&quot;</span><span
+class="html-tag">&gt;</span>
+    {<span class="php-keyword1">foreach</span> <span class="php-var">$comments</span> <span
+class="php-keyword1">as</span> <span class="php-var">$comment</span>}
+        <span
+class="html-tag">&lt;p&gt;&lt;b&gt;&lt;a</span><span class="html-tagin"> href=</span><span
+class="html-quote">&quot;mailto:{</span><span class="php-var">$comment</span>-&gt;email}<span
+class="html-quote">&quot;</span><span class="html-tagin"> n:tag-if=</span><span
+class="html-quote">&quot;$comment-&gt;email&quot;</span><span class="html-tag">&gt;</span>{<span
+class="php-var">$comment</span>-&gt;name}<span class="html-tag">&lt;/a&gt;&lt;/b&gt;</span> said:<span
+class="html-tag">&lt;/p&gt;</span>
+        <span class="html-tag">&lt;div&gt;</span>{<span
+class="php-var">$comment</span>-&gt;content}<span class="html-tag">&lt;/div&gt;</span>
+    {/<span
+class="php-keyword1">foreach</span>}
+<span class="html-tag">&lt;/div&gt;</span></code></pre>
+
+<p>Notice the special <code>n:tag-if</code> attribute. You already know how <code>n: attributes</code> work. Well, If you prepend
+the attribute with <code>tag-</code>, it will only wrap around the tags, not their content. This allows you to make the
+commenter's name into a link if they provided their email. These two lines are identical in results:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;strong</span><span class="html-tagin"> n:tag-if=</span><span
+class="html-quote">&quot;$important&quot;</span><span class="html-tag">&gt;</span> Hello there! <span
+class="html-tag">&lt;/strong&gt;</span>
+{<span class="php-keyword1">if</span> <span class="php-var">$important</span>}<span
+class="html-tag">&lt;strong&gt;</span>{/<span class="php-keyword1">if</span>} Hello there! {<span
+class="php-keyword1">if</span> <span class="php-var">$important</span>}<span class="html-tag">&lt;/strong&gt;</span>{/<span
+class="php-keyword1">if</span>}</code></pre>
+
+
+<div class="paginator">
+	<small><a href="/en/2.4/quickstart/single-post">« Single Post Page</a></small>
+	<a href="/en/2.4/quickstart/creating-posts">Creating and Editing Posts »</a>
+</div>
+		</div>
+
+			<aside class="main">
+		<div>
+
+
+			<ul class="toc">
+				<li class="up" value="0"><a href="#">▲</a></li>
+				<li><a href="#toc-creating-a-new-table">Creating a new Table</a>
+				</li>
+				<li><a href="#toc-form-for-commenting">Form for Commenting</a>
+				</li>
+				<li><a href="#toc-saving-to-database">Saving to Database</a>
+				</li>
+				<li><a href="#toc-rendering-the-comments">Rendering the Comments</a>
+				</li>
+			</ul>
+		</div>
+	</aside>
+	</div>
+
+	<footer class="main">
+		<p>&copy; 2008, 2016 <a href="https://nettefoundation.com">Nette Foundation</a> | <a href="http://php7.org/guidelines/">PHP Coding Guidelines</a>
+		| <a href="https://nette.org/terms-of-use">Terms of use</a> | If not stated otherwise, the contents are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cz/">Creative Commons CC-BY-SA</a>.</p>
+	</footer>
+
+	<div class="docmenu">
+		<div class="column">
+	<h3 id="toc-programmer-s-guide"><img src="//files.nette.org/git/doc-2.4/icon-guides-small.png" alt=""> Programmer's Guide</h3>
+
+	<ul>
+		<li><a href="/en/2.4/forms">Forms</a></li>
+
+		<li><a href="//latte.nette.org/en/">Templates</a>, <a href="//latte.nette.org/en/macros">Latte Macros</a> and <a
+		href="//latte.nette.org/en/filters">Filters</a></li>
+
+		<li><a href="/en/2.4/presenters">MVC Application &amp; Presenters</a></li>
+
+		<li><a href="/en/2.4/configuring">Configuration</a>, <a href="/en/2.4/dependency-injection">Dependency Injection</a>, <a
+		href="/en/2.4/di-usage">Getting Dependencies</a> and <a href="/en/2.4/di-extensions">DI extensions</a></li>
+
+		<li><a href="/en/2.4/components">Components and Controls</a></li>
+
+		<li><a href="/en/2.4/routing">Routing</a></li>
+
+		<li><a href="/en/2.4/access-control">Authentication &amp; Authorization</a></li>
+
+		<li><a href="//tracy.nette.org/en/">Debugging and Error Handling</a>, <a href="//tracy.nette.org/en/extensions">Debugger
+		extensions</a></li>
+
+		<li><a href="/en/2.4/ajax">AJAX</a></li>
+
+		<li><a href="/en/2.4/php-language-enhancements">PHP Language Enhancements</a></li>
+
+		<li><a href="/en/2.4/http-request-response">HTTP request &amp; response</a></li>
+
+		<li><a href="/en/2.4/database">Database</a>, <a href="/en/2.4/database-table">Table</a>, <a
+		href="/en/2.4/database-selection">Selection</a>, <a href="/en/2.4/database-activerow">ActiveRow</a></li>
+
+		<li><a href="/en/2.4/sessions">Sessions</a></li>
+
+		<li><a href="/en/2.4/mailing">Mailing</a></li>
+
+		<li><a href="/en/2.4/images">Image Manipulation</a></li>
+
+		<li><a href="/en/2.4/caching">Caching</a></li>
+
+		<li><a href="/en/2.4/localization">Localization</a></li>
+
+		<li><a href="//tester.nette.org/en/">Testing</a>, <a href="//tester.nette.org/en/testing-with-travis">Continuous
+		integration</a></li>
+
+		<li><a href="/en/2.4/pagination">Pagination</a></li>
+
+		<li><a href="/en/2.4/auto-loading">Auto-loading</a></li>
+
+		<li><a href="/en/2.4/finder">Browsing files on disk</a></li>
+
+		<li><a href="/en/2.4/atomicity">Atomic Operations</a></li>
+
+		<li><a href="/en/2.4/validators">Validation</a></li>
+
+		<li><a href="/en/2.4/strings">Strings</a>, <a href="/en/2.4/arrays">arrays</a>, <a href="/en/2.4/html-elements">HTML elements</a>
+		and <a href="/en/2.4/urls">URLs</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-getting-started"><img src="//files.nette.org/git/doc-2.4/icon-welcome-small.png" alt=""> Getting Started</h3>
+
+	<ul>
+		<li><a href="/en/2.4/getting-started">Introduction to Nette</a></li>
+
+		<li><b><a href="/en/2.4/quickstart">Create First Application!</a></b></li>
+
+		<li><a href="/en/2.4/glossary">Glossary</a></li>
+	</ul>
+
+	<h3 id="toc-general-info"><img src="//files.nette.org/git/doc-2.4/icon-question-small.png" alt=""> General Info</h3>
+
+	<ul>
+		<li><a href="https://api.nette.org/2.4">API Reference</a></li>
+
+		<li><a href="/en/2.4/migration-2-3">Migrating from 2.2 to 2.3</a></li>
+
+		<li><a href="/en/2.4/code-checker">Code-Checker</a></li>
+
+		<li><a href="/en/2.4/vulnerability-protection">Vulnerability Protection</a></li>
+
+		<li><a href="/en/2.4/requirements">Server Requirements</a></li>
+
+		<li><a href="//nette.org/en/license">License</a> and <a href="https://nette.org/contributors">contributors</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-development"><img src="//files.nette.org/git/doc-2.4/icon-ruler-small.png" alt=""> Development</h3>
+
+	<ul>
+		<li><a href="//nette.org/en/contributing">Contributing</a></li>
+
+		<li><a href="//nette.org/en/writing">Writing Documentation</a></li>
+
+		<li><a href="irc://irc.freenode.net/nettefw">IRC #nettefw</a></li>
+
+		<li><a href="/en/2.4/troubleshooting">Troubleshooting</a></li>
+	</ul>
+</div>
+
+	</div>
+</div>
+
+<div class="bar"><div>
+
+	<ul class="user" style="opacity:.6">
+		<li><a href="https://addons.nette.org/"><span>Add-ons</span></a>
+		<li><a href="https://pla.nette.org/en/"><span>Planette</span></a>
+		<li><a href="https://forum.nette.org/en/"><span>Forum</span></a>
+		<li><a href="https://blog.nette.org"><span>Blog</span></a>
+		<li><a href="https://nette.org/donate"><span>Donate</span></a>
+		<li>
+		<form action="https://www.google.com/cse" class="search">
+			<input type="hidden" name="cx" value="011549293477758430224:vxofa9ufnhc"><input type="hidden" name="ie" value="UTF-8"><input type="search" name="q" class="text" size="30" placeholder="Search"><input type="image" src="https://files.nette.org/images/search.png" alt="Search">
+		</form>
+		</li>
+	</ul>
+</div></div>
+
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html class="nette-tracy">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Nette Foundation; c 2008">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Debugger extensions | Nette Framework</title>
+
+	<link rel="stylesheet" href="https://files.nette.org/css/combined.css?v=1468405828">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://nette.org/opensearch.xml" title="Nette Framework">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://forum.nette.org/opensearch.xml" title="Nette Framework forum">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://api.nette.org/opensearch.xml" title="Nette Framework API">
+	<link rel="canonical" href="/en/extensions">
+	<link rel="image_src" href="https://files.nette.org/images/fb-preview.png">
+
+		<link rel="alternate" hreflang="cs" href="/cs/extensions">
+	<link rel="alternate" hreflang="en" href="/en/extensions">
+</head>
+
+
+<body>
+<script>
+	ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-95238-14','auto'); ga('send','pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+<script src="https://api.nette.org/2.4/elementlist.js" async></script>
+<script src="https://files.nette.org/js/combined.js?v=1468489896" async></script>
+
+<div class="page">
+	<header class="main">
+		<a class="logo" title="Homepage" href="https://nette.org/en/"><span>Homepage</span></a>
+
+		<nav class="main">
+			<ul>
+	<li><a href="/en/#toc-installation-and-requirements">Download</a></li>
+
+	<li><a href="/en/">Documentation</a></li>
+
+	<li><a href="https://api.nette.org/tracy/">API</a></li>
+
+	<li><a href="https://github.com/nette/tracy">GitHub</a></li>
+</ul>
+
+		</nav>
+	</header>
+
+		<div class="wikimenu">
+	<div>
+		<div><a href="https://github.com/nette/web-content/blob/nette.org/tracy/en/extensions.texy">Edit</a></div>
+		<ul>
+			<li><a href="https://nette.org/en/writing">How to write?</a></li>
+
+			<li><a href="/en/extensions?view=links">Backlinks</a></li>
+
+			<li>Languages: <a href="/cs/extensions">cs</a> <a href="/en/extensions">en</a> </li>
+
+			<li>changed 23. 5. 2016</li>
+
+			<li><a href="/special/sitemap?lang=en">All pages</a></li>
+
+			<li><a href="/special/broken-links?lang=en">Broken links</a></li>
+		</ul>
+	</div>
+
+	<div>
+		<div>Lang</div>
+		<ul>
+			<li><a href="/cs/extensions">cs</a></li>
+			<li><a href="/en/extensions">en</a></li>
+		</ul>
+	</div>
+
+</div>
+
+
+	<div class="main">
+		<div class="content has-sidebar">
+			
+
+
+
+<h1 id="toc-debugger-extensions">Debugger extensions</h1>
+
+<div class="perex">
+	<p>Tracy is a great tool for debugging your application. However, you sometimes need more information than Tracy offers. You'll
+	learn about:</p>
+
+	<ul>
+		<li>Creating your own Debugger bar panels</li>
+
+		<li>Creating your own Bluescreen extensions</li>
+	</ul>
+</div>
+
+<h2 id="toc-debugger-bar-extensions">Debugger Bar extensions</h2>
+
+<p>Creating new extension for Debugger Bar is simple. You need to implement <code>Tracy\IBarPanel</code> interface with methods
+<code>getTab()</code> and <code>getPanel()</code>. The methods must return HTML code of a tab (small label on Debugger Bar) and a
+panel (pop-up displayed after clicking on the tab). If <code>getPanel()</code> returns nothing, only tab will be displayed. If
+<code>getTab()</code> returns nothing, nothing is displayed and <code>getPanel()</code> will not be called.</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> ExamplePanel <span
+class="php-keyword1">extends</span> Nette\Object <span class="php-keyword1">implements</span> Tracy\IBarPanel
+{
+    <span
+class="php-keyword1">public</span> <span class="php-keyword1">function</span> getTab()
+    {
+        <span
+class="php-keyword1">return</span> ...;
+    }
+
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> getPanel()
+    {
+        <span class="php-keyword1">return</span> ...;
+    }
+}</code></pre>
+
+<h3 id="toc-registration">Registration</h3>
+
+<p>Registration is done by calling <code>Tracy\Bar::addPanel()</code>:</p>
+
+<pre class="src-php"><code>Tracy\Debugger::getBar()-&gt;addPanel(<span class="php-keyword1">new</span> ExamplePanel);</code></pre>
+
+<p>or you can simply register your panel in application configuration:</p>
+
+<pre class="src-neon"><code><span class="neon-section">tracy</span><span class="neon-sep">:</span><span
+class="neon-section">
+    bar</span><span class="neon-sep">:</span><span class="neon-section">
+        </span><span
+class="neon-sep">-</span><span class="neon-value"> ExamplePanel</span></code></pre>
+
+<h3 id="toc-tab-html-code">Tab HTML code</h3>
+
+<p>Should look something like this:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;span</span><span class="html-tagin"> title=</span><span
+class="html-quote">&quot;Explaining tooltip&quot;</span><span class="html-tag">&gt;</span>
+<span
+class="html-tag">&lt;img</span><span class="html-tagin"> src=</span><span
+class="html-quote">&quot;data:image/png;base64,&lt;encoded thumbnail image&gt;&quot;</span><span class="html-tagin"> </span><span
+class="html-tag">/&gt;</span>
+Title
+<span class="html-tag">&lt;/span&gt;</span></code></pre>
+
+<p>For encoding images you can use <code>Nette\Templating\DefaultHelpers::dataStream()</code>. If you don't need tooltip, you can
+leave <code>&lt;span&gt;</code> out.</p>
+
+<h3 id="toc-panel-html-code">Panel HTML code</h3>
+
+<p>Should look something like this:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;h1&gt;</span>Title<span class="html-tag">&lt;/h1&gt;</span>
+
+<span
+class="html-tag">&lt;div</span><span class="html-tagin"> class=</span><span class="html-quote">&quot;nette-inner&quot;</span><span
+class="html-tag">&gt;</span>
+    ... content ...
+<span class="html-tag">&lt;/div&gt;</span></code></pre>
+
+<p>Title should either be the same as in tab or contain additional information.</p>
+
+<p>One extension can be registered multiple times, so it's recommended not to use <code>id</code> attribute for styling. You can
+use classes, preferably in <code>nette-addons-&lt;class-name&gt;[-&lt;optional&gt;]</code> format. When creating CSS, it's better
+to use <code>#nette-debug .class</code>, because such rule has higher priority than reset.</p>
+
+<h3 id="toc-default-styles">Default styles</h3>
+
+<p>In the panel, elements <code>&lt;a&gt;</code>, <code>&lt;table&gt;</code>, <code>&lt;pre&gt;</code>, <code>&lt;code&gt;</code>
+have default styles. You can also use <code>.nette-hidden</code> and <code>.nette-collapsed</code> for hidden elements. For
+creating a link for hiding or displaying other element, connect them with <code>rel</code> and <code>id</code> attributes.</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;a</span><span class="html-tagin"> href=</span><span
+class="html-quote">'#'</span><span class="html-tagin"> rel=</span><span class="html-quote">'#nette-addons-className-{</span><span
+class="php-var">$counter</span>}<span class="html-quote">'</span><span class="html-tag">&gt;</span>Details<span
+class="html-entity">&amp;nbsp;&amp;#x25ba;</span><span class="html-tag">&lt;/a&gt;</span>
+
+<span
+class="html-tag">&lt;div</span><span class="html-tagin"> id=</span><span
+class="html-quote">&quot;nette-addons-className-{</span><span class="php-var">$counter</span>}<span
+class="html-quote">&quot;</span><span class="html-tag">&gt;</span>...<span class="html-tag">&lt;/div&gt;</span></code></pre>
+
+<p>Use static counter to prevent duplicate IDs on one page.</p>
+
+<h2 id="toc-bluescreen-extensions">Bluescreen extensions</h2>
+
+<p>You can add your own exception visualizations (a substitution for implementing <code>IDebugPanel</code>) or panels, which will
+appear on the (red) bluescreen.</p>
+
+<p>Extension is made like this:</p>
+
+<pre class="src-php"><code>Tracy\Debugger::getBlueScreen()-&gt;addPanel(<span class="php-keyword1">function</span>(<span
+class="php-var">$e</span>) { <span class="php-comment">// catched exception</span>
+    <span
+class="php-keyword1">return</span> [
+        <span class="php-quote">'tab'</span> =&gt; <span
+class="php-quote">'...Title...'</span>,
+        <span class="php-quote">'panel'</span> =&gt; <span
+class="php-quote">'...content...'</span>,
+    ];
+});</code></pre>
+
+<p>If the anonymous function returns nothing, panel won't be displayed. The function is called twice. First time with the catched
+exception in parameter <code>$e</code> and the panel is rendered on the top of the bluescreen. Second time with <code>NULL</code>
+given in <code>$e</code> and the panel is rendered in the bottom. You can force rendering in the bottom by returning
+<code>'bottom' =&gt; true</code> in the array. Fuction won't be rendered the first two times and will be called for the third time
+with <code>NULL</code> parameter.</p>
+
+
+		</div>
+
+			<aside class="main">
+		<div>
+
+
+			<ul class="toc">
+				<li class="up" value="0"><a href="#">▲</a></li>
+				<li><a href="#toc-debugger-bar-extensions">Debugger Bar extensions</a>
+				<ul>
+				
+				<li><a href="#toc-registration">Registration</a>
+				</li>
+				<li><a href="#toc-tab-html-code">Tab HTML code</a>
+				</li>
+				<li><a href="#toc-panel-html-code">Panel HTML code</a>
+				</li>
+				<li><a href="#toc-default-styles">Default styles</a>
+				</ul>
+				
+				<li><a href="#toc-bluescreen-extensions">Bluescreen extensions</a>
+				</li>
+			</ul>
+		</div>
+	</aside>
+	</div>
+
+	<footer class="main">
+		<p>&copy; 2008, 2016 <a href="https://nettefoundation.com">Nette Foundation</a> | <a href="http://php7.org/guidelines/">PHP Coding Guidelines</a>
+		| <a href="https://nette.org/terms-of-use">Terms of use</a> | If not stated otherwise, the contents are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cz/">Creative Commons CC-BY-SA</a>.</p>
+	</footer>
+
+</div>
+
+<div class="bar"><div>
+
+	<ul class="user" style="opacity:.6">
+		<li><a href="https://addons.nette.org/"><span>Add-ons</span></a>
+		<li><a href="https://pla.nette.org/en/"><span>Planette</span></a>
+		<li><a href="https://forum.nette.org/en/"><span>Forum</span></a>
+		<li><a href="https://blog.nette.org"><span>Blog</span></a>
+		<li><a href="https://nette.org/donate"><span>Donate</span></a>
+		<li>
+		<form action="https://www.google.com/cse" class="search">
+			<input type="hidden" name="cx" value="011549293477758430224:vxofa9ufnhc"><input type="hidden" name="ie" value="UTF-8"><input type="search" name="q" class="text" size="30" placeholder="Search"><input type="image" src="https://files.nette.org/images/search.png" alt="Search">
+		</form>
+		</li>
+	</ul>
+</div></div>
+
+</body>
+</html>

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html class="nette-doc">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Nette Foundation; c 2008">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Sending E-mails | Nette Framework</title>
+
+	<link rel="stylesheet" href="https://files.nette.org/css/combined.css?v=1468405828">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://nette.org/opensearch.xml" title="Nette Framework">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://forum.nette.org/opensearch.xml" title="Nette Framework forum">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://api.nette.org/opensearch.xml" title="Nette Framework API">
+	<link rel="canonical" href="/en/2.4/mailing">
+	<link rel="image_src" href="https://files.nette.org/images/fb-preview.png">
+
+		<link rel="alternate" hreflang="cs" href="/cs/2.4/mailing">
+	<link rel="alternate" hreflang="en" href="/en/2.4/mailing">
+</head>
+
+
+<body>
+<script>
+	ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-95238-14','auto'); ga('send','pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+<script src="https://api.nette.org/2.4/elementlist.js" async></script>
+<script src="https://files.nette.org/js/combined.js?v=1468489896" async></script>
+
+<div class="page">
+	<header class="main">
+		<a class="logo" title="Homepage" href="https://nette.org/en/"><span>Homepage</span></a>
+
+		<nav class="main">
+			<ul>
+	<li><a href="//nette.org/en/download">Download</a></li>
+
+	<li class="item-doc"><a href="/en/">Documentation</a></li>
+
+	<li><a href="https://api.nette.org">API</a></li>
+
+	<li><a href="https://github.com/nette">GitHub</a></li>
+</ul>
+
+		</nav>
+	</header>
+
+		<div class="wikimenu">
+	<div>
+		<div><a href="https://github.com/nette/web-content/blob/doc-2.4/en/mailing.texy">Edit</a></div>
+		<ul>
+			<li><a href="https://nette.org/en/writing">How to write?</a></li>
+
+			<li><a href="/en/2.4/mailing?view=links">Backlinks</a></li>
+
+			<li>Languages: <a href="/cs/2.4/mailing">cs</a> <a href="/en/2.4/mailing">en</a> </li>
+
+			<li>changed 23. 5. 2016</li>
+
+			<li><a href="/special/sitemap?lang=en">All pages</a></li>
+
+			<li><a href="/special/broken-links?lang=en">Broken links</a></li>
+		</ul>
+	</div>
+
+	<div>
+		<div>Lang</div>
+		<ul>
+			<li><a href="/cs/2.4/mailing">cs</a></li>
+			<li><a href="/en/2.4/mailing">en</a></li>
+		</ul>
+	</div>
+
+	<div class=versionmenu>
+		<div>Version 2.4</div>
+		<ul>
+			<li><a href="/en/2.3/mailing">Version 2.3</a></li>
+			<li><a href="/en/2.2/mailing">Version 2.2</a></li>
+			<li><a href="/en/2.1/mailing">Version 2.1</a></li>
+			<li><a href="/en/2.0/mailing">Version 2.0</a></li>
+		</ul>
+	</div>
+</div>
+
+
+	<div class="main">
+		<div class="content has-sidebar">
+			
+
+			<ul class="breadcrumbs">
+				<li><a href="/en/2.4/">Documentation</a></li>
+				<li>Sending E-mails</li>
+			</ul>
+
+
+<h1 id="toc-sending-e-mails">Sending E-mails</h1>
+
+<div class="perex">
+	<p>Almost every web application needs to send e-mails, whether it's newsletter or order confirmation. That's why Nette Framework
+	provides necessary tools. This tutorial will show you how to:</p>
+
+	<ul>
+		<li>create e-mail</li>
+
+		<li>send it</li>
+
+		<li>add attachments</li>
+
+		<li>use templates in e-mails</li>
+
+		<li>create links</li>
+	</ul>
+</div>
+
+<p class="tip">Never send passwords or any other login credentials by e-mail.</p>
+
+<p>Example of creating an e-mail using <a href="//api.nette.org/2.4/Nette.Mail.Message.html">Nette\Mail\Message</a> class:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">use</span> Nette\<span class="php-keyword2">Mail</span>\Message;
+
+<span
+class="php-var">$mail</span> = <span class="php-keyword1">new</span> Message;
+<span class="php-var">$mail</span>-&gt;setFrom(<span
+class="php-quote">'John &lt;john@example.com&gt;'</span>)
+    -&gt;addTo(<span
+class="php-quote">'peter@example.com'</span>)
+    -&gt;addTo(<span
+class="php-quote">'jack@example.com'</span>)
+    -&gt;setSubject(<span
+class="php-quote">'Order Confirmation'</span>)
+    -&gt;setBody(<span
+class="php-quote">&quot;Hello, Your order has been accepted.&quot;</span>);</code></pre>
+
+<p class="note">All parameters must be encoded in UTF-8.</p>
+
+<p>And sending:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">use</span> Nette\<span
+class="php-keyword2">Mail</span>\SendmailMailer;
+
+<span class="php-var">$mailer</span> = <span
+class="php-keyword1">new</span> SendmailMailer;
+<span class="php-var">$mailer</span>-&gt;send(<span
+class="php-var">$mail</span>);</code></pre>
+
+<p class="note">In presenters and services we don't create mailer manually, but we will require the service of type <a
+href="//api.nette.org/2.4/Nette.Mail.IMailer.html">Nette\Mail\IMailer</a> <a href="/en/2.4/di-usage">using DI</a>.</p>
+
+<p>In addition to specifying recipient with <code>addTo()</code>, it's possible to specify recipient of copy with
+<code>addCc()</code> and recipient of blind copy: <code>addBcc()</code>. In all these methods, including <code>setFrom()</code>,
+we can specifiy addressee in three ways:</p>
+
+<pre class="src-php"><code><span class="php-var">$mail</span>-&gt;setFrom(<span
+class="php-quote">'john.doe@example.com'</span>);
+<span class="php-var">$mail</span>-&gt;setFrom(<span
+class="php-quote">'john.doe@example.com'</span>, <span class="php-quote">'John Doe'</span>);
+<span
+class="php-var">$mail</span>-&gt;setFrom(<span class="php-quote">'John Doe &lt;john.doe@example.com&gt;'</span>);</code></pre>
+
+<p>HTML content can be defined using <code>setHtmlBody()</code> method:</p>
+
+<pre class="src-php"><code><span class="php-var">$mail</span>-&gt;setHTMLBody(<span
+class="php-quote">'&lt;b&gt;Sample HTML&lt;/b&gt; &lt;img src=&quot;background.gif&quot;&gt;'</span>);</code></pre>
+
+<p>Embedded images can be inserted using <code>$mail-&gt;addEmbeddedFile('background.gif')</code>, but it is not necessary. Why?
+Because Nette Framework finds and inserts all files referenced in the HTML code automatically. This behavior can be supressed by
+adding <code>FALSE</code> as a second parameter of the <code>setHtmlBody()</code> method.</p>
+
+<p>If a HTML e-mail has no plain-text alternative, it will be automatically generated. And if it has no subject set, it will be
+taken from the <code>&lt;title&gt;</code> element.</p>
+
+<h2 id="toc-attachments">Attachments</h2>
+
+<p>Adding attachments to the e-mail is simple. In order to attach a file, we use <a
+href="//api.nette.org/2.4/Nette.Mail.Message.html#_addAttachment">addAttachment</a> method:</p>
+
+<pre class="src-php"><code><span class="php-comment">// attaches example.zip to the e-mail</span>
+<span
+class="php-var">$mail</span>-&gt;addAttachment(<span class="php-quote">'path/to/example.zip'</span>);
+
+<span
+class="php-comment">// attaches new example.txt file with &quot;Hello John!&quot; in it</span>
+<span
+class="php-var">$mail</span>-&gt;addAttachment(<span class="php-quote">'example.txt'</span>, <span
+class="php-quote">'Hello John!'</span>);
+
+<span class="php-comment">// attaches example.zip renamed to info.zip</span>
+<span
+class="php-var">$mail</span>-&gt;addAttachment(<span class="php-quote">'info.zip'</span>, <span
+class="php-keyword2">file_get_contents</span>(<span class="php-quote">'path/to/example.zip'</span>));</code></pre>
+
+<h2 id="toc-templates">Templates</h2>
+
+<p>The real power comes in combination with <a href="//latte.nette.org/en/">Latte templating system</a>:</p>
+
+<pre class="src-php"><code><span class="php-var">$latte</span> = <span class="php-keyword1">new</span> Latte\Engine;
+<span
+class="php-var">$params</span> = [
+    <span class="php-quote">'orderId'</span> =&gt; <span class="php-num">123</span>,
+];
+
+<span
+class="php-var">$mail</span> = <span class="php-keyword1">new</span> Message;
+<span class="php-var">$mail</span>-&gt;setFrom(<span
+class="php-quote">'John &lt;john@example.com&gt;'</span>)
+    -&gt;addTo(<span
+class="php-quote">'jack@example.com'</span>)
+    -&gt;setHtmlBody(<span class="php-var">$latte</span>-&gt;renderToString(<span
+class="php-quote">'email.latte'</span>, <span class="php-var">$params</span>));</code></pre>
+
+<p>File <code>email.latte</code>:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;html&gt;</span>
+<span class="html-tag">&lt;head&gt;</span>
+    <span
+class="html-tag">&lt;meta</span><span class="html-tagin"> http-equiv=</span><span
+class="html-quote">&quot;Content-Type&quot;</span><span class="html-tagin"> content=</span><span
+class="html-quote">&quot;text/html; charset=utf-8&quot;</span><span class="html-tag">&gt;</span>
+    <span
+class="html-tag">&lt;title&gt;</span>Order Confirmation<span class="html-tag">&lt;/title&gt;</span>
+    <span
+class="html-tag">&lt;style&gt;</span>
+    <span class="css-tag">body</span> {
+        <span
+class="css-property">background</span>:<span class="css-value"> </span><span class="css-func">url(</span><span
+class="css-value">&quot;background.png&quot;</span><span class="css-func">)</span><span class="css-value">
+    </span>}
+    <span
+class="html-tag">&lt;/style&gt;</span>
+<span class="html-tag">&lt;/head&gt;</span>
+<span
+class="html-tag">&lt;body&gt;</span>
+    <span class="html-tag">&lt;p&gt;</span>Hello,<span
+class="html-tag">&lt;/p&gt;</span>
+
+    <span class="html-tag">&lt;p&gt;</span>Your order number {<span
+class="php-var">$orderId</span>} has been accepted.<span class="html-tag">&lt;/p&gt;</span>
+<span
+class="html-tag">&lt;/body&gt;</span>
+<span class="html-tag">&lt;/html&gt;</span></code></pre>
+
+<h3 id="toc-creating-links">Creating links</h3>
+
+<p>The Latte Engine itself doesn't provide <code>{link}</code> macro. If we want to use it though, we can use a presenter or a
+component to create the template for us by calling <code>$template = $this-&gt;createTemplate()-&gt;setFile('email.latte')</code>
+and adding it in <code>setHtmlBody()</code>. This way, we are able to create links in the template.</p>
+
+<pre class="src-php"><code><span class="php-keyword1">use</span> Nette;
+
+<span
+class="php-keyword1">class</span> MyPresenter
+{
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> actionFoo()
+    {
+        <span class="php-var">$template</span> = <span
+class="php-var">$this</span>-&gt;createTemplate()-&gt;setFile(<span class="php-quote">'email.latte'</span>);
+        <span
+class="php-var">$mail</span> = <span class="php-keyword1">new</span> Message();
+        <span
+class="php-var">$mail</span>-&gt;setHtmlBody(<span class="php-var">$template</span>);
+    }
+}</code></pre>
+
+<p>Another option is to register the macro ourselves. Because a presenter is needed for generating links, we pass it as a
+parameter to the template:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">use</span> Nette;
+<span
+class="php-keyword1">use</span> Nette\Bridges\ApplicationLatte\UIMacros;
+
+<span
+class="php-keyword1">function</span> createMessage(Nette\Application\Application <span
+class="php-var">$application</span>)
+
+    <span class="php-comment">/** @var Nette\Application\IPresenter */</span>
+    <span
+class="php-var">$presenter</span> = <span class="php-var">$application</span>-&gt;getPresenter();
+
+    <span
+class="php-var">$latte</span> = <span class="php-keyword1">new</span> Latte\Engine;
+    <span
+class="php-var">$params</span> = [
+        <span class="php-quote">'orderId'</span> =&gt; <span
+class="php-num">123</span>,
+        <span class="php-quote">'_presenter'</span> =&gt; <span
+class="php-var">$presenter</span>, <span class="php-comment">// because of {plink}</span>
+        <span
+class="php-quote">'_control'</span> =&gt; <span class="php-var">$presenter</span>    <span
+class="php-comment">// because of {link}</span>
+    ];
+
+    UIMacros::install(<span
+class="php-var">$latte</span>-&gt;getCompiler()); <span
+class="php-comment">// This registers macros link, plink and others</span>
+
+    <span
+class="php-comment">// ...</span>
+}</code></pre>
+
+<p>In the template, link is created like in a normal template. We use absolute address, so the link always points to the correct
+domain:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;a</span><span class="html-tagin"> href=</span><span
+class="html-quote">&quot;{</span><span class="php-keyword1">link</span> //Presenter:action}<span
+class="html-quote">&quot;</span><span class="html-tag">&gt;</span>Odkaz<span class="html-tag">&lt;/a&gt;</span></code></pre>
+
+<h2 id="toc-custom-mailer">Custom mailer</h2>
+
+<p>Default <abbr title="class responsible for e-mail sending" class="about">mailer</abbr> uses PHP function <a
+href="http://php.net/mail">mail</a>. If you need to send mail through a SMTP server, you can use <code>SmtpMailer</code>.</p>
+
+<pre class="src-php"><code><span class="php-var">$mailer</span> = <span class="php-keyword1">new</span> Nette\<span
+class="php-keyword2">Mail</span>\SmtpMailer([
+        <span class="php-quote">'host'</span> =&gt; <span
+class="php-quote">'smtp.gmail.com'</span>,
+        <span class="php-quote">'username'</span> =&gt; <span
+class="php-quote">'john@gmail.com'</span>,
+        <span class="php-quote">'password'</span> =&gt; <span
+class="php-quote">'*****'</span>,
+        <span class="php-quote">'secure'</span> =&gt; <span
+class="php-quote">'ssl'</span>,
+]);
+<span class="php-var">$mailer</span>-&gt;send(<span
+class="php-var">$mail</span>);</code></pre>
+
+<p>You can also create your own mailer – it's a class implementing <a
+href="//api.nette.org/2.4/Nette.Mail.IMailer.html">Nette\Mail\IMailer</a> interface.</p>
+
+
+<div class="paginator">
+	<small><a href="/en/2.4/sessions">« Sessions</a></small>
+	<a href="/en/2.4/images">Image Manipulation »</a>
+</div>
+		</div>
+
+			<aside class="main">
+		<div>
+			<p><a href="https://github.com/nette/mail">GitHub</a> | <a href="https://api.nette.org/2.4/namespace-Nette.Mail.html">API</a>
+			<br>composer: <a href="https://packagist.org/packages/nette/mail">nette/mail</a></p>
+
+
+			<ul class="toc">
+				<li class="up" value="0"><a href="#">▲</a></li>
+				<li><a href="#toc-sending-e-mails">Sending E-mails</a>
+				</li>
+				<li><a href="#toc-attachments">Attachments</a>
+				</li>
+				<li><a href="#toc-templates">Templates</a>
+				<ul>
+				
+				<li><a href="#toc-creating-links">Creating links</a>
+				</ul>
+				
+				<li><a href="#toc-custom-mailer">Custom mailer</a>
+				</li>
+			</ul>
+		</div>
+	</aside>
+	</div>
+
+	<footer class="main">
+		<p>&copy; 2008, 2016 <a href="https://nettefoundation.com">Nette Foundation</a> | <a href="http://php7.org/guidelines/">PHP Coding Guidelines</a>
+		| <a href="https://nette.org/terms-of-use">Terms of use</a> | If not stated otherwise, the contents are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cz/">Creative Commons CC-BY-SA</a>.</p>
+	</footer>
+
+	<div class="docmenu">
+		<div class="column">
+	<h3 id="toc-programmer-s-guide"><img src="//files.nette.org/git/doc-2.4/icon-guides-small.png" alt=""> Programmer's Guide</h3>
+
+	<ul>
+		<li><a href="/en/2.4/forms">Forms</a></li>
+
+		<li><a href="//latte.nette.org/en/">Templates</a>, <a href="//latte.nette.org/en/macros">Latte Macros</a> and <a
+		href="//latte.nette.org/en/filters">Filters</a></li>
+
+		<li><a href="/en/2.4/presenters">MVC Application &amp; Presenters</a></li>
+
+		<li><a href="/en/2.4/configuring">Configuration</a>, <a href="/en/2.4/dependency-injection">Dependency Injection</a>, <a
+		href="/en/2.4/di-usage">Getting Dependencies</a> and <a href="/en/2.4/di-extensions">DI extensions</a></li>
+
+		<li><a href="/en/2.4/components">Components and Controls</a></li>
+
+		<li><a href="/en/2.4/routing">Routing</a></li>
+
+		<li><a href="/en/2.4/access-control">Authentication &amp; Authorization</a></li>
+
+		<li><a href="//tracy.nette.org/en/">Debugging and Error Handling</a>, <a href="//tracy.nette.org/en/extensions">Debugger
+		extensions</a></li>
+
+		<li><a href="/en/2.4/ajax">AJAX</a></li>
+
+		<li><a href="/en/2.4/php-language-enhancements">PHP Language Enhancements</a></li>
+
+		<li><a href="/en/2.4/http-request-response">HTTP request &amp; response</a></li>
+
+		<li><a href="/en/2.4/database">Database</a>, <a href="/en/2.4/database-table">Table</a>, <a
+		href="/en/2.4/database-selection">Selection</a>, <a href="/en/2.4/database-activerow">ActiveRow</a></li>
+
+		<li><a href="/en/2.4/sessions">Sessions</a></li>
+
+		<li><a href="/en/2.4/mailing">Mailing</a></li>
+
+		<li><a href="/en/2.4/images">Image Manipulation</a></li>
+
+		<li><a href="/en/2.4/caching">Caching</a></li>
+
+		<li><a href="/en/2.4/localization">Localization</a></li>
+
+		<li><a href="//tester.nette.org/en/">Testing</a>, <a href="//tester.nette.org/en/testing-with-travis">Continuous
+		integration</a></li>
+
+		<li><a href="/en/2.4/pagination">Pagination</a></li>
+
+		<li><a href="/en/2.4/auto-loading">Auto-loading</a></li>
+
+		<li><a href="/en/2.4/finder">Browsing files on disk</a></li>
+
+		<li><a href="/en/2.4/atomicity">Atomic Operations</a></li>
+
+		<li><a href="/en/2.4/validators">Validation</a></li>
+
+		<li><a href="/en/2.4/strings">Strings</a>, <a href="/en/2.4/arrays">arrays</a>, <a href="/en/2.4/html-elements">HTML elements</a>
+		and <a href="/en/2.4/urls">URLs</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-getting-started"><img src="//files.nette.org/git/doc-2.4/icon-welcome-small.png" alt=""> Getting Started</h3>
+
+	<ul>
+		<li><a href="/en/2.4/getting-started">Introduction to Nette</a></li>
+
+		<li><b><a href="/en/2.4/quickstart">Create First Application!</a></b></li>
+
+		<li><a href="/en/2.4/glossary">Glossary</a></li>
+	</ul>
+
+	<h3 id="toc-general-info"><img src="//files.nette.org/git/doc-2.4/icon-question-small.png" alt=""> General Info</h3>
+
+	<ul>
+		<li><a href="https://api.nette.org/2.4">API Reference</a></li>
+
+		<li><a href="/en/2.4/migration-2-3">Migrating from 2.2 to 2.3</a></li>
+
+		<li><a href="/en/2.4/code-checker">Code-Checker</a></li>
+
+		<li><a href="/en/2.4/vulnerability-protection">Vulnerability Protection</a></li>
+
+		<li><a href="/en/2.4/requirements">Server Requirements</a></li>
+
+		<li><a href="//nette.org/en/license">License</a> and <a href="https://nette.org/contributors">contributors</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-development"><img src="//files.nette.org/git/doc-2.4/icon-ruler-small.png" alt=""> Development</h3>
+
+	<ul>
+		<li><a href="//nette.org/en/contributing">Contributing</a></li>
+
+		<li><a href="//nette.org/en/writing">Writing Documentation</a></li>
+
+		<li><a href="irc://irc.freenode.net/nettefw">IRC #nettefw</a></li>
+
+		<li><a href="/en/2.4/troubleshooting">Troubleshooting</a></li>
+	</ul>
+</div>
+
+	</div>
+</div>
+
+<div class="bar"><div>
+
+	<ul class="user" style="opacity:.6">
+		<li><a href="https://addons.nette.org/"><span>Add-ons</span></a>
+		<li><a href="https://pla.nette.org/en/"><span>Planette</span></a>
+		<li><a href="https://forum.nette.org/en/"><span>Forum</span></a>
+		<li><a href="https://blog.nette.org"><span>Blog</span></a>
+		<li><a href="https://nette.org/donate"><span>Donate</span></a>
+		<li>
+		<form action="https://www.google.com/cse" class="search">
+			<input type="hidden" name="cx" value="011549293477758430224:vxofa9ufnhc"><input type="hidden" name="ie" value="UTF-8"><input type="search" name="q" class="text" size="30" placeholder="Search"><input type="image" src="https://files.nette.org/images/search.png" alt="Search">
+		</form>
+		</li>
+	</ul>
+</div></div>
+
+</body>
+</html>

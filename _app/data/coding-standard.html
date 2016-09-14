@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html class="nette-www">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Nette Foundation; c 2008">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Coding Standards | Nette Framework</title>
+
+	<link rel="stylesheet" href="https://files.nette.org/css/combined.css?v=1468405828">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://nette.org/opensearch.xml" title="Nette Framework">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://forum.nette.org/opensearch.xml" title="Nette Framework forum">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://api.nette.org/opensearch.xml" title="Nette Framework API">
+	<link rel="canonical" href="/en/coding-standard">
+	<link rel="image_src" href="https://files.nette.org/images/fb-preview.png">
+
+	</head>
+
+
+<body>
+<script>
+	ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-95238-14','auto'); ga('send','pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+<script src="https://api.nette.org/2.4/elementlist.js" async></script>
+<script src="https://files.nette.org/js/combined.js?v=1468489896" async></script>
+
+<div class="page">
+	<header class="main">
+		<a class="logo" title="Homepage" href="/en/"><span>Homepage</span></a>
+
+		<nav class="main">
+			<ul>
+	<li><a href="/en/download">Download</a></li>
+
+	<li class="item-doc"><a href="//doc.nette.org/en/">Documentation</a></li>
+
+	<li><a href="https://api.nette.org">API</a></li>
+
+	<li><a href="https://github.com/nette">GitHub</a></li>
+</ul>
+
+		</nav>
+	</header>
+
+		<div class="wikimenu">
+	<div>
+		<div><a href="https://github.com/nette/web-content/blob/nette.org/www/en/coding-standard.texy">Edit</a></div>
+		<ul>
+			<li><a href="/en/writing">How to write?</a></li>
+
+			<li><a href="/en/coding-standard?view=links">Backlinks</a></li>
+
+			<li>Languages: <a href="/en/coding-standard">en</a> </li>
+
+			<li>changed 30. 1. 2016</li>
+
+			<li><a href="/special/sitemap?lang=en">All pages</a></li>
+
+			<li><a href="/special/broken-links?lang=en">Broken links</a></li>
+		</ul>
+	</div>
+
+
+</div>
+
+
+	<div class="main">
+		<div class="content has-sidebar">
+			
+
+
+
+<h1 id="toc-coding-standards">Coding Standards</h1>
+
+<p class="perex">This document describes rules and recommendations for developing Nette.</p>
+
+<p>Nette follows the recommendations defined in the <a href="http://www.php-fig.org/psr/psr-1/">PSR-1</a> and <a
+href="http://www.php-fig.org/psr/psr-2/">PSR-2</a> documents with <a href="http://php7.org/guidelines/pgs-2.html">two
+differences</a>:</p>
+
+<ul>
+	<li>tabs are used for indenting</li>
+
+	<li>PHP constants TRUE, FALSE, and NULL are in upper case</li>
+</ul>
+
+<p>When contributing code to Nette, you must follow its coding standards. The easiest way how to do it is to imitate the existing
+Nette code. The main advantage is that every piece of code looks and feels familiar.</p>
+
+<h2 id="toc-general-rules">General rules</h2>
+
+<ul>
+	<li>Code must be compatible with PHP version declared in composer.json.</li>
+
+	<li>Code must use 1 tab for indenting, not spaces. Tabs are allowed only at the begin of line.</li>
+
+	<li>The recommended line length limit is 120 characters; lines should be 80 characters or less long.</li>
+
+	<li>PHP code must use only UTF-8 without BOM; ASCII encoding is preferred.</li>
+
+	<li>PHP code must always be opened by the full-form PHP tag: <code>&lt;?php</code></li>
+
+	<li>The closing <code>?&gt;</code> tag must be omitted from files containing only PHP.</li>
+
+	<li>Blank lines should be added to improve readability and to indicate related blocks of code.</li>
+
+	<li>There should not be more than one statement per line.</li>
+
+	<li>There must not be trailing whitespace at the end of lines.</li>
+
+	<li>All files must end with a single blank line.</li>
+
+	<li>File name should match class name if possible.</li>
+
+	<li>Any file that contains any PHP code must end with the extension <code>.php</code>, or <code>.phtml</code> in case of
+	templates, or <code>.phpt</code> in case of PHP tests.</li>
+
+	<li>Defining constants or functions in the global scope is permitted but strongly discouraged.</li>
+
+	<li>The reason for using shut-up operator must be commented: <code>@mkdir($dir); // @ - directory may exist</code>.</li>
+</ul>
+
+<p>For all file names, only alphanumeric characters, underscores, dots, and the dash character (<code>-</code>) are permitted.</p>
+
+<h2 id="toc-common-naming-conventions">Common Naming Conventions</h2>
+
+<ul>
+	<li>Always choose meaningful and specific names.</li>
+
+	<li>Avoid using abbreviations unless the full name is excessive.</li>
+
+	<li>Use uppercase for two-letter abbreviations, and Pascal Case for longer abbreviations.</li>
+
+	<li>Use only alphanumeric characters in names.</li>
+
+	<li>Variables should always be as verbose as practical. Terse variable names such as <code>$i</code> and <code>$n</code> are
+	discouraged for anything other than the smallest loop contexts.</li>
+</ul>
+
+<h2 id="toc-file-header">File Header</h2>
+
+<p>Header in PHP files with a class definition is following. Other files are specific by its type and contents.</p>
+
+<ul>
+	<li>PHP opening tag <code>&lt;php</code>.</li>
+
+	<li>Empty line.</li>
+
+	<li>Copyright doc block.</li>
+
+	<li>Empty line.</li>
+
+	<li>Namespace definition.</li>
+
+	<li>Empty line.</li>
+
+	<li>The <code>use</code> statements, once per line. The <code>use</code> keyword on every line. Lines are alphabetically
+	ordered.</li>
+
+	<li>Empty line.</li>
+
+	<li>Empty line.</li>
+
+	<li>(content)</li>
+</ul>
+
+<pre class="src-php"><code><span class="xlang">&lt;?php</span>
+
+<span
+class="php-comment">/**
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
+ */</span>
+
+<span
+class="php-keyword1">namespace</span> Nette\Application;
+
+<span class="php-keyword1">use</span> Latte;
+<span
+class="php-keyword1">use</span> Nette\Http;
+
+
+...</code></pre>
+
+<h2 id="toc-basic-expressions">Basic expressions</h2>
+
+<h3 id="toc-strings">Strings</h3>
+
+<p>When a string is literal (contains no variable substitutions), the single quote should be used to demarcate the string, except
+when a literal string itself contains apostrophes, it is recommended to demarcate the string with double quotes.</p>
+
+<p>Strings may be concatenated using the <code>.</code> operator. A space must always be added before and after the
+<code>.</code> operator to improve readability. It is permitted to break the statement into multiple lines:</p>
+
+<pre class="src-php"><code><span class="php-var">$sql</span> = <span
+class="php-quote">'SELECT `id`, `name` FROM `people`'</span>
+    . <span class="php-quote">'WHERE `name` = ?'</span>
+    . <span
+class="php-quote">'ORDER BY `name`'</span>;</code></pre>
+
+<h3 id="toc-arrays">Arrays</h3>
+
+<ul>
+	<li>Arrays must be written by short notation.</li>
+
+	<li>Trailing space must be added after each comma delimiter to improve readability.</li>
+</ul>
+
+<pre class="src-php"><code><span class="php-var">$sampleArray</span> = [<span class="php-num">1</span>, <span
+class="php-num">2</span>, <span class="php-num">3</span>, <span class="php-quote">'test'</span>];</code></pre>
+
+<ul>
+	<li>When declaring associative arrays, it is encouraged to put each key and value pair on separated line, indented by 1 tab.
+	After last pair the comma must be added.</li>
+</ul>
+
+<pre class="src-php"><code><span class="php-var">$sampleArray</span> = [
+    <span class="php-quote">'firstKey'</span> =&gt; <span
+class="php-quote">'firstValue'</span>,
+    <span class="php-quote">'secondKey'</span> =&gt; <span
+class="php-quote">'secondValue'</span>,
+];</code></pre>
+
+<h3 id="toc-keywords-and-true-false-null">Keywords and True/False/Null</h3>
+
+<ul>
+	<li>PHP <a href="http://php.net/manual/en/reserved.keywords.php">keywords</a> must be in lower case.</li>
+
+	<li>The PHP constants <code>TRUE</code>, <code>FALSE</code>, and <code>NULL</code> must be in upper case.</li>
+</ul>
+
+<h3 id="toc-closures">Closures</h3>
+
+<ul>
+	<li>Closures must be declared with a space after the <code>function</code> keyword, and with a space before and after the
+	<code>use</code> keyword.</li>
+
+	<li>The opening brace must go on the same line, and the closing brace must go on the next line following the body.</li>
+
+	<li>In the argument list, there must be one space after each comma, and there must no be a space before each comma.</li>
+</ul>
+
+<p>A closure declaration looks like the following:</p>
+
+<pre class="src-php"><code><span class="php-var">$closureWithArgs</span> = <span class="php-keyword1">function</span> (<span
+class="php-var">$arg1</span>, <span class="php-var">$arg2</span>) {
+    <span class="php-comment">// body</span>
+};
+
+<span
+class="php-var">$closureWithArgsAndVars</span> = <span class="php-keyword1">function</span> (<span
+class="php-var">$arg1</span>, <span class="php-var">$arg2</span>) <span class="php-keyword1">use</span> (<span
+class="php-var">$var1</span>, <span class="php-var">$var2</span>) {
+    <span class="php-comment">// body</span>
+};</code></pre>
+
+<h3 id="toc-method-and-function-calls">Method and Function Calls</h3>
+
+<ul>
+	<li>There must not be a space between the method or function name, the opening parenthesis, after the opening parenthesis and
+	before the closing parenthesis.</li>
+
+	<li>In the argument list, there must be one space after each comma, and there must no be a space before each comma.</li>
+
+	<li>Call-time pass by-reference is prohibited.</li>
+</ul>
+
+<p>Examples:</p>
+
+<pre class="src-php"><code>bar();
+<span class="php-var">$foo</span>-&gt;bar(<span class="php-var">$arg1</span>);
+Foo::bar(<span
+class="php-var">$arg1</span>, <span class="php-var">$arg2</span>);</code></pre>
+
+<p>For functions whose arguments permitted arrays, the function call may include <code>[]</code> and can be split into multiple
+lines to improve readability. In these cases, the standards for writing arrays still apply:</p>
+
+<pre class="src-php"><code>fooBar([<span class="php-num">1</span>, <span class="php-num">2</span>, <span
+class="php-num">3</span>], <span class="php-num">2</span>, <span class="php-num">3</span>);
+
+<span
+class="php-var">$foo</span>-&gt;bar(<span class="php-num">1</span>, <span class="php-num">2</span>, [
+    <span
+class="php-quote">'firstKey'</span> =&gt; <span class="php-quote">'firstValue'</span>,
+    <span
+class="php-quote">'secondKey'</span> =&gt; <span class="php-quote">'secondValue'</span>,
+], <span class="php-num">3</span>, <span
+class="php-num">4</span>);</code></pre>
+
+<p>Argument lists may be split across multiple lines, where each subsequent line is indented once. When doing so, the first item
+in the list must be on the next line, and there must be only one argument per line:</p>
+
+<pre class="src-php"><code><span class="php-var">$foo</span>-&gt;bar(
+    <span class="php-var">$arg</span>,
+    <span
+class="php-var">$arg2</span>,
+    <span class="php-var">$arg3</span>
+);</code></pre>
+
+<h2 id="toc-classes">Classes</h2>
+
+<p>The term “class” refers to all classes, interfaces, and traits.</p>
+
+<ul>
+	<li>Class names must be declared in <code>PascalCase</code>.</li>
+
+	<li>Code written for PHP &gt;= 5.3 must use formal namespaces.</li>
+
+	<li>Use a noun or noun phrase for class name.</li>
+
+	<li>Add an appropriate class-suffix when sub-classing another type when possible. (TexyParser, HttpRequest)</li>
+
+	<li>Interface classes must follow the same conventions as other classes, however should begin with <code>I</code> letter.
+	Example: <code>IPresenter</code></li>
+
+	<li>The <code>extends</code> and <code>implements</code> keywords must be declared on the same line as the class name.</li>
+
+	<li>The opening brace for the class must be on the line underneath the class name; the closing brace for the class must go on the
+	next line after the body.</li>
+
+	<li>Every class must have a documentation block.</li>
+
+	<li>Any code within a class must be indented by 1 tab.</li>
+</ul>
+
+<p>Placing additional code in a class file is permitted but discouraged (static constructor calling is allowed). In these files,
+two blank lines must separate the class from any additional PHP code in the file.</p>
+
+<p>Class members implementation should follow this order as it is practical:</p>
+
+<ol>
+	<li>Constants</li>
+
+	<li>Properties (Member Variables)
+		<ol style="list-style-type:lower-alpha">
+			<li>public</li>
+
+			<li>protected</li>
+
+			<li>private</li>
+		</ol>
+	</li>
+
+	<li>Constructor, Destructor</li>
+
+	<li>Methods
+		<ol style="list-style-type:lower-alpha">
+			<li>public</li>
+
+			<li>protected</li>
+
+			<li>private</li>
+		</ol>
+	</li>
+</ol>
+
+<p>The ultimate ancestor of all instantiable classes should be <code>Nette\Object</code>.</p>
+
+<h3 id="toc-constants">Constants</h3>
+
+<ul>
+	<li>Constants always have all letters capitalized, separated by underscore characters (example: CONTENT_TEXTUAL,
+	FIELD_NUMERIC).</li>
+</ul>
+
+<h3 id="toc-class-properties">Class properties</h3>
+
+<ul>
+	<li>Properties must be declared in <code>camelCase</code>.</li>
+
+	<li>The <code>var</code> keyword must not be used to declare a property.</li>
+
+	<li>Property names must not be prefixed with a single underscore to indicate protected or private visibility.</li>
+
+	<li>Properties must describe an entity not the type or size.</li>
+
+	<li>Properties must have documentation block with <code>@var</code> directive and specified type.</li>
+</ul>
+
+<h3 id="toc-methods">Methods</h3>
+
+<ul>
+	<li>They must be declared in <code>camelCase</code>.</li>
+
+	<li>Visibility must be declared on all methods (with exception of interface declarations).</li>
+
+	<li>Method names must not be prefixed with a single underscore to indicate protected or private visibility.</li>
+
+	<li>Like classes, the brace is always written on the line underneath the function name. There is no space between the function
+	name and the opening parenthesis for the arguments. All arguments should have type hint if possible.</li>
+
+	<li>Functions and methods must have documentation block with specified types of returned value.</li>
+
+	<li>Names must be as verbose as is practical to enhance the understandability of code (examples: fetchPairs(), getElementById(),
+	isSubmitted()).</li>
+
+	<li>Try to use a verb or verb-object pair.</li>
+
+	<li>If method returns boolean, try to prefix name with “is”, “can”, “has” or similar meaningful prefix.</li>
+
+	<li>The return value must not be enclosed in parentheses.</li>
+</ul>
+
+<p>A method declaration looks like the following:</p>
+
+<pre class="src-php"><code><span class="php-comment">/**
+ * Documentation block here.
+ */</span>
+<span
+class="php-keyword1">class</span> Foo
+{
+
+    <span
+class="php-comment">/**
+     * Documentation block here.
+     * @return void
+     */</span>
+    <span
+class="php-keyword1">public</span> <span class="php-keyword1">function</span> verb(<span
+class="php-var">$arg1</span>, TypeHint <span class="php-var">$arg2</span> = <span
+class="php-keyword1">NULL</span>)
+    {
+        <span
+class="php-comment">// content must be indented by 1 tab</span>
+    }
+
+}</code></pre>
+
+<h3 id="toc-abstract-final-and-static"><code>abstract</code>, <code>final</code>, and <code>static</code></h3>
+
+<ul>
+	<li>When present, the <code>abstract</code> and <code>final</code> declarations must precede the visibility declaration.</li>
+
+	<li>When present, the <code>static</code> declaration must come after the visibility declaration.</li>
+</ul>
+
+<h2 id="toc-control-statements">Control Statements</h2>
+
+<p>The general style rules for control structures are as follows:</p>
+
+<ul>
+	<li>There must be one space after the control structure keyword.</li>
+
+	<li>There must not be a space after the opening parenthesis and before the closing parenthesis.</li>
+
+	<li>There must be one space between the closing parenthesis and the opening brace.</li>
+
+	<li>The structure body must be indented once.</li>
+
+	<li>The closing brace must be on the next line after the body.</li>
+</ul>
+
+<p>The body of each structure must be enclosed by braces. This standardizes how the structures look, and reduces the likelihood of
+introducing errors as new lines get added to the body.</p>
+
+<h3 id="toc-if-elseif-else"><code>if</code>, <code>elseif</code>, <code>else</code></h3>
+
+<ul>
+	<li>Comparison “strong typed” operators (<code>===</code> and <code>!==</code>) are preferred before “weak typed” ones
+	(<code>==</code> and <code>!=</code>).</li>
+
+	<li>If weak typed comparison operator is used, the intention must be documented with a comment.</li>
+
+	<li>The keyword <code>elseif</code> must be used instead of <code>else if</code>.</li>
+</ul>
+
+<p>A structure looks like the following:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">if</span> (<span class="php-var">$a</span> === <span
+class="php-num">2</span>) {
+    <span class="php-var">$x</span> = <span class="php-num">2</span>;
+
+} <span
+class="php-keyword1">elseif</span> (<span class="php-var">$a</span> == <span class="php-num">0</span>) { <span
+class="php-comment">// intentionally ==, $a may be NULL</span>
+    <span class="php-var">$x</span> = <span
+class="php-num">4</span>;
+
+} <span class="php-keyword1">else</span> {
+    <span class="php-var">$x</span> = <span
+class="php-num">7</span>;
+}</code></pre>
+
+<h3 id="toc-switch-case"><code>switch</code>, <code>case</code></h3>
+
+<p>A <code>switch</code> structure looks like the following:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">switch</span> (<span class="php-var">$numPeople</span>) {
+    <span
+class="php-keyword1">case</span> <span class="php-num">1</span>:
+        <span class="php-keyword1">echo</span> <span
+class="php-quote">'First case, with a break'</span>;
+        <span class="php-keyword1">break</span>;
+
+    <span
+class="php-keyword1">case</span> <span class="php-num">2</span>:
+        <span class="php-keyword1">echo</span> <span
+class="php-quote">'Second case, which falls through'</span>;
+        <span
+class="php-comment">// break intentionally omitted</span>
+
+    <span class="php-keyword1">default</span>:
+        <span
+class="php-keyword1">break</span>;
+}</code></pre>
+
+<p>There must be a comment when fall-through is intentional in a non-empty <code>case</code> body.</p>
+
+<h3 id="toc-while-do-while"><code>while</code>, <code>do while</code></h3>
+
+<p>A <code>while</code> statement looks like the following:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">while</span> (<span class="php-var">$expr</span>) {
+    <span
+class="php-comment">// structure body</span>
+}</code></pre>
+
+<p>Similarly, a <code>do while</code> statement looks like the following:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">do</span> {
+    <span class="php-comment">// structure body;</span>
+} <span
+class="php-keyword1">while</span> (<span class="php-var">$expr</span>);</code></pre>
+
+<h3 id="toc-for"><code>for</code></h3>
+
+<p>A <code>for</code> statement looks like the following:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">for</span> (<span class="php-var">$i</span> = <span
+class="php-num">0</span>; <span class="php-var">$i</span> &lt; <span class="php-num">10</span>; <span
+class="php-var">$i</span>++) {
+    <span class="php-comment">// for body</span>
+}</code></pre>
+
+<h3 id="toc-foreach"><code>foreach</code></h3>
+
+<p>A <code>foreach</code> statement looks like the following:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">foreach</span> (<span class="php-var">$iterable</span> <span
+class="php-keyword1">as</span> <span class="php-var">$key</span> =&gt; <span class="php-var">$value</span>) {
+    <span
+class="php-comment">// foreach body</span>
+}</code></pre>
+
+<h3 id="toc-try-catch"><code>try</code>, <code>catch</code></h3>
+
+<p>A <code>try catch</code> block looks like the following:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">try</span> {
+    <span class="php-comment">// try body</span>
+} <span
+class="php-keyword1">catch</span> (FirstExceptionType <span class="php-var">$e</span>) {
+    <span
+class="php-comment">// catch body</span>
+} <span class="php-keyword1">catch</span> (OtherExceptionType <span
+class="php-var">$e</span>) {
+    <span class="php-comment">// catch body</span>
+}</code></pre>
+
+<h2 id="toc-documentation-blocks-and-annotations">Documentation Blocks and Annotations</h2>
+
+<p>There are two main places for documentation blocks. Documentation block before class definition:</p>
+
+<ul>
+	<li>Starts by a class description.</li>
+
+	<li>Empty line follows.</li>
+
+	<li>The <code>@property</code> (or <code>@property-read</code>, <code>@property-write</code>) annotations follow, one
+	by line.</li>
+
+	<li>Syntax of property annotation is: annotation, space, type, space, $name. The property-write has not type.</li>
+
+	<li>The <code>@method</code> annotations follow, one by line. They are used to declare magic methods.</li>
+
+	<li>Syntax of method annotation is: annotation, space, return type, space, name(type list).</li>
+
+	<li>The <code>@author</code> annotation is omitted. The authorship is kept in a source code history.</li>
+
+	<li>The <code>@internal</code> or <code>@deprecated</code> annotations can be used.</li>
+</ul>
+
+<pre class="src-php"><code><span
+class="php-comment">/**
+ * MIME message part.
+ *
+ * @property string $encoding
+ * @property-read array $headers
+ * @property-write $contentType
+ * @method string getSomething(string, TypeHint)
+ */</span></code></pre>
+
+<p>Documentation block before class method definition:</p>
+
+<ul>
+	<li>Starts by a short method description.</li>
+
+	<li>No empty line.</li>
+
+	<li>The <code>@param</code> annotations, one by line.</li>
+
+	<li>The <code>@return</code> annotation.</li>
+
+	<li>The <code>@throws</code> annotations, one by line.</li>
+</ul>
+
+<p>Every annotation is followed by one space and its contents, except for the <code>@param</code> which is quite complex:</p>
+
+<ul>
+	<li>The <code>@param</code> annotation is followed by two spaces, type and optionally by space and description.</li>
+
+	<li>It is primarily meant for scalar method parameters without type hint.</li>
+
+	<li>The main rule is: never duplicate any method signature information.</li>
+
+	<li>Description is used only if parameter name is not self-descriptive enough.</li>
+</ul>
+
+<pre class="src-php"><code><span
+class="php-comment">/**
+ * @param  int|Countable
+ * @return string
+ * @throws DirectoryNotFoundException
+ */</span>
+<span
+class="php-keyword1">public</span> <span class="php-keyword1">function</span> run(<span
+class="php-var">$iterations</span>, Logger <span class="php-var">$logger</span>) {}
+
+
+<span
+class="php-comment">/**
+ * @param  Container
+ * @param  bool
+ * @param  callable function(string $value)
+ * @return string[]
+ */</span>
+<span
+class="php-keyword1">public</span> <span class="php-keyword1">function</span> find(Container <span
+class="php-var">$container</span>, <span class="php-var">$need</span>, <span class="php-var">$filter</span> = <span
+class="php-keyword1">NULL</span>) {}</code></pre>
+
+<p>Some annotations like <code>@param</code> or <code>@return</code> require data type. These can be:</p>
+
+<ul>
+	<li><code>int</code>, <code>float</code>, <code>bool</code>, <code>string</code> for scalars.</li>
+
+	<li><code>resource</code>.</li>
+
+	<li><code>callable</code> with a following function signature as a description.</li>
+
+	<li><code>ClassName</code></li>
+
+	<li><code>array</code> for common arrays, but</li>
+
+	<li><code>string[]</code>, <code>int[]</code>, 'ClassName[]` for single-type arrays.</li>
+
+	<li>Dynamic type list is concatenated by <code>|</code> like <code>int|string|ClassName</code>.</li>
+</ul>
+
+<p><code>`</code></p>
+
+
+		</div>
+
+			<aside class="main">
+		<div>
+
+
+			<ul class="toc">
+				<li class="up" value="0"><a href="#">▲</a></li>
+				<li><a href="#toc-general-rules">General rules</a>
+				</li>
+				<li><a href="#toc-common-naming-conventions">Common Naming Conventions</a>
+				</li>
+				<li><a href="#toc-file-header">File Header</a>
+				</li>
+				<li><a href="#toc-basic-expressions">Basic expressions</a>
+				<ul>
+				
+				<li><a href="#toc-strings">Strings</a>
+				</li>
+				<li><a href="#toc-arrays">Arrays</a>
+				</li>
+				<li><a href="#toc-keywords-and-true-false-null">Keywords and True/False/Null</a>
+				</li>
+				<li><a href="#toc-closures">Closures</a>
+				</li>
+				<li><a href="#toc-method-and-function-calls">Method and Function Calls</a>
+				</ul>
+				
+				<li><a href="#toc-classes">Classes</a>
+				<ul>
+				
+				<li><a href="#toc-constants">Constants</a>
+				</li>
+				<li><a href="#toc-class-properties">Class properties</a>
+				</li>
+				<li><a href="#toc-methods">Methods</a>
+				</li>
+				<li><a href="#toc-abstract-final-and-static">abstract, final, and static</a>
+				</ul>
+				
+				<li><a href="#toc-control-statements">Control Statements</a>
+				<ul>
+				
+				<li><a href="#toc-if-elseif-else">if, elseif, else</a>
+				</li>
+				<li><a href="#toc-switch-case">switch, case</a>
+				</li>
+				<li><a href="#toc-while-do-while">while, do while</a>
+				</li>
+				<li><a href="#toc-for">for</a>
+				</li>
+				<li><a href="#toc-foreach">foreach</a>
+				</li>
+				<li><a href="#toc-try-catch">try, catch</a>
+				</ul>
+				
+				<li><a href="#toc-documentation-blocks-and-annotations">Documentation Blocks and Annotations</a>
+				</li>
+			</ul>
+		</div>
+	</aside>
+	</div>
+
+	<footer class="main">
+		<p>&copy; 2008, 2016 <a href="https://nettefoundation.com">Nette Foundation</a> | <a href="http://php7.org/guidelines/">PHP Coding Guidelines</a>
+		| <a href="https://nette.org/terms-of-use">Terms of use</a> | If not stated otherwise, the contents are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cz/">Creative Commons CC-BY-SA</a>.</p>
+	</footer>
+
+</div>
+
+<div class="bar"><div>
+
+	<ul class="user" style="opacity:.6">
+		<li><a href="https://addons.nette.org/"><span>Add-ons</span></a>
+		<li><a href="https://pla.nette.org/en/"><span>Planette</span></a>
+		<li><a href="https://forum.nette.org/en/"><span>Forum</span></a>
+		<li><a href="https://blog.nette.org"><span>Blog</span></a>
+		<li><a href="https://nette.org/donate"><span>Donate</span></a>
+		<li>
+		<form action="https://www.google.com/cse" class="search">
+			<input type="hidden" name="cx" value="011549293477758430224:vxofa9ufnhc"><input type="hidden" name="ie" value="UTF-8"><input type="search" name="q" class="text" size="30" placeholder="Search"><input type="image" src="https://files.nette.org/images/search.png" alt="Search">
+		</form>
+		</li>
+	</ul>
+</div></div>
+
+</body>
+</html>

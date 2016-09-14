@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html class="nette-tracy">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Nette Foundation; c 2008">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Tracy – PHP debugger | Nette Framework</title>
+
+	<link rel="stylesheet" href="https://files.nette.org/css/combined.css?v=1468405828">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://nette.org/opensearch.xml" title="Nette Framework">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://forum.nette.org/opensearch.xml" title="Nette Framework forum">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://api.nette.org/opensearch.xml" title="Nette Framework API">
+	<link rel="canonical" href="/en/">
+	<link rel="image_src" href="https://files.nette.org/images/fb-preview.png">
+
+		<link rel="alternate" hreflang="cs" href="/cs/">
+	<link rel="alternate" hreflang="en" href="/en/">
+</head>
+
+
+<body>
+<script>
+	ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-95238-14','auto'); ga('send','pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+<script src="https://api.nette.org/2.4/elementlist.js" async></script>
+<script src="https://files.nette.org/js/combined.js?v=1468489896" async></script>
+
+<div class="page">
+	<header class="main">
+		<a class="logo" title="Homepage" href="https://nette.org/en/"><span>Homepage</span></a>
+
+		<nav class="main">
+			<ul>
+	<li><a href="/en/#toc-installation-and-requirements">Download</a></li>
+
+	<li><a href="/en/">Documentation</a></li>
+
+	<li><a href="https://api.nette.org/tracy/">API</a></li>
+
+	<li><a href="https://github.com/nette/tracy">GitHub</a></li>
+</ul>
+
+		</nav>
+	</header>
+
+		<div class="wikimenu">
+	<div>
+		<div><a href="https://github.com/nette/web-content/blob/nette.org/tracy/en/homepage.texy">Edit</a></div>
+		<ul>
+			<li><a href="https://nette.org/en/writing">How to write?</a></li>
+
+			<li><a href="/en/?view=links">Backlinks</a></li>
+
+			<li>Languages: <a href="/cs/">cs</a> <a href="/en/">en</a> </li>
+
+			<li>changed 23. 5. 2016</li>
+
+			<li><a href="/special/sitemap?lang=en">All pages</a></li>
+
+			<li><a href="/special/broken-links?lang=en">Broken links</a></li>
+		</ul>
+	</div>
+
+	<div>
+		<div>Lang</div>
+		<ul>
+			<li><a href="/cs/">cs</a></li>
+			<li><a href="/en/">en</a></li>
+		</ul>
+	</div>
+
+</div>
+
+
+	<div class="main">
+		<div class="content has-sidebar">
+			
+
+
+
+<h1 id="toc-tracy-php-debugger">Tracy – PHP debugger</h1>
+
+<div class="perex">
+	<p>Tracy library is a useful helper for everyday PHP programmers. It helps you to:</p>
+
+	<ul>
+		<li>quickly detect and correct errors</li>
+
+		<li>log errors</li>
+
+		<li>dump variables</li>
+
+		<li>measure execution time of scripts/queries</li>
+
+		<li>see memory consumption</li>
+	</ul>
+</div>
+
+<p>PHP is a perfect language for making hardly detectable errors because it gives a great flexibility to programmers.
+Tracy\Debugger is more valuable because of that. It is an ultimate tool among the diagnostic ones. If you are meeting Tracy for
+the first time, believe me, your life starts to be divided into one before the Tracy and the one with her. Welcome to the
+good part!</p>
+
+<h2 id="toc-installation-and-requirements">Installation and requirements</h2>
+
+<p>The best way how to install Tracy is to <a href="https://github.com/nette/tracy/releases">download the latest package</a> or
+use Composer:</p>
+
+<pre>php composer.phar require tracy/tracy</pre>
+
+<p>Tracy requires PHP version 5.3.0 or newer.</p>
+
+<h2 id="toc-usage">Usage</h2>
+
+<p>Activating Tracy is easy. Simply add these two lines of code, preferably just after library loading (using
+<code>require 'src/tracy.php'</code> or via Composer):</p>
+
+<pre class="src-php"><code><span class="php-keyword1">use</span> Tracy\Debugger;
+
+Debugger::enable();</code></pre>
+
+<p>The first thing you will notice on the website is a Debugger Bar.</p>
+
+<h2 id="toc-debugger-bar">Debugger Bar</h2>
+
+<p>The Debugger Bar is a floating panel. It is displayed in the bottom right corner of a page. You can move it using the mouse. It
+will remember its position after the page reloading.</p>
+
+<div><a href="https://nette.github.io/tracy/tracy-debug-bar.html"><img src="//files.nette.org/git/tracy/tracy-bar.png"
+alt=""></a></div>
+
+<p>You can add other useful panels into the Debugger Bar. You can find interesing ones in <a
+href="https://addons.nette.org/">addons</a> or you can <a href="/en/extensions">create your own</a>.</p>
+
+<h2 id="toc-visualization-of-errors-and-exceptions">Visualization of errors and exceptions</h2>
+
+<p>Surely, you know how PHP reports errors: there is something like this in the page source code:</p>
+
+<pre
+style="font-size:90%"><b>Parse error</b>:  syntax error, unexpected '}' in <b>HomepagePresenter.php</b> on line <b>15</b></pre>
+
+<p>or uncaught exception:</p>
+
+<pre
+style="font-size:90%"><b>Fatal error</b>:  Uncaught Nette\MemberAccessException: Call to undefined method Nette\Application\UI\Form::addTest()? in /sandbox/vendor/nette/utils/src/Utils/ObjectMixin.php:100
+Stack trace:
+#0 /sandbox/vendor/nette/utils/src/Utils/Object.php(75): Nette\Utils\ObjectMixin::call(Object(Nette\Application\UI\Form), 'addTest', Array)
+#1 /sandbox/app/forms/SignFormFactory.php(32): Nette\Object-&gt;__call('addTest', Array)
+#2 /sandbox/app/presenters/SignPresenter.php(21): App\Forms\SignFormFactory-&gt;create()
+#3 /sandbox/vendor/nette/component-model/src/ComponentModel/Container.php(181): App\Presenters\SignPresenter-&gt;createComponentSignInForm('signInForm')
+#4 /sandbox/vendor/nette/component-model/src/ComponentModel/Container.php(139): Nette\ComponentModel\Container-&gt;createComponent('signInForm')
+#5 /sandbox/temp/cache/latte/15206b353f351f6bfca2c36cc.php(17): Nette\ComponentModel\Co in <b>/sandbox/vendor/nette/utils/src/Utils/ObjectMixin.php</b> on line <b>100</b><br></pre>
+
+<p>It is not so easy to navigate through this output. If you enable Tracy, both errors and exceptions are displayed in a
+completely different form:</p>
+
+<div><a href="https://nette.github.io/tracy/tracy-exception.html"><img src="//files.nette.org/git/tracy/tracy-exception.png"
+alt=""></a></div>
+
+<p>The error message literally screams. You can see a part of the source code with the highlighted line where the error occurred.
+A message clearly explains an error. The entire site is <a href="https://nette.github.io/tracy/tracy-exception.html">interactive,
+try it</a>.</p>
+
+<p>And you know what? Fatal errors are captured and displayed in the same way. No need to install any extension (click for live
+example):</p>
+
+<div><a href="https://nette.github.io/tracy/tracy-error.html"><img src="//files.nette.org/git/tracy/tracy-error.png"
+alt=""></a></div>
+
+<p>Errors like a typo in a variable name or an attempt to open a nonexistent file generate reports of E_NOTICE or E_WARNING level.
+These can be easily overlooked and/or can be completely hidden in a web page graphic layout. Let Tracy manage them:</p>
+
+<div><a href="https://nette.github.io/tracy/tracy-debug-bar.html"><img src="//files.nette.org/git/tracy/tracy-notice2.png"
+alt=""></a></div>
+
+<p>Or they may be displayed like errors:</p>
+
+<pre class="src-php"><code>Debugger::<span class="php-var">$strictMode</span> = <span
+class="php-keyword1">TRUE</span>;</code></pre>
+
+<div><a href="https://nette.github.io/tracy/tracy-notice.html"><img src="//files.nette.org/git/tracy/tracy-notice.png"
+alt=""></a></div>
+
+<h2 id="toc-production-mode-and-error-logging">Production mode and error logging</h2>
+
+<p>As you can see, Tracy is quite eloquent. It is appreciated in a development environment, but on a production server it would
+cause a disaster. Any debugging information cannot be listed there. Therefore Tracy has an environment autodetection and logging
+functionality. Instead of showing herself, Tracy stores information into a log file and shows the visitor a user-comprehensible
+server error message:</p>
+
+<div><a href="https://nette.github.io/tracy/tracy-production.html"><img src="//files.nette.org/git/tracy/tracy-error2.png"
+alt=""></a></div>
+
+<p>Production output mode suppresses all debugging information which is sent out via <code>Debugger::dump()</code> or
+<code>Debugger::fireLog()</code>, and of course all error messages generated by PHP. So, even if you forget
+<code>Debugger::dump($obj)</code> in the source code, you do not have to worry about it on your production server. Nothing will
+be seen.</p>
+
+<p>The output mode is set by the first parameter of <code>Debugger::enable()</code>. You can specify either a constant
+<code>Debugger::PRODUCTION</code> or <code>Debugger::DEVELOPMENT</code>. Other option is to set it up in a way, that development
+mode will be on when the application is accessed from defined IP address with defined value of <code>tracy-debug</code> cookie.
+The syntax used to achieve this is <code>cookie-value@ip-address</code>.</p>
+
+<p>If it is not specified, the default value <code>Debugger::DETECT</code> is used. In this case the system detects a server by IP
+address. The production mode is chosen if an application is accessed via public IP address. A local IP address leads to
+development mode. It is not necessary to set the mode in most cases. The mode is correctly recognized when you are launching the
+application on your local server or in production.</p>
+
+<p>In the production mode, Tracy automatically captures all errors and exceptions into a text log. Unless you specify otherwise,
+it will be stored in log/error.log. This error logging is extremely useful. Imagine, that all users of your application are
+actually betatesters. They are doing cutting-edge work for free when hunting bugs and you would be silly if you threw away their
+valuable reports to a recycle bin unnoticed.</p>
+
+<p>If you need to log your own messages or caught exceptions, use the method <code>log()</code>:</p>
+
+<pre class="src-php"><code>Debugger::<span class="php-keyword2">log</span>(<span
+class="php-quote">'Unexpected error'</span>); <span class="php-comment">// text message</span>
+
+<span
+class="php-keyword1">try</span> {
+    criticalOperation();
+} <span class="php-keyword1">catch</span> (Exception <span
+class="php-var">$e</span>) {
+    Debugger::<span class="php-keyword2">log</span>(<span class="php-var">$e</span>); <span
+class="php-comment">// log exception</span>
+    <span class="php-comment">// or</span>
+    Debugger::<span
+class="php-keyword2">log</span>(<span class="php-var">$e</span>, Debugger::ERROR) <span
+class="php-comment">// also sends an email notification</span>
+}</code></pre>
+
+<p>A directory for errors logging can be set by the second parameter of the enable() method:</p>
+
+<pre class="src-php"><code>Debugger::enable(Debugger::DETECT, __DIR__ . <span class="php-quote">'/mylog'</span>);</code></pre>
+
+<p>If you want Tracy to log PHP errors like <code>E_NOTICE</code> or <code>E_WARNING</code> with detailed information (HTML
+report), set <code>Debugger::$logSeverity</code>:</p>
+
+<pre class="src-php"><code>Debugger::<span class="php-var">$logSeverity</span> = E_NOTICE | E_WARNING;</code></pre>
+
+<p>For a real professional the error log is a crucial source of information and he or she wants to be notified about any new error
+immediately. Tracy helps him. She is capable of sending an email for every new error record. The variable $email identifies where
+to send these e-mails:</p>
+
+<pre class="src-php"><code>Debugger::<span class="php-var">$email</span> = <span
+class="php-quote">'admin@example.com'</span>;</code></pre>
+
+<p>To protect your e-mail box from flood, Tracy sends <b>only one message</b> and creates a file <code>email-sent</code>. When a
+developer receives the e-mail notification, he checks the log, corrects his application and deletes the <code>email-sent</code>
+monitoring file. This activates the e-mail sending again.</p>
+
+<p class="note">If your site uses Content Security Policy, you'll need to add <code>'unsafe-inline'</code> to
+<code>style-src</code>, and <code>'unsafe-inline'</code> &amp; <code>'unsafe-eval'</code> to <code>script-src</code> for Tracy to
+work properly. Avoid adding these in production mode, if you can.</p>
+
+<h2 id="toc-variable-dumping">Variable dumping</h2>
+
+<p>Every debugging developer is a good friend with the function <code>var_dump</code>, which lists all contents of any variable in
+detail. Unfortunately, its output is without HTML formatting and outputs the dump into a single line of HTML code, not to mention
+context escaping. It is necessary to replace the <code>var_dump</code> by a handier function. That is just what
+<code>Debugger::dump()</code> is.</p>
+
+<pre class="src-php"><code><span class="php-var">$arr</span> = [<span class="php-num">10</span>, <span
+class="php-num">20.2</span>, <span class="php-keyword1">TRUE</span>, <span class="php-keyword1">NULL</span>, <span
+class="php-quote">'hello'</span>];
+
+dump(<span class="php-var">$arr</span>);
+<span
+class="php-comment">// or Tracy\Debugger::dump($arr);</span></code></pre>
+
+<p>generates the output:</p>
+
+<div><img src="//files.nette.org/git/tracy/tracy-dump.png" alt=""></div>
+
+<p>You can also change the nesting depth by <code>Debugger::$maxDepth</code> and displayed strings length by
+<code>Debugger::$maxLen</code>. Naturally, lower values accelerate Tracy rendering.</p>
+
+<pre class="src-php"><code>Debugger::<span class="php-var">$maxDepth</span> = <span class="php-num">2</span>; <span
+class="php-comment">// default: 3</span>
+Debugger::<span class="php-var">$maxLen</span> = <span class="php-num">50</span>; <span
+class="php-comment">// default: 150</span></code></pre>
+
+<p>The <code>dump()</code> function can display other useful information. <code>Tracy\Dumper::LOCATION_SOURCE</code> adds tooltip
+with path to the file, where the function was called. <code>Tracy\Dumper::LOCATION_LINK</code> adds a link to the file.
+<code>Tracy\Dumper::LOCATION_CLASS</code> adds a tooltip to every dumped object containing path to the file, in which the
+object's class is defined. All these constants can be set in <code>Debugger::$showLocation</code> variable before calling the
+<code>dump()</code>. You can set multiple values at once using the <code>|</code> operator.</p>
+
+<pre class="src-php"><code>Debugger::<span class="php-var">$showLocation</span> = Tracy\Dumper::LOCATION_SOURCE; <span
+class="php-comment">// Shows path to where the dump() was called</span>
+Debugger::<span
+class="php-var">$showLocation</span> = Tracy\Dumper::LOCATION_CLASS | Tracy\Dumper::LOCATION_LINK; <span
+class="php-comment">// Shows both paths to the classes and link to where the dump() was called</span>
+Debugger::<span
+class="php-var">$showLocation</span> = <span class="php-keyword1">FALSE</span>; <span
+class="php-comment">// Hides additional location information</span>
+Debugger::<span class="php-var">$showLocation</span> = <span
+class="php-keyword1">TRUE</span>; <span class="php-comment">// Shows all additional location information</span></code></pre>
+
+<p>Very handy alternative to <code>Debugger::dump()</code> is <code>Debugger::barDump()</code>. This allows us to dump variables
+in Debugger Bar. This is useful, because dumps don't mess up the output and we can also add a title to the dump.</p>
+
+<pre class="src-php"><code>Debugger::barDump([<span class="php-num">2</span>, <span class="php-num">4</span>, <span
+class="php-num">6</span>, <span class="php-num">8</span>], <span
+class="php-quote">'even numbers up to ten'</span>);
+Debugger::barDump([<span class="php-num">1</span>, <span
+class="php-num">3</span>, <span class="php-num">5</span>, <span class="php-num">7</span>, <span class="php-num">9</span>], <span
+class="php-quote">'odd numbers up to ten'</span>);</code></pre>
+
+<div><img src="//files.nette.org/git/tracy/bardump-en.png" alt=""></div>
+
+<h2 id="toc-timing">Timing</h2>
+
+<p>Another useful tool is the debugger stopwatch with a precision of microseconds:</p>
+
+<pre class="src-php"><code>Debugger::timer();
+
+<span class="php-comment">// sweet dreams my cherrie</span>
+<span
+class="php-keyword2">sleep</span>(<span class="php-num">2</span>);
+
+<span
+class="php-var">$elapsed</span> = Debugger::timer();
+<span class="php-comment">// $elapsed = 2</span></code></pre>
+
+<p>Multiple measurements at once can be achieved by an optional parameter.</p>
+
+<pre class="src-php"><code>Debugger::timer(<span class="php-quote">'page-generating'</span>);
+<span
+class="php-comment">// some code</span>
+
+Debugger::timer(<span class="php-quote">'rss-generating'</span>);
+<span
+class="php-comment">// some code</span>
+
+<span class="php-var">$rssElapsed</span> = Debugger::timer(<span
+class="php-quote">'rss-generating'</span>);
+<span class="php-var">$pageElapsed</span> = Debugger::timer(<span
+class="php-quote">'page-generating'</span>);</code></pre>
+
+<pre class="src-php"><code>Debugger::timer(); <span class="php-comment">// runs the timer</span>
+
+... <span
+class="php-comment">// some time consuming operation</span>
+
+<span class="php-keyword1">echo</span> Debugger::timer(); <span
+class="php-comment">// elapsed time in seconds</span></code></pre>
+
+<h2 id="toc-firelogger">FireLogger</h2>
+
+<p>You cannot always send debugging information to the browser window. This applies to AJAX requests, or generating XML files to
+output. In such cases, you can send the messages by a separate channel into FireLogger. Error, Notice and Warning levels are sent
+to FireLogger window automatically. It is also possible to log suppressed exceptions in running application when attention to them
+is important.</p>
+
+<p>How to do it?</p>
+
+<p>Firefox:</p>
+
+<ul>
+	<li>install extension <a href="http://getfirebug.com/">Firebug</a> and <a
+	href="https://addons.mozilla.org/cs/firefox/addon/firelogger/">FireLogger</a></li>
+
+	<li>turn on Firebug (using F12 key), enable tabs Net and Logger (stay on Logger)</li>
+</ul>
+
+<p>Chrome:</p>
+
+<ul>
+	<li>install extension <a
+	href="https://chrome.google.com/webstore/detail/firelogger-for-chrome/hmagilfopmdjkeomnjpchokglfdfjfeh">FireLogger for
+	Chrome</a></li>
+
+	<li>turn on Chrome DevTools (using Ctrl-Shift-I key) and open Console</li>
+</ul>
+
+<p>Navigate to <a href="https://examples.nette.org/tracy/">demo page</a> and you will see messages sent from PHP.</p>
+
+<p>Because Tracy\Debugger communicates with FireLogger via HTTP headers, you must call the logging function before the PHP script
+sends anything to output. It is also possible to enable output buffering and delay the output.</p>
+
+<pre class="src-php"><code><span class="php-keyword1">use</span> Tracy\Debugger;
+
+Debugger::fireLog(<span
+class="php-quote">'Hello World'</span>); <span
+class="php-comment">// send string into FireLogger console</span>
+
+Debugger::fireLog(<span class="php-var">$_SERVER</span>); <span
+class="php-comment">// or even arrays and objects</span>
+
+Debugger::fireLog(<span class="php-keyword1">new</span> Exception(<span
+class="php-quote">'Test Exception'</span>)); <span class="php-comment">// or exceptions</span></code></pre>
+
+<p>The result looks like this:</p>
+
+<div><img src="//files.nette.org/git/tracy/tracy-firelogger.png" alt=""></div>
+
+
+		</div>
+
+			<aside class="main">
+		<div>
+			<p><a href="https://github.com/nette/tracy">GitHub</a> | <a href="https://api.nette.org/tracy/namespace-Tracy.html">API</a>
+			<br>composer: <a href="https://packagist.org/packages/tracy/tracy">tracy/tracy</a></p>
+
+
+			<ul class="toc">
+				<li class="up" value="0"><a href="#">▲</a></li>
+				<li><a href="#toc-installation-and-requirements">Installation and requirements</a>
+				</li>
+				<li><a href="#toc-usage">Usage</a>
+				</li>
+				<li><a href="#toc-debugger-bar">Debugger Bar</a>
+				</li>
+				<li><a href="#toc-visualization-of-errors-and-exceptions">Visualization of errors and exceptions</a>
+				</li>
+				<li><a href="#toc-production-mode-and-error-logging">Production mode and error logging</a>
+				</li>
+				<li><a href="#toc-variable-dumping">Variable dumping</a>
+				</li>
+				<li><a href="#toc-timing">Timing</a>
+				</li>
+				<li><a href="#toc-firelogger">FireLogger</a>
+				</li>
+			</ul>
+		</div>
+	</aside>
+	</div>
+
+	<footer class="main">
+		<p>&copy; 2008, 2016 <a href="https://nettefoundation.com">Nette Foundation</a> | <a href="http://php7.org/guidelines/">PHP Coding Guidelines</a>
+		| <a href="https://nette.org/terms-of-use">Terms of use</a> | If not stated otherwise, the contents are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cz/">Creative Commons CC-BY-SA</a>.</p>
+	</footer>
+
+</div>
+
+<div class="bar"><div>
+
+	<ul class="user" style="opacity:.6">
+		<li><a href="https://addons.nette.org/"><span>Add-ons</span></a>
+		<li><a href="https://pla.nette.org/en/"><span>Planette</span></a>
+		<li><a href="https://forum.nette.org/en/"><span>Forum</span></a>
+		<li><a href="https://blog.nette.org"><span>Blog</span></a>
+		<li><a href="https://nette.org/donate"><span>Donate</span></a>
+		<li>
+		<form action="https://www.google.com/cse" class="search">
+			<input type="hidden" name="cx" value="011549293477758430224:vxofa9ufnhc"><input type="hidden" name="ie" value="UTF-8"><input type="search" name="q" class="text" size="30" placeholder="Search"><input type="image" src="https://files.nette.org/images/search.png" alt="Search">
+		</form>
+		</li>
+	</ul>
+</div></div>
+
+</body>
+</html>

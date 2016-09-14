@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html class="nette-doc">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Nette Foundation; c 2008">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Creating and Editing Posts | Nette Framework</title>
+
+	<link rel="stylesheet" href="https://files.nette.org/css/combined.css?v=1468405828">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://nette.org/opensearch.xml" title="Nette Framework">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://forum.nette.org/opensearch.xml" title="Nette Framework forum">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://api.nette.org/opensearch.xml" title="Nette Framework API">
+	<link rel="canonical" href="/en/2.4/quickstart/creating-posts">
+	<link rel="image_src" href="https://files.nette.org/images/fb-preview.png">
+
+		<link rel="alternate" hreflang="cs" href="/cs/2.4/quickstart/creating-posts">
+	<link rel="alternate" hreflang="en" href="/en/2.4/quickstart/creating-posts">
+</head>
+
+
+<body>
+<script>
+	ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-95238-14','auto'); ga('send','pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+<script src="https://api.nette.org/2.4/elementlist.js" async></script>
+<script src="https://files.nette.org/js/combined.js?v=1468489896" async></script>
+
+<div class="page">
+	<header class="main">
+		<a class="logo" title="Homepage" href="https://nette.org/en/"><span>Homepage</span></a>
+
+		<nav class="main">
+			<ul>
+	<li><a href="//nette.org/en/download">Download</a></li>
+
+	<li class="item-doc"><a href="/en/">Documentation</a></li>
+
+	<li><a href="https://api.nette.org">API</a></li>
+
+	<li><a href="https://github.com/nette">GitHub</a></li>
+</ul>
+
+		</nav>
+	</header>
+
+		<div class="wikimenu">
+	<div>
+		<div><a href="https://github.com/nette/web-content/blob/doc-2.4/en/quickstart/creating-posts.texy">Edit</a></div>
+		<ul>
+			<li><a href="https://nette.org/en/writing">How to write?</a></li>
+
+			<li><a href="/en/2.4/quickstart/creating-posts?view=links">Backlinks</a></li>
+
+			<li>Languages: <a href="/cs/2.4/quickstart/creating-posts">cs</a> <a href="/en/2.4/quickstart/creating-posts">en</a> </li>
+
+			<li>changed 11. 7. 2016</li>
+
+			<li><a href="/special/sitemap?lang=en">All pages</a></li>
+
+			<li><a href="/special/broken-links?lang=en">Broken links</a></li>
+		</ul>
+	</div>
+
+	<div>
+		<div>Lang</div>
+		<ul>
+			<li><a href="/cs/2.4/quickstart/creating-posts">cs</a></li>
+			<li><a href="/en/2.4/quickstart/creating-posts">en</a></li>
+		</ul>
+	</div>
+
+	<div class=versionmenu>
+		<div>Version 2.4</div>
+		<ul>
+			<li><a href="/en/2.3/quickstart/creating-posts">Version 2.3</a></li>
+			<li><a href="/en/2.2/quickstart/creating-posts">Version 2.2</a></li>
+			<li><a href="/en/2.1/quickstart/creating-posts">Version 2.1</a></li>
+			<li><a href="/en/2.0/quickstart/creating-posts">Version 2.0</a></li>
+		</ul>
+	</div>
+</div>
+
+
+	<div class="main">
+		<div class="content has-sidebar">
+			
+
+			<ul class="breadcrumbs">
+				<li><a href="/en/2.4/">Documentation</a></li>
+				<li><a href="/en/2.4/quickstart">QuickStart</a></li>
+				<li>Creating and Editing Posts</li>
+			</ul>
+
+
+<h1 id="toc-creating-and-editing-posts">Creating and Editing Posts</h1>
+
+<p>What a great time. We have a super cool new blog, people are arguing in comments and we have finally some time for more
+programming. Though we like Adminer, it is not that comfortable to write blog posts in it. Perhaps it's the right time to add a
+simple form for adding new posts directly from our app. Let’s do it.</p>
+
+<p>Let’s start by designing the UI:</p>
+
+<ol>
+	<li>On the homepage, let’s add a “Write new post” link.</li>
+
+	<li>It will show a form with title and textarea for content.</li>
+
+	<li>When you click a Save button, it’ll save the blog post.</li>
+</ol>
+
+<p>Later we’ll also add authentication and allow only logged-in users to add new posts. But let’s do that later. What code
+will we need to write to make it work?</p>
+
+<ol>
+	<li>Add the link to homepage template (<code>app/presenters/templates/Homepage/default.latte</code>)</li>
+
+	<li>Create a new page (template) which will show the form</li>
+
+	<li>Define the form for adding a new post</li>
+
+	<li>Define handler which will be executed when the form gets submitted, which will save the post.</li>
+</ol>
+
+<h2 id="toc-link-for-new-posts">Link for New Posts</h2>
+
+<p>You should already know how to add a new link to the homepage. So try it yourself.</p>
+
+<p>If you’re not sure, add this code somewhere to <code>app/presenters/templates/Homepage/default.latte</code>:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;a</span><span class="html-tagin"> n:href=</span><span
+class="html-quote">&quot;Post:create&quot;</span><span class="html-tag">&gt;</span>Write new post<span
+class="html-tag">&lt;/a&gt;</span></code></pre>
+
+<h2 id="toc-page-for-creating-a-new-post">Page for Creating a New Post</h2>
+
+<p>The link we've just created points to <code>PostPresenter</code> and its action <code>create</code>. We can add a new method
+<code>renderCreate</code>, but actually it is not necessary. We don’t need to fetch any data from database and put it into the
+template, so the method would be empty. In such case, it doesn’t need to exist at all.</p>
+
+<p class="note">If you want, you can have the empty method there; perhaps it’ll have some code later. It’s up to you.</p>
+
+<p>Let’s just create the template (<code>app/presenters/templates/Post/create.latte</code>):</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">block</span> content}
+<span
+class="html-tag">&lt;h1&gt;</span>New post<span class="html-tag">&lt;/h1&gt;</span>
+
+{<span
+class="php-keyword1">control</span> postForm}</code></pre>
+
+<p>Everything should be obvious by now. The last line tries to render the form which we are about to create.</p>
+
+<h2 id="toc-form-for-saving-posts">Form for Saving Posts</h2>
+
+<p>Forms and components have been already covered when we were adding support for comments. If you're confused about the topic, go
+checkout <a href="/en/2.4/quickstart/comments#toc-form-for-commenting">how forms and components work</a> again, we'll wait
+here ;)</p>
+
+<p>Now add this method to the <code>PostPresenter</code>:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">protected</span> <span
+class="php-keyword1">function</span> createComponentPostForm()
+{
+    <span class="php-var">$form</span> = <span
+class="php-keyword1">new</span> Form;
+    <span class="php-var">$form</span>-&gt;addText(<span
+class="php-quote">'title'</span>, <span class="php-quote">'Title:'</span>)
+        -&gt;setRequired();
+    <span
+class="php-var">$form</span>-&gt;addTextArea(<span class="php-quote">'content'</span>, <span
+class="php-quote">'Content:'</span>)
+        -&gt;setRequired();
+
+    <span class="php-var">$form</span>-&gt;addSubmit(<span
+class="php-quote">'send'</span>, <span class="php-quote">'Save and publish'</span>);
+    <span
+class="php-var">$form</span>-&gt;onSuccess[] = [<span class="php-var">$this</span>, <span
+class="php-quote">'postFormSucceeded'</span>];
+
+    <span class="php-keyword1">return</span> <span
+class="php-var">$form</span>;
+}</code></pre>
+
+<h2 id="toc-saving-new-post-from-form">Saving new Post from Form</h2>
+
+<p>Continue by adding a handler method.</p>
+
+<pre class="src-php"><code><span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> postFormSucceeded(<span class="php-var">$form</span>, <span
+class="php-var">$values</span>)
+{
+    <span class="php-var">$post</span> = <span
+class="php-var">$this</span>-&gt;database-&gt;table(<span class="php-quote">'posts'</span>)-&gt;insert(<span
+class="php-var">$values</span>);
+
+    <span class="php-var">$this</span>-&gt;flashMessage(<span
+class="php-quote">&quot;Post was published&quot;</span>, <span class="php-quote">'success'</span>);
+    <span
+class="php-var">$this</span>-&gt;redirect(<span class="php-quote">'show'</span>, <span
+class="php-var">$post</span>-&gt;id);
+}</code></pre>
+
+<p>Just a quick explanation: it fetches the values from the form, inserts them into the database, creates a message for the user
+that the post was saved successfully, and redirects to the page where that post is published, so that you can see how it
+looks like.</p>
+
+<h2 id="toc-editing-posts">Editing Posts</h2>
+
+<p>Let’s also add the capability to edit existing posts. It shall be pretty simple – we already have <code>postForm</code>
+and we can use it for editing as well. We’ll add a new <code>edit</code> page and update the form handler, which will be able
+either to add a new post (as it does now), or to edit existing ones.</p>
+
+<p>Add the method to the <code>PostPresenter</code>:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">public</span> <span class="php-keyword1">function</span> actionEdit(<span
+class="php-var">$postId</span>)
+{
+    <span class="php-var">$post</span> = <span
+class="php-var">$this</span>-&gt;database-&gt;table(<span class="php-quote">'posts'</span>)-&gt;get(<span
+class="php-var">$postId</span>);
+    <span class="php-keyword1">if</span> (!<span class="php-var">$post</span>) {
+        <span
+class="php-var">$this</span>-&gt;error(<span class="php-quote">'Post not found'</span>);
+    }
+    <span
+class="php-var">$this</span>[<span class="php-quote">'postForm'</span>]-&gt;setDefaults(<span
+class="php-var">$post</span>-&gt;toArray());
+}</code></pre>
+
+<p>Notice that the method is called <code>actionEdit</code> (and not <code>renderEdit</code>, as you may have expected). Render
+methods are used for passing the data into templates. Actions, on the other hand, may be doing a lot more, they should check if
+the page can be displayed by the current visitor or user and they should be doing most of the heavy work, that doesn't belong to
+form handlers. Passing data into the template would of course also work in action methods, but it's recommended not to do it,
+because of separating responsibilities. Your code is simply more synoptic when you split the code into render and action
+methods.</p>
+
+<p>Now create the template (<code>app/presenters/templates/Post/edit.latte</code>):</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">block</span> content}
+<span
+class="html-tag">&lt;h1&gt;</span>Edit post<span class="html-tag">&lt;/h1&gt;</span>
+
+{<span
+class="php-keyword1">control</span> postForm}</code></pre>
+
+<p>Let’s also extend the form handler:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> postFormSucceeded(<span class="php-var">$form</span>, <span
+class="php-var">$values</span>)
+{
+    <span class="php-var">$postId</span> = <span
+class="php-var">$this</span>-&gt;getParameter(<span class="php-quote">'postId'</span>);
+
+    <span
+class="php-keyword1">if</span> (<span class="php-var">$postId</span>) {
+        <span class="php-var">$post</span> = <span
+class="php-var">$this</span>-&gt;database-&gt;table(<span class="php-quote">'posts'</span>)-&gt;get(<span
+class="php-var">$postId</span>);
+        <span class="php-var">$post</span>-&gt;update(<span
+class="php-var">$values</span>);
+    } <span class="php-keyword1">else</span> {
+        <span class="php-var">$post</span> = <span
+class="php-var">$this</span>-&gt;database-&gt;table(<span class="php-quote">'posts'</span>)-&gt;insert(<span
+class="php-var">$values</span>);
+    }
+
+    <span class="php-var">$this</span>-&gt;flashMessage(<span
+class="php-quote">'Post was published'</span>, <span class="php-quote">'success'</span>);
+    <span
+class="php-var">$this</span>-&gt;redirect(<span class="php-quote">'show'</span>, <span
+class="php-var">$post</span>-&gt;id);
+}</code></pre>
+
+<p>When <code>postId</code> parameter is provided, it means that a post is being edited. In such case we’ll check that the post
+really exists and if so, we’ll update it in the database. If the <code>postId</code> is not provided, it means that a new post
+shall be added.</p>
+
+<p>But where does the <code>postId</code> come from? It is the parameter passed to <code>actionEdit</code> method. You can now add
+a link to the <code>app/presenters/templates/Post/show.latte</code> template:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;a</span><span class="html-tagin"> n:href=</span><span
+class="html-quote">&quot;edit $post-&gt;id&quot;</span><span class="html-tag">&gt;</span>Edit this post<span
+class="html-tag">&lt;/a&gt;</span></code></pre>
+
+<h2 id="toc-summary">Summary</h2>
+
+<p>The blog is working, people are commenting rapidly and we no longer rely on Adminer for adding new posts. It is fully
+independent and even normal people can post there. But wait, that’s probably not ok, that anyone, I mean really anyone on the
+Internet, can post on our blog. Some form of authentication is required, so that only logged-in users would be able to post. We'll
+add that in the next chapter.</p>
+
+
+<div class="paginator">
+	<small><a href="/en/2.4/quickstart/comments">« Comments</a></small>
+	<a href="/en/2.4/quickstart/authentication">Authentication »</a>
+</div>
+		</div>
+
+			<aside class="main">
+		<div>
+
+
+			<ul class="toc">
+				<li class="up" value="0"><a href="#">▲</a></li>
+				<li><a href="#toc-link-for-new-posts">Link for New Posts</a>
+				</li>
+				<li><a href="#toc-page-for-creating-a-new-post">Page for Creating a New Post</a>
+				</li>
+				<li><a href="#toc-form-for-saving-posts">Form for Saving Posts</a>
+				</li>
+				<li><a href="#toc-saving-new-post-from-form">Saving new Post from Form</a>
+				</li>
+				<li><a href="#toc-editing-posts">Editing Posts</a>
+				</li>
+				<li><a href="#toc-summary">Summary</a>
+				</li>
+			</ul>
+		</div>
+	</aside>
+	</div>
+
+	<footer class="main">
+		<p>&copy; 2008, 2016 <a href="https://nettefoundation.com">Nette Foundation</a> | <a href="http://php7.org/guidelines/">PHP Coding Guidelines</a>
+		| <a href="https://nette.org/terms-of-use">Terms of use</a> | If not stated otherwise, the contents are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cz/">Creative Commons CC-BY-SA</a>.</p>
+	</footer>
+
+	<div class="docmenu">
+		<div class="column">
+	<h3 id="toc-programmer-s-guide"><img src="//files.nette.org/git/doc-2.4/icon-guides-small.png" alt=""> Programmer's Guide</h3>
+
+	<ul>
+		<li><a href="/en/2.4/forms">Forms</a></li>
+
+		<li><a href="//latte.nette.org/en/">Templates</a>, <a href="//latte.nette.org/en/macros">Latte Macros</a> and <a
+		href="//latte.nette.org/en/filters">Filters</a></li>
+
+		<li><a href="/en/2.4/presenters">MVC Application &amp; Presenters</a></li>
+
+		<li><a href="/en/2.4/configuring">Configuration</a>, <a href="/en/2.4/dependency-injection">Dependency Injection</a>, <a
+		href="/en/2.4/di-usage">Getting Dependencies</a> and <a href="/en/2.4/di-extensions">DI extensions</a></li>
+
+		<li><a href="/en/2.4/components">Components and Controls</a></li>
+
+		<li><a href="/en/2.4/routing">Routing</a></li>
+
+		<li><a href="/en/2.4/access-control">Authentication &amp; Authorization</a></li>
+
+		<li><a href="//tracy.nette.org/en/">Debugging and Error Handling</a>, <a href="//tracy.nette.org/en/extensions">Debugger
+		extensions</a></li>
+
+		<li><a href="/en/2.4/ajax">AJAX</a></li>
+
+		<li><a href="/en/2.4/php-language-enhancements">PHP Language Enhancements</a></li>
+
+		<li><a href="/en/2.4/http-request-response">HTTP request &amp; response</a></li>
+
+		<li><a href="/en/2.4/database">Database</a>, <a href="/en/2.4/database-table">Table</a>, <a
+		href="/en/2.4/database-selection">Selection</a>, <a href="/en/2.4/database-activerow">ActiveRow</a></li>
+
+		<li><a href="/en/2.4/sessions">Sessions</a></li>
+
+		<li><a href="/en/2.4/mailing">Mailing</a></li>
+
+		<li><a href="/en/2.4/images">Image Manipulation</a></li>
+
+		<li><a href="/en/2.4/caching">Caching</a></li>
+
+		<li><a href="/en/2.4/localization">Localization</a></li>
+
+		<li><a href="//tester.nette.org/en/">Testing</a>, <a href="//tester.nette.org/en/testing-with-travis">Continuous
+		integration</a></li>
+
+		<li><a href="/en/2.4/pagination">Pagination</a></li>
+
+		<li><a href="/en/2.4/auto-loading">Auto-loading</a></li>
+
+		<li><a href="/en/2.4/finder">Browsing files on disk</a></li>
+
+		<li><a href="/en/2.4/atomicity">Atomic Operations</a></li>
+
+		<li><a href="/en/2.4/validators">Validation</a></li>
+
+		<li><a href="/en/2.4/strings">Strings</a>, <a href="/en/2.4/arrays">arrays</a>, <a href="/en/2.4/html-elements">HTML elements</a>
+		and <a href="/en/2.4/urls">URLs</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-getting-started"><img src="//files.nette.org/git/doc-2.4/icon-welcome-small.png" alt=""> Getting Started</h3>
+
+	<ul>
+		<li><a href="/en/2.4/getting-started">Introduction to Nette</a></li>
+
+		<li><b><a href="/en/2.4/quickstart">Create First Application!</a></b></li>
+
+		<li><a href="/en/2.4/glossary">Glossary</a></li>
+	</ul>
+
+	<h3 id="toc-general-info"><img src="//files.nette.org/git/doc-2.4/icon-question-small.png" alt=""> General Info</h3>
+
+	<ul>
+		<li><a href="https://api.nette.org/2.4">API Reference</a></li>
+
+		<li><a href="/en/2.4/migration-2-3">Migrating from 2.2 to 2.3</a></li>
+
+		<li><a href="/en/2.4/code-checker">Code-Checker</a></li>
+
+		<li><a href="/en/2.4/vulnerability-protection">Vulnerability Protection</a></li>
+
+		<li><a href="/en/2.4/requirements">Server Requirements</a></li>
+
+		<li><a href="//nette.org/en/license">License</a> and <a href="https://nette.org/contributors">contributors</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-development"><img src="//files.nette.org/git/doc-2.4/icon-ruler-small.png" alt=""> Development</h3>
+
+	<ul>
+		<li><a href="//nette.org/en/contributing">Contributing</a></li>
+
+		<li><a href="//nette.org/en/writing">Writing Documentation</a></li>
+
+		<li><a href="irc://irc.freenode.net/nettefw">IRC #nettefw</a></li>
+
+		<li><a href="/en/2.4/troubleshooting">Troubleshooting</a></li>
+	</ul>
+</div>
+
+	</div>
+</div>
+
+<div class="bar"><div>
+
+	<ul class="user" style="opacity:.6">
+		<li><a href="https://addons.nette.org/"><span>Add-ons</span></a>
+		<li><a href="https://pla.nette.org/en/"><span>Planette</span></a>
+		<li><a href="https://forum.nette.org/en/"><span>Forum</span></a>
+		<li><a href="https://blog.nette.org"><span>Blog</span></a>
+		<li><a href="https://nette.org/donate"><span>Donate</span></a>
+		<li>
+		<form action="https://www.google.com/cse" class="search">
+			<input type="hidden" name="cx" value="011549293477758430224:vxofa9ufnhc"><input type="hidden" name="ie" value="UTF-8"><input type="search" name="q" class="text" size="30" placeholder="Search"><input type="image" src="https://files.nette.org/images/search.png" alt="Search">
+		</form>
+		</li>
+	</ul>
+</div></div>
+
+</body>
+</html>

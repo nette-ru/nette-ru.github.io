@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html class="nette-www">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Nette Foundation; c 2008">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Nette Components | Nette Framework</title>
+
+	<link rel="stylesheet" href="https://files.nette.org/css/combined.css?v=1468405828">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://nette.org/opensearch.xml" title="Nette Framework">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://forum.nette.org/opensearch.xml" title="Nette Framework forum">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://api.nette.org/opensearch.xml" title="Nette Framework API">
+	<link rel="canonical" href="/en/components">
+	<link rel="image_src" href="https://files.nette.org/images/fb-preview.png">
+
+		<link rel="alternate" hreflang="cs" href="/cs/components">
+	<link rel="alternate" hreflang="en" href="/en/components">
+</head>
+
+
+<body>
+<script>
+	ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-95238-14','auto'); ga('send','pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+<script src="https://api.nette.org/2.4/elementlist.js" async></script>
+<script src="https://files.nette.org/js/combined.js?v=1468489896" async></script>
+
+<div class="page">
+	<header class="main">
+		<a class="logo" title="Homepage" href="/en/"><span>Homepage</span></a>
+
+		<nav class="main">
+			<ul>
+	<li><a href="/en/download">Download</a></li>
+
+	<li class="item-doc"><a href="//doc.nette.org/en/">Documentation</a></li>
+
+	<li><a href="https://api.nette.org">API</a></li>
+
+	<li><a href="https://github.com/nette">GitHub</a></li>
+</ul>
+
+		</nav>
+	</header>
+
+		<div class="wikimenu">
+	<div>
+		<div><a href="https://github.com/nette/web-content/blob/nette.org/www/en/components.texy">Edit</a></div>
+		<ul>
+			<li><a href="/en/writing">How to write?</a></li>
+
+			<li><a href="/en/components?view=links">Backlinks</a></li>
+
+			<li>Languages: <a href="/cs/components">cs</a> <a href="/en/components">en</a> </li>
+
+			<li>changed 30. 1. 2016</li>
+
+			<li><a href="/special/sitemap?lang=en">All pages</a></li>
+
+			<li><a href="/special/broken-links?lang=en">Broken links</a></li>
+		</ul>
+	</div>
+
+	<div>
+		<div>Lang</div>
+		<ul>
+			<li><a href="/cs/components">cs</a></li>
+			<li><a href="/en/components">en</a></li>
+		</ul>
+	</div>
+
+</div>
+
+
+	<div class="main">
+		<div class="content has-sidebar">
+			
+
+
+
+<h1 id="toc-nette-components">Nette Components</h1>
+
+<p>Nette is a full-stack PHP framework composed from a set of decoupled and reusable components. You can use any of these
+components standalone, independently from the rest of framework.</p>
+
+<p>You can download each component from <a href="https://github.com/nette">official Git repository</a>. The recommended way how to
+install them is via <a href="//doc.nette.org/en/composer">Composer</a>. For instance, to install the <a
+href="https://latte.nette.org">Latte</a> use:</p>
+
+<pre>composer require latte/latte</pre>
+
+<p>Names of other components are in the third column in the table below.</p>
+
+<p>Complete framework (i.e. all components) can be added using:</p>
+
+<pre>composer require nette/nette</pre>
+
+<h2 id="toc-list-of-components">List of Components</h2>
+
+<table>
+	<tbody>
+		<tr>
+			<td><a href="https://github.com/nette/application">Application</a></td>
+
+			<td>The kernel of web application</td>
+
+			<td><code>nette/application</code></td>
+		</tr>
+
+		<tr class="alt">
+			<td><a href="https://github.com/nette/bootstrap">Bootstrap</a></td>
+
+			<td>Bootstrap of your application</td>
+
+			<td><code>nette/bootstrap</code></td>
+		</tr>
+
+		<tr>
+			<td><a href="https://github.com/nette/caching">Caching</a></td>
+
+			<td>Cache layer with set of storages</td>
+
+			<td><code>nette/caching</code></td>
+		</tr>
+
+		<tr class="alt">
+			<td><a href="https://github.com/nette/component-model">Component Model</a></td>
+
+			<td>Foundation for component systems</td>
+
+			<td><code>nette/component-model</code></td>
+		</tr>
+
+		<tr>
+			<td><a href="https://github.com/nette/di">DI</a></td>
+
+			<td>Dependency Injection Container</td>
+
+			<td><code>nette/di</code></td>
+		</tr>
+
+		<tr class="alt">
+			<td><a href="https://github.com/nette/database">Database</a></td>
+
+			<td>Database layer</td>
+
+			<td><code>nette/database</code></td>
+		</tr>
+
+		<tr>
+			<td><a href="https://github.com/nette/finder">Finder</a></td>
+
+			<td>Finds files and directories with intuitive interface</td>
+
+			<td><code>nette/finder</code></td>
+		</tr>
+
+		<tr class="alt">
+			<td><a href="https://github.com/nette/forms">Forms</a></td>
+
+			<td>Greatly facilitates secure web forms</td>
+
+			<td><code>nette/forms</code></td>
+		</tr>
+
+		<tr>
+			<td><a href="https://github.com/nette/http">Http</a></td>
+
+			<td>Layer for the HTTP request &amp; response</td>
+
+			<td><code>nette/http</code></td>
+		</tr>
+
+		<tr class="alt">
+			<td><a href="https://latte.nette.org">Latte</a></td>
+
+			<td>Amazing template engine</td>
+
+			<td><code>latte/latte</code></td>
+		</tr>
+
+		<tr>
+			<td><a href="https://github.com/nette/mail">Mail</a></td>
+
+			<td>Sending E-mails</td>
+
+			<td><code>nette/mail</code></td>
+		</tr>
+
+		<tr class="alt">
+			<td><a href="https://github.com/nette/neon">Neon</a></td>
+
+			<td>Loads and dumps <a href="http://ne-on.org">NEON</a> format</td>
+
+			<td><code>nette/neon</code></td>
+		</tr>
+
+		<tr>
+			<td><a href="https://github.com/nette/php-generator">Php Generator</a></td>
+
+			<td>PHP code generator</td>
+
+			<td><code>nette/php-generator</code></td>
+		</tr>
+
+		<tr class="alt">
+			<td><a href="https://github.com/nette/reflection">Reflection</a></td>
+
+			<td>PHP class reflection enhancements</td>
+
+			<td><code>nette/reflection</code></td>
+		</tr>
+
+		<tr>
+			<td><a href="https://github.com/nette/robot-loader">Robot Loader</a></td>
+
+			<td>The most comfortable autoloading</td>
+
+			<td><code>nette/robot-loader</code></td>
+		</tr>
+
+		<tr class="alt">
+			<td><a href="https://github.com/nette/safe-stream">Safe Stream</a></td>
+
+			<td>Safe atomic operations with files</td>
+
+			<td><code>nette/safe-stream</code></td>
+		</tr>
+
+		<tr>
+			<td><a href="https://github.com/nette/security">Security</a></td>
+
+			<td>Provides access control system</td>
+
+			<td><code>nette/security</code></td>
+		</tr>
+
+		<tr class="alt">
+			<td><a href="https://tester.nette.org">Tester</a></td>
+
+			<td>Enjoyable unit testing in PHP</td>
+
+			<td><code>nette/tester</code></td>
+		</tr>
+
+		<tr>
+			<td><a href="https://github.com/nette/tokenizer">Tokenizer</a></td>
+
+			<td>String tokenization</td>
+
+			<td><code>nette/tokenizer</code></td>
+		</tr>
+
+		<tr class="alt">
+			<td><a href="https://tracy.nette.org">Tracy</a></td>
+
+			<td>Debugging tool you will love ♥</td>
+
+			<td><code>tracy/tracy</code></td>
+		</tr>
+
+		<tr>
+			<td><a href="https://github.com/nette/utils">Utils</a></td>
+
+			<td>Utilities and Core Classes</td>
+
+			<td><code>nette/utils</code></td>
+		</tr>
+
+		<tr class="alt">
+			<td><a href="https://github.com/nette/deprecated">deprecated</a></td>
+
+			<td>Deprecated stuff</td>
+
+			<td><code>nette/deprecated</code></td>
+		</tr>
+	</tbody>
+</table>
+
+
+		</div>
+
+			<aside class="main">
+		<div>
+
+
+			<ul class="toc">
+				<li class="up" value="0"><a href="#">▲</a></li>
+				<li><a href="#toc-list-of-components">List of Components</a>
+				</li>
+			</ul>
+		</div>
+	</aside>
+	</div>
+
+	<footer class="main">
+		<p>&copy; 2008, 2016 <a href="https://nettefoundation.com">Nette Foundation</a> | <a href="http://php7.org/guidelines/">PHP Coding Guidelines</a>
+		| <a href="https://nette.org/terms-of-use">Terms of use</a> | If not stated otherwise, the contents are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cz/">Creative Commons CC-BY-SA</a>.</p>
+	</footer>
+
+</div>
+
+<div class="bar"><div>
+
+	<ul class="user" style="opacity:.6">
+		<li><a href="https://addons.nette.org/"><span>Add-ons</span></a>
+		<li><a href="https://pla.nette.org/en/"><span>Planette</span></a>
+		<li><a href="https://forum.nette.org/en/"><span>Forum</span></a>
+		<li><a href="https://blog.nette.org"><span>Blog</span></a>
+		<li><a href="https://nette.org/donate"><span>Donate</span></a>
+		<li>
+		<form action="https://www.google.com/cse" class="search">
+			<input type="hidden" name="cx" value="011549293477758430224:vxofa9ufnhc"><input type="hidden" name="ie" value="UTF-8"><input type="search" name="q" class="text" size="30" placeholder="Search"><input type="image" src="https://files.nette.org/images/search.png" alt="Search">
+		</form>
+		</li>
+	</ul>
+</div></div>
+
+</body>
+</html>

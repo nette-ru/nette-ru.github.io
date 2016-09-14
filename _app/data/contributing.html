@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html class="nette-www">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Nette Foundation; c 2008">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Contributing | Nette Framework</title>
+
+	<link rel="stylesheet" href="https://files.nette.org/css/combined.css?v=1468405828">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://nette.org/opensearch.xml" title="Nette Framework">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://forum.nette.org/opensearch.xml" title="Nette Framework forum">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://api.nette.org/opensearch.xml" title="Nette Framework API">
+	<link rel="canonical" href="/en/contributing">
+	<link rel="image_src" href="https://files.nette.org/images/fb-preview.png">
+
+		<link rel="alternate" hreflang="cs" href="/cs/contributing">
+	<link rel="alternate" hreflang="en" href="/en/contributing">
+</head>
+
+
+<body>
+<script>
+	ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-95238-14','auto'); ga('send','pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+<script src="https://api.nette.org/2.4/elementlist.js" async></script>
+<script src="https://files.nette.org/js/combined.js?v=1468489896" async></script>
+
+<div class="page">
+	<header class="main">
+		<a class="logo" title="Homepage" href="/en/"><span>Homepage</span></a>
+
+		<nav class="main">
+			<ul>
+	<li><a href="/en/download">Download</a></li>
+
+	<li class="item-doc"><a href="//doc.nette.org/en/">Documentation</a></li>
+
+	<li><a href="https://api.nette.org">API</a></li>
+
+	<li><a href="https://github.com/nette">GitHub</a></li>
+</ul>
+
+		</nav>
+	</header>
+
+		<div class="wikimenu">
+	<div>
+		<div><a href="https://github.com/nette/web-content/blob/nette.org/www/en/contributing.texy">Edit</a></div>
+		<ul>
+			<li><a href="/en/writing">How to write?</a></li>
+
+			<li><a href="/en/contributing?view=links">Backlinks</a></li>
+
+			<li>Languages: <a href="/cs/contributing">cs</a> <a href="/en/contributing">en</a> </li>
+
+			<li>changed 30. 1. 2016</li>
+
+			<li><a href="/special/sitemap?lang=en">All pages</a></li>
+
+			<li><a href="/special/broken-links?lang=en">Broken links</a></li>
+		</ul>
+	</div>
+
+	<div>
+		<div>Lang</div>
+		<ul>
+			<li><a href="/cs/contributing">cs</a></li>
+			<li><a href="/en/contributing">en</a></li>
+		</ul>
+	</div>
+
+</div>
+
+
+	<div class="main">
+		<div class="content has-sidebar">
+			
+
+
+
+<h1 id="toc-contributing">Contributing</h1>
+
+<p>Nette Framework uses Git and <a href="https://github.com/nette/nette">GitHub</a> for maintaining the code base. The best way to
+contribute is to commit your changes to your own fork and then make a pull-request on GitHub. This document summarize the major
+steps for successful contributing.</p>
+
+<h2 id="toc-preparing-environment">Preparing environment</h2>
+
+<p>Start with <a href="https://help.github.com/articles/fork-a-repo">forking</a> <a href="https://github.com/nette/nette">Nette
+Framework on GitHub</a>. Carefully <a href="https://help.github.com/articles/set-up-git">set up</a> your local Git environment,
+configure your username and email, these credentials will identify your changes in Nette Framework history.</p>
+
+<p class="tip">Commit files with LF line endings. See <a href="https://help.github.com/articles/dealing-with-line-endings">Dealing
+with line endings</a> chapter on GitHub.</p>
+
+<h2 id="toc-working-on-your-patch">Working on your patch</h2>
+
+<p>Before you start working on your patch, create a new branch for your changes.</p>
+
+<pre class="src-bash"><code>$ git checkout -b new_branch_name</code></pre>
+
+<p>The branch name should be short meaningful expression such as “secured-signals” or “form-email-validation”.</p>
+
+<p>You can work on your code change.</p>
+
+<h3 id="toc-testing-your-changes">Testing your changes</h3>
+
+<p>You need to install Nette Tester. The easiest way is to call <code>composer install</code> in Nette Framework repository root.
+Now you should be able to run tests with <code>./vendor/bin/tester</code> in the unix-like terminal or
+<code>vendor\bin\tester</code> in the Windows terminal.</p>
+
+<p>Some tests will probably be failing due to missing php.ini. Therefore you should call the runner with parameter -c and specify
+the path to php.ini, for example <code>./vendor/bin/tester -c ./tests/php.ini</code>.</p>
+
+<p>After you are able to run the tests, you can implement your own or change the failing to match the new behavior. Read more
+about testing with Nette Tester in <a href="//tester.nette.org/en/">documentation page</a>.</p>
+
+<h3 id="toc-commiting-the-changes">Commiting the changes</h3>
+
+<p>After you have changed the code, you have to commit your changes. <b>Do not commit everything at all</b>. Each commit should
+have been usable as is – without other commits. So, the appropriate tests should be also included in the same commit.</p>
+
+<p>Please, double-check your code fits the rules:</p>
+
+<ul>
+	<li>Code does not generate any errors neither <code>E_STRICT</code>.</li>
+
+	<li>Your code does not break any tests.</li>
+
+	<li>Your code change is tested.</li>
+
+	<li>You are commiting all needed files, you are not commiting useless white-space changes.</li>
+
+	<li>You keep code convention &amp; <a href="/en/coding-standard">coding standard</a> used in Nette Framework. The code must
+	contain chars only from <code>\t\r\n\x20..\x7E</code> range, the code uses only tabs for indentation, the code does not contain
+	white-space on the right side.</li>
+</ul>
+
+<h3 id="toc-pull-requesting-the-commits">Pull-requesting the commits</h3>
+
+<p>If you are satisfied with your code changes &amp; commits, you have to push you commits to your remote repository.</p>
+
+<pre class="src-bash"><code>$ git push origin new_branch_name</code></pre>
+
+<p>Changes are present publicly, however, you have to propose your changes for integration into master branch of Nette Framework.
+To do that, <a href="https://help.github.com/articles/creating-a-pull-request">make a pull-request</a> Each pull-request has a
+title and a description. Please provide some describing title. It's often similar to the branch name, for example “Securing
+signals against CSRF attack.” or “Fixing form validations for UTF-8 emails”.</p>
+
+<p>Pull request description should have contain some more specific information about your code changes. The description of
+pull-request must contain this information table about you changes:</p>
+
+<pre
+class="src-markdown"><code>- feature / bugfix
+- issues - #2, #3
+- documentation - not needed / needed: nette/web-content#65
+- BC break - yes / no</code></pre>
+
+<p>Please change the information table to fit your pull-request. Comments to each list item:</p>
+
+<ul>
+	<li>Says if the pull-request adds <b>feature</b> or it is a <b>bugfix</b>.</li>
+
+	<li>References <b>related issue</b>, which will be closed after merging the pull-request.</li>
+
+	<li>Says if the pull-request needs the <b>documentation changes</b>, if yes, provide references to the appropriate pull-requests.
+	You don't have to provide the documentation change immediately, however, the pull-request won't be merged if the documentation
+	change is needed. The documentation change must be prepared for English documentation, other language mutations are optional.</li>
+
+	<li>Says if the pull-request creates <b>a BC break</b>. Please, consider everything which changes public interface as a
+	BC break.</li>
+</ul>
+
+<p>The final table could look like:</p>
+
+<ul>
+	<li>feature</li>
+
+	<li>issues – #123</li>
+
+	<li>documentation – needed: <a href="https://github.com/nette/web-content/pull/43">nette/web-content#43</a></li>
+
+	<li>BC break – no</li>
+</ul>
+
+<h3 id="toc-reworking-your-changes">Reworking your changes</h3>
+
+<p>It is really common to receive comments to your code change. Please, try to follow proposed changes and rework your commits to
+do that. You can commit proposed changes as new commits and then squash them to the previous ones. See <a
+href="https://help.github.com/articles/interactive-rebase">Interactive rebase</a> chapter on GitHub. After rebasing your changes,
+force-push your changes to your remote fork, everything will be automatically propagate to the pull-request.</p>
+
+
+		</div>
+
+			<aside class="main">
+		<div>
+
+
+			<ul class="toc">
+				<li class="up" value="0"><a href="#">▲</a></li>
+				<li><a href="#toc-preparing-environment">Preparing environment</a>
+				</li>
+				<li><a href="#toc-working-on-your-patch">Working on your patch</a>
+				<ul>
+				
+				<li><a href="#toc-testing-your-changes">Testing your changes</a>
+				</li>
+				<li><a href="#toc-commiting-the-changes">Commiting the changes</a>
+				</li>
+				<li><a href="#toc-pull-requesting-the-commits">Pull-requesting the commits</a>
+				</li>
+				<li><a href="#toc-reworking-your-changes">Reworking your changes</a>
+				</li>
+			</ul>
+		</div>
+	</aside>
+	</div>
+
+	<footer class="main">
+		<p>&copy; 2008, 2016 <a href="https://nettefoundation.com">Nette Foundation</a> | <a href="http://php7.org/guidelines/">PHP Coding Guidelines</a>
+		| <a href="https://nette.org/terms-of-use">Terms of use</a> | If not stated otherwise, the contents are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cz/">Creative Commons CC-BY-SA</a>.</p>
+	</footer>
+
+</div>
+
+<div class="bar"><div>
+
+	<ul class="user" style="opacity:.6">
+		<li><a href="https://addons.nette.org/"><span>Add-ons</span></a>
+		<li><a href="https://pla.nette.org/en/"><span>Planette</span></a>
+		<li><a href="https://forum.nette.org/en/"><span>Forum</span></a>
+		<li><a href="https://blog.nette.org"><span>Blog</span></a>
+		<li><a href="https://nette.org/donate"><span>Donate</span></a>
+		<li>
+		<form action="https://www.google.com/cse" class="search">
+			<input type="hidden" name="cx" value="011549293477758430224:vxofa9ufnhc"><input type="hidden" name="ie" value="UTF-8"><input type="search" name="q" class="text" size="30" placeholder="Search"><input type="image" src="https://files.nette.org/images/search.png" alt="Search">
+		</form>
+		</li>
+	</ul>
+</div></div>
+
+</body>
+</html>

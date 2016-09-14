@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html class="nette-doc">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Nette Foundation; c 2008">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>QuickStart | Nette Framework</title>
+
+	<link rel="stylesheet" href="https://files.nette.org/css/combined.css?v=1468405828">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://nette.org/opensearch.xml" title="Nette Framework">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://forum.nette.org/opensearch.xml" title="Nette Framework forum">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://api.nette.org/opensearch.xml" title="Nette Framework API">
+	<link rel="canonical" href="/en/2.4/quickstart">
+	<link rel="image_src" href="https://files.nette.org/images/fb-preview.png">
+
+		<link rel="alternate" hreflang="cs" href="/cs/2.4/quickstart">
+	<link rel="alternate" hreflang="en" href="/en/2.4/quickstart">
+</head>
+
+
+<body>
+<script>
+	ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-95238-14','auto'); ga('send','pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+<script src="https://api.nette.org/2.4/elementlist.js" async></script>
+<script src="https://files.nette.org/js/combined.js?v=1468489896" async></script>
+
+<div class="page">
+	<header class="main">
+		<a class="logo" title="Homepage" href="https://nette.org/en/"><span>Homepage</span></a>
+
+		<nav class="main">
+			<ul>
+	<li><a href="//nette.org/en/download">Download</a></li>
+
+	<li class="item-doc"><a href="/en/">Documentation</a></li>
+
+	<li><a href="https://api.nette.org">API</a></li>
+
+	<li><a href="https://github.com/nette">GitHub</a></li>
+</ul>
+
+		</nav>
+	</header>
+
+		<div class="wikimenu">
+	<div>
+		<div><a href="https://github.com/nette/web-content/blob/doc-2.4/en/quickstart.texy">Edit</a></div>
+		<ul>
+			<li><a href="https://nette.org/en/writing">How to write?</a></li>
+
+			<li><a href="/en/2.4/quickstart?view=links">Backlinks</a></li>
+
+			<li>Languages: <a href="/cs/2.4/quickstart">cs</a> <a href="/en/2.4/quickstart">en</a> </li>
+
+			<li>changed 17. 7. 2016</li>
+
+			<li><a href="/special/sitemap?lang=en">All pages</a></li>
+
+			<li><a href="/special/broken-links?lang=en">Broken links</a></li>
+		</ul>
+	</div>
+
+	<div>
+		<div>Lang</div>
+		<ul>
+			<li><a href="/cs/2.4/quickstart">cs</a></li>
+			<li><a href="/en/2.4/quickstart">en</a></li>
+		</ul>
+	</div>
+
+	<div class=versionmenu>
+		<div>Version 2.4</div>
+		<ul>
+			<li><a href="/en/2.3/quickstart">Version 2.3</a></li>
+			<li><a href="/en/2.2/quickstart">Version 2.2</a></li>
+			<li><a href="/en/2.1/quickstart">Version 2.1</a></li>
+			<li><a href="/en/2.0/quickstart">Version 2.0</a></li>
+		</ul>
+	</div>
+</div>
+
+
+	<div class="main">
+		<div class="content">
+			
+
+			<ul class="breadcrumbs">
+				<li><a href="/en/2.4/">Documentation</a></li>
+				<li>QuickStart</li>
+			</ul>
+
+
+<h1 id="toc-quickstart">QuickStart</h1>
+
+<div class="perex">
+	<p>Get to know Nette Framework while creating a simple blog with comments. Let's begin!</p>
+
+	<ol class="navig">
+		<li><a href="/en/2.4/quickstart/getting-started">Getting Started</a></li>
+
+		<li><a href="/en/2.4/quickstart/home-page">Home Page</a></li>
+
+		<li><a href="/en/2.4/quickstart/single-post">Single Post Page</a></li>
+
+		<li><a href="/en/2.4/quickstart/comments">Comments</a></li>
+
+		<li><a href="/en/2.4/quickstart/creating-posts">Creating and Editing Posts</a></li>
+
+		<li><a href="/en/2.4/quickstart/authentication">Authentication</a></li>
+
+		<li><a href="/en/2.4/quickstart/refactoring-model">Model</a></li>
+	</ol>
+</div>
+
+<p>After the first two chapters you will have your own working blog and you'll be ready to publish your awesome posts, although
+the features will be pretty much limited after completing these two chapters. To make things nicer for your users, you should also
+read the following chapters and keep improving your application.</p>
+
+<p>You can find the <a href="https://github.com/nette/tutorial-quickstart">complete application on GitHub</a>.</p>
+
+<p>This QuickStart was written for Nette Framework 2.4.0 and PHP 5.6 or newer. Check out your version.</p>
+
+
+<div class="paginator">
+	<small><a href="/en/2.4/getting-started">« Introduction to Nette Framework</a></small>
+	<a href="/en/2.4/migration-2-3">Migrating to version 2.3 »</a>
+</div>
+		</div>
+
+			</div>
+
+	<footer class="main">
+		<p>&copy; 2008, 2016 <a href="https://nettefoundation.com">Nette Foundation</a> | <a href="http://php7.org/guidelines/">PHP Coding Guidelines</a>
+		| <a href="https://nette.org/terms-of-use">Terms of use</a> | If not stated otherwise, the contents are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cz/">Creative Commons CC-BY-SA</a>.</p>
+	</footer>
+
+	<div class="docmenu">
+		<div class="column">
+	<h3 id="toc-programmer-s-guide"><img src="//files.nette.org/git/doc-2.4/icon-guides-small.png" alt=""> Programmer's Guide</h3>
+
+	<ul>
+		<li><a href="/en/2.4/forms">Forms</a></li>
+
+		<li><a href="//latte.nette.org/en/">Templates</a>, <a href="//latte.nette.org/en/macros">Latte Macros</a> and <a
+		href="//latte.nette.org/en/filters">Filters</a></li>
+
+		<li><a href="/en/2.4/presenters">MVC Application &amp; Presenters</a></li>
+
+		<li><a href="/en/2.4/configuring">Configuration</a>, <a href="/en/2.4/dependency-injection">Dependency Injection</a>, <a
+		href="/en/2.4/di-usage">Getting Dependencies</a> and <a href="/en/2.4/di-extensions">DI extensions</a></li>
+
+		<li><a href="/en/2.4/components">Components and Controls</a></li>
+
+		<li><a href="/en/2.4/routing">Routing</a></li>
+
+		<li><a href="/en/2.4/access-control">Authentication &amp; Authorization</a></li>
+
+		<li><a href="//tracy.nette.org/en/">Debugging and Error Handling</a>, <a href="//tracy.nette.org/en/extensions">Debugger
+		extensions</a></li>
+
+		<li><a href="/en/2.4/ajax">AJAX</a></li>
+
+		<li><a href="/en/2.4/php-language-enhancements">PHP Language Enhancements</a></li>
+
+		<li><a href="/en/2.4/http-request-response">HTTP request &amp; response</a></li>
+
+		<li><a href="/en/2.4/database">Database</a>, <a href="/en/2.4/database-table">Table</a>, <a
+		href="/en/2.4/database-selection">Selection</a>, <a href="/en/2.4/database-activerow">ActiveRow</a></li>
+
+		<li><a href="/en/2.4/sessions">Sessions</a></li>
+
+		<li><a href="/en/2.4/mailing">Mailing</a></li>
+
+		<li><a href="/en/2.4/images">Image Manipulation</a></li>
+
+		<li><a href="/en/2.4/caching">Caching</a></li>
+
+		<li><a href="/en/2.4/localization">Localization</a></li>
+
+		<li><a href="//tester.nette.org/en/">Testing</a>, <a href="//tester.nette.org/en/testing-with-travis">Continuous
+		integration</a></li>
+
+		<li><a href="/en/2.4/pagination">Pagination</a></li>
+
+		<li><a href="/en/2.4/auto-loading">Auto-loading</a></li>
+
+		<li><a href="/en/2.4/finder">Browsing files on disk</a></li>
+
+		<li><a href="/en/2.4/atomicity">Atomic Operations</a></li>
+
+		<li><a href="/en/2.4/validators">Validation</a></li>
+
+		<li><a href="/en/2.4/strings">Strings</a>, <a href="/en/2.4/arrays">arrays</a>, <a href="/en/2.4/html-elements">HTML elements</a>
+		and <a href="/en/2.4/urls">URLs</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-getting-started"><img src="//files.nette.org/git/doc-2.4/icon-welcome-small.png" alt=""> Getting Started</h3>
+
+	<ul>
+		<li><a href="/en/2.4/getting-started">Introduction to Nette</a></li>
+
+		<li><b><a href="/en/2.4/quickstart">Create First Application!</a></b></li>
+
+		<li><a href="/en/2.4/glossary">Glossary</a></li>
+	</ul>
+
+	<h3 id="toc-general-info"><img src="//files.nette.org/git/doc-2.4/icon-question-small.png" alt=""> General Info</h3>
+
+	<ul>
+		<li><a href="https://api.nette.org/2.4">API Reference</a></li>
+
+		<li><a href="/en/2.4/migration-2-3">Migrating from 2.2 to 2.3</a></li>
+
+		<li><a href="/en/2.4/code-checker">Code-Checker</a></li>
+
+		<li><a href="/en/2.4/vulnerability-protection">Vulnerability Protection</a></li>
+
+		<li><a href="/en/2.4/requirements">Server Requirements</a></li>
+
+		<li><a href="//nette.org/en/license">License</a> and <a href="https://nette.org/contributors">contributors</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-development"><img src="//files.nette.org/git/doc-2.4/icon-ruler-small.png" alt=""> Development</h3>
+
+	<ul>
+		<li><a href="//nette.org/en/contributing">Contributing</a></li>
+
+		<li><a href="//nette.org/en/writing">Writing Documentation</a></li>
+
+		<li><a href="irc://irc.freenode.net/nettefw">IRC #nettefw</a></li>
+
+		<li><a href="/en/2.4/troubleshooting">Troubleshooting</a></li>
+	</ul>
+</div>
+
+	</div>
+</div>
+
+<div class="bar"><div>
+
+	<ul class="user" style="opacity:.6">
+		<li><a href="https://addons.nette.org/"><span>Add-ons</span></a>
+		<li><a href="https://pla.nette.org/en/"><span>Planette</span></a>
+		<li><a href="https://forum.nette.org/en/"><span>Forum</span></a>
+		<li><a href="https://blog.nette.org"><span>Blog</span></a>
+		<li><a href="https://nette.org/donate"><span>Donate</span></a>
+		<li>
+		<form action="https://www.google.com/cse" class="search">
+			<input type="hidden" name="cx" value="011549293477758430224:vxofa9ufnhc"><input type="hidden" name="ie" value="UTF-8"><input type="search" name="q" class="text" size="30" placeholder="Search"><input type="image" src="https://files.nette.org/images/search.png" alt="Search">
+		</form>
+		</li>
+	</ul>
+</div></div>
+
+</body>
+</html>

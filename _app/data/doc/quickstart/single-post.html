@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html class="nette-doc">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Nette Foundation; c 2008">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Single Post Page | Nette Framework</title>
+
+	<link rel="stylesheet" href="https://files.nette.org/css/combined.css?v=1468405828">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://nette.org/opensearch.xml" title="Nette Framework">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://forum.nette.org/opensearch.xml" title="Nette Framework forum">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://api.nette.org/opensearch.xml" title="Nette Framework API">
+	<link rel="canonical" href="/en/2.4/quickstart/single-post">
+	<link rel="image_src" href="https://files.nette.org/images/fb-preview.png">
+
+		<link rel="alternate" hreflang="cs" href="/cs/2.4/quickstart/single-post">
+	<link rel="alternate" hreflang="en" href="/en/2.4/quickstart/single-post">
+</head>
+
+
+<body>
+<script>
+	ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-95238-14','auto'); ga('send','pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+<script src="https://api.nette.org/2.4/elementlist.js" async></script>
+<script src="https://files.nette.org/js/combined.js?v=1468489896" async></script>
+
+<div class="page">
+	<header class="main">
+		<a class="logo" title="Homepage" href="https://nette.org/en/"><span>Homepage</span></a>
+
+		<nav class="main">
+			<ul>
+	<li><a href="//nette.org/en/download">Download</a></li>
+
+	<li class="item-doc"><a href="/en/">Documentation</a></li>
+
+	<li><a href="https://api.nette.org">API</a></li>
+
+	<li><a href="https://github.com/nette">GitHub</a></li>
+</ul>
+
+		</nav>
+	</header>
+
+		<div class="wikimenu">
+	<div>
+		<div><a href="https://github.com/nette/web-content/blob/doc-2.4/en/quickstart/single-post.texy">Edit</a></div>
+		<ul>
+			<li><a href="https://nette.org/en/writing">How to write?</a></li>
+
+			<li><a href="/en/2.4/quickstart/single-post?view=links">Backlinks</a></li>
+
+			<li>Languages: <a href="/cs/2.4/quickstart/single-post">cs</a> <a href="/en/2.4/quickstart/single-post">en</a> </li>
+
+			<li>changed 11. 7. 2016</li>
+
+			<li><a href="/special/sitemap?lang=en">All pages</a></li>
+
+			<li><a href="/special/broken-links?lang=en">Broken links</a></li>
+		</ul>
+	</div>
+
+	<div>
+		<div>Lang</div>
+		<ul>
+			<li><a href="/cs/2.4/quickstart/single-post">cs</a></li>
+			<li><a href="/en/2.4/quickstart/single-post">en</a></li>
+		</ul>
+	</div>
+
+	<div class=versionmenu>
+		<div>Version 2.4</div>
+		<ul>
+			<li><a href="/en/2.3/quickstart/single-post">Version 2.3</a></li>
+			<li><a href="/en/2.2/quickstart/single-post">Version 2.2</a></li>
+			<li><a href="/en/2.1/quickstart/single-post">Version 2.1</a></li>
+			<li><a href="/en/2.0/quickstart/single-post">Version 2.0</a></li>
+		</ul>
+	</div>
+</div>
+
+
+	<div class="main">
+		<div class="content has-sidebar">
+			
+
+			<ul class="breadcrumbs">
+				<li><a href="/en/2.4/">Documentation</a></li>
+				<li><a href="/en/2.4/quickstart">QuickStart</a></li>
+				<li>Single Post Page</li>
+			</ul>
+
+
+<h1 id="toc-single-post-page">Single Post Page</h1>
+
+<p class="perex">Let’s add another page to our blog, which will display the content of one particular blog post.</p>
+
+<p>We need to create a new render method, that will fetch one specific blog post and pass it to the template. Having this view in
+<code>HomepagePresenter</code> is not nice, because it’s about a blog post, not homepage. So, let’s create a new class
+<code>PostPresenter</code> and place it to <code>app/presenters/PostPresenter.php</code>. It will need a database connection, so
+put the <em>database injection</em> code there again.</p>
+
+<p>The <code>PostPresenter</code> should look like this:</p>
+
+<pre class="src-php"><code><span class="xlang">&lt;?php</span>
+<span class="php-keyword1">namespace</span> App\Presenters;
+
+<span
+class="php-keyword1">use</span> Nette;
+<span class="php-keyword1">use</span> Nette\Application\UI\Form;
+
+
+<span
+class="php-keyword1">class</span> PostPresenter <span
+class="php-keyword1">extends</span> Nette\Application\UI\Presenter
+{
+    <span
+class="php-comment">/** @var Nette\Database\Context */</span>
+    <span class="php-keyword1">private</span> <span
+class="php-var">$database</span>;
+
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> __construct(Nette\Database\Context <span
+class="php-var">$database</span>)
+    {
+        <span class="php-var">$this</span>-&gt;database = <span
+class="php-var">$database</span>;
+    }
+
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> renderShow(<span class="php-var">$postId</span>)
+    {
+        <span
+class="php-var">$this</span>-&gt;template-&gt;post = <span class="php-var">$this</span>-&gt;database-&gt;table(<span
+class="php-quote">'posts'</span>)-&gt;get(<span class="php-var">$postId</span>);
+    }
+}</code></pre>
+
+<p>The <code>renderShow</code> method requires one argument – the ID of the post to be displayed. Then, it loads the post from
+the database and passes the result to the template.</p>
+
+<p>In the <code>app/presenters/templates/Homepage/default.latte</code> template, we’ve already created a link to the
+<code>Post:show</code> action, for which a template doesn’t exist yet. You can try to open a post in your browser using the link
+in the list on the home page. (If you see 404 error, you need to enable mod_rewrite at your webserver.) <a
+href="//tracy.nette.org/en/">Tracy</a> will show an error, because the <code>app/presenters/templates/Post/show.latte</code>
+template has not yet been created (if you see 404 error, you probably need to enable mod_rewrite at your webserver). Let’s add
+that one now:</p>
+
+<pre class="src-html"><code>...
+<span class="html-tag">&lt;h2&gt;&lt;a</span><span class="html-tagin"> href=</span><span
+class="html-quote">&quot;{</span><span class="php-keyword1">link</span> Post:show <span class="php-var">$post</span>-&gt;id}<span
+class="html-quote">&quot;</span><span class="html-tag">&gt;</span>{<span class="php-var">$post</span>-&gt;title}<span
+class="html-tag">&lt;/a&gt;&lt;/h2&gt;</span>
+...</code></pre>
+
+<p>Macro <code>{link}</code> generates URL address which points to the action <code>Post:show</code>. This macro also forwards the
+ID of the post as argument.</p>
+
+<p>The same we can write shortly using n:macro:</p>
+
+<pre class="src-html"><code>...
+<span class="html-tag">&lt;h2&gt;&lt;a</span><span class="html-tagin"> n:href=</span><span
+class="html-quote">&quot;Post:show $post-&gt;id&quot;</span><span class="html-tag">&gt;</span>{<span
+class="php-var">$post</span>-&gt;title}<span class="html-tag">&lt;/a&gt;&lt;/h2&gt;</span>
+...</code></pre>
+
+<p>Atribute <code>n:href</code> is alias for <code>{link}</code> macro.</p>
+
+<p>The template for <code>Post:show</code> action does not yet exist. We can open link to this post. <a
+href="//tracy.nette.org/en/">Tracy</a> will show an error, why <code>app/templates/Post/show.latte</code> doesn't exist. If you
+see any other error report you probably have to turn on mod_rewrite in your webserver.</p>
+
+<p>So we<code>ll create `app/templates/Post/show.latte</code> with this content:</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">block</span> content}
+
+<span class="html-tag">&lt;p&gt;&lt;a</span><span
+class="html-tagin"> n:href=</span><span class="html-quote">&quot;Homepage:default&quot;</span><span
+class="html-tag">&gt;</span>← back to posts list<span class="html-tag">&lt;/a&gt;&lt;/p&gt;</span>
+
+<span
+class="html-tag">&lt;div</span><span class="html-tagin"> class=</span><span class="html-quote">&quot;date&quot;</span><span
+class="html-tag">&gt;</span>{<span class="php-var">$post</span>-&gt;created_at|date:<span class="php-quote">'F j, Y'</span>}<span
+class="html-tag">&lt;/div&gt;</span>
+
+<span class="html-tag">&lt;h1</span><span class="html-tagin"> n:block=</span><span
+class="html-quote">&quot;title&quot;</span><span class="html-tag">&gt;</span>{<span class="php-var">$post</span>-&gt;title}<span
+class="html-tag">&lt;/h1&gt;</span>
+
+<span class="html-tag">&lt;div</span><span class="html-tagin"> class=</span><span
+class="html-quote">&quot;post&quot;</span><span class="html-tag">&gt;</span>{<span class="php-var">$post</span>-&gt;content}<span
+class="html-tag">&lt;/div&gt;</span></code></pre>
+
+<p>Let’s have a look at the individual parts.</p>
+
+<p>The first line starts the definition of a <em>named block</em> called “content” that we saw earlier. It will be displayed
+in a <em>layout template</em>.</p>
+
+<p>The second line provides a back link to the list of blog posts, so the user can navigate smoothly back and forth on our blog.
+We use <code>n:href</code> attribute again, therefore Nette will take care of generating the URL for us. The link points to the
+<code>default</code> action of the <code>Homepage</code> presenter (you could also write <code>n:href="Homepage:"</code> as the
+<code>default</code> action can be omitted).</p>
+
+<p>The third line formats the publication timestamp with a filter, as we already know.</p>
+
+<p>The fourth line displays the <i>title</i> of the blog post as an <code>&lt;h1&gt;</code> heading. There is a part that you may
+not be familiar with, and that is <code>n:block="title"</code>. Can you guess what it does? If you’ve read the previous parts
+carefully, we've mentioned <code>n: attributes</code>. This is another example. It is equivalent to:</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">block</span> title}<span class="html-tag">&lt;h1&gt;</span>{<span
+class="php-var">$post</span>-&gt;title}<span class="html-tag">&lt;/h1&gt;</span>{/<span
+class="php-keyword1">block</span>}</code></pre>
+
+<p>In simple words, it <i>re-defines</i> a block called <code>title</code>. The block is defined in <em>layout template</em>
+(<code>/app/presenters/templates/@layout.latte:11</code>) and like with OOP overriding, it gets overridden here. Therefore, the
+page’s <code>&lt;title&gt;</code> will contain the title of the displayed post. We’ve overridden the title of the page and all
+we needed was <code>n:block="title"</code>. Great, huh?</p>
+
+<p>The fifth and the last line of the template displays full content of your post.</p>
+
+<h2 id="toc-checking-post-id">Checking post ID</h2>
+
+<p>What happens if someone alters the URL and inserts <code>postId</code> which does not exist? We should provide the user with a
+nice “page not found” error. Let’s update the render method in <code>app/presenters/PostPresenter.php</code>:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">public</span> <span class="php-keyword1">function</span> renderShow(<span
+class="php-var">$postId</span>)
+{
+    <span class="php-var">$post</span> = <span
+class="php-var">$this</span>-&gt;database-&gt;table(<span class="php-quote">'posts'</span>)-&gt;get(<span
+class="php-var">$postId</span>);
+    <span class="php-keyword1">if</span> (!<span class="php-var">$post</span>) {
+        <span
+class="php-var">$this</span>-&gt;error(<span class="php-quote">'Post not found'</span>);
+    }
+
+    <span
+class="php-var">$this</span>-&gt;template-&gt;post = <span class="php-var">$post</span>;
+}</code></pre>
+
+<p>If the post cannot be found, calling <code>$this-&gt;error(...)</code> will show a 404 page with a nice and understandable
+message. Note, that in your development environment (on your laptop), you won’t see the error page. Instead, Tracy will show the
+exception with full details, which is pretty convenient for development. You can check both modes, just change the value passed to
+<code>setDebugMode</code> in <code>bootstrap.php</code>.</p>
+
+<h2 id="toc-summary">Summary</h2>
+
+<p>We have a database with blog posts and a web app with two views – first one displays the summary of all recent posts and the
+second one displays one specific post.</p>
+
+
+<div class="paginator">
+	<small><a href="/en/2.4/quickstart/home-page">« Home Page</a></small>
+	<a href="/en/2.4/quickstart/comments">Comments »</a>
+</div>
+		</div>
+
+			<aside class="main">
+		<div>
+
+
+			<ul class="toc">
+				<li class="up" value="0"><a href="#">▲</a></li>
+				<li><a href="#toc-checking-post-id">Checking post ID</a>
+				</li>
+				<li><a href="#toc-summary">Summary</a>
+				</li>
+			</ul>
+		</div>
+	</aside>
+	</div>
+
+	<footer class="main">
+		<p>&copy; 2008, 2016 <a href="https://nettefoundation.com">Nette Foundation</a> | <a href="http://php7.org/guidelines/">PHP Coding Guidelines</a>
+		| <a href="https://nette.org/terms-of-use">Terms of use</a> | If not stated otherwise, the contents are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cz/">Creative Commons CC-BY-SA</a>.</p>
+	</footer>
+
+	<div class="docmenu">
+		<div class="column">
+	<h3 id="toc-programmer-s-guide"><img src="//files.nette.org/git/doc-2.4/icon-guides-small.png" alt=""> Programmer's Guide</h3>
+
+	<ul>
+		<li><a href="/en/2.4/forms">Forms</a></li>
+
+		<li><a href="//latte.nette.org/en/">Templates</a>, <a href="//latte.nette.org/en/macros">Latte Macros</a> and <a
+		href="//latte.nette.org/en/filters">Filters</a></li>
+
+		<li><a href="/en/2.4/presenters">MVC Application &amp; Presenters</a></li>
+
+		<li><a href="/en/2.4/configuring">Configuration</a>, <a href="/en/2.4/dependency-injection">Dependency Injection</a>, <a
+		href="/en/2.4/di-usage">Getting Dependencies</a> and <a href="/en/2.4/di-extensions">DI extensions</a></li>
+
+		<li><a href="/en/2.4/components">Components and Controls</a></li>
+
+		<li><a href="/en/2.4/routing">Routing</a></li>
+
+		<li><a href="/en/2.4/access-control">Authentication &amp; Authorization</a></li>
+
+		<li><a href="//tracy.nette.org/en/">Debugging and Error Handling</a>, <a href="//tracy.nette.org/en/extensions">Debugger
+		extensions</a></li>
+
+		<li><a href="/en/2.4/ajax">AJAX</a></li>
+
+		<li><a href="/en/2.4/php-language-enhancements">PHP Language Enhancements</a></li>
+
+		<li><a href="/en/2.4/http-request-response">HTTP request &amp; response</a></li>
+
+		<li><a href="/en/2.4/database">Database</a>, <a href="/en/2.4/database-table">Table</a>, <a
+		href="/en/2.4/database-selection">Selection</a>, <a href="/en/2.4/database-activerow">ActiveRow</a></li>
+
+		<li><a href="/en/2.4/sessions">Sessions</a></li>
+
+		<li><a href="/en/2.4/mailing">Mailing</a></li>
+
+		<li><a href="/en/2.4/images">Image Manipulation</a></li>
+
+		<li><a href="/en/2.4/caching">Caching</a></li>
+
+		<li><a href="/en/2.4/localization">Localization</a></li>
+
+		<li><a href="//tester.nette.org/en/">Testing</a>, <a href="//tester.nette.org/en/testing-with-travis">Continuous
+		integration</a></li>
+
+		<li><a href="/en/2.4/pagination">Pagination</a></li>
+
+		<li><a href="/en/2.4/auto-loading">Auto-loading</a></li>
+
+		<li><a href="/en/2.4/finder">Browsing files on disk</a></li>
+
+		<li><a href="/en/2.4/atomicity">Atomic Operations</a></li>
+
+		<li><a href="/en/2.4/validators">Validation</a></li>
+
+		<li><a href="/en/2.4/strings">Strings</a>, <a href="/en/2.4/arrays">arrays</a>, <a href="/en/2.4/html-elements">HTML elements</a>
+		and <a href="/en/2.4/urls">URLs</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-getting-started"><img src="//files.nette.org/git/doc-2.4/icon-welcome-small.png" alt=""> Getting Started</h3>
+
+	<ul>
+		<li><a href="/en/2.4/getting-started">Introduction to Nette</a></li>
+
+		<li><b><a href="/en/2.4/quickstart">Create First Application!</a></b></li>
+
+		<li><a href="/en/2.4/glossary">Glossary</a></li>
+	</ul>
+
+	<h3 id="toc-general-info"><img src="//files.nette.org/git/doc-2.4/icon-question-small.png" alt=""> General Info</h3>
+
+	<ul>
+		<li><a href="https://api.nette.org/2.4">API Reference</a></li>
+
+		<li><a href="/en/2.4/migration-2-3">Migrating from 2.2 to 2.3</a></li>
+
+		<li><a href="/en/2.4/code-checker">Code-Checker</a></li>
+
+		<li><a href="/en/2.4/vulnerability-protection">Vulnerability Protection</a></li>
+
+		<li><a href="/en/2.4/requirements">Server Requirements</a></li>
+
+		<li><a href="//nette.org/en/license">License</a> and <a href="https://nette.org/contributors">contributors</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-development"><img src="//files.nette.org/git/doc-2.4/icon-ruler-small.png" alt=""> Development</h3>
+
+	<ul>
+		<li><a href="//nette.org/en/contributing">Contributing</a></li>
+
+		<li><a href="//nette.org/en/writing">Writing Documentation</a></li>
+
+		<li><a href="irc://irc.freenode.net/nettefw">IRC #nettefw</a></li>
+
+		<li><a href="/en/2.4/troubleshooting">Troubleshooting</a></li>
+	</ul>
+</div>
+
+	</div>
+</div>
+
+<div class="bar"><div>
+
+	<ul class="user" style="opacity:.6">
+		<li><a href="https://addons.nette.org/"><span>Add-ons</span></a>
+		<li><a href="https://pla.nette.org/en/"><span>Planette</span></a>
+		<li><a href="https://forum.nette.org/en/"><span>Forum</span></a>
+		<li><a href="https://blog.nette.org"><span>Blog</span></a>
+		<li><a href="https://nette.org/donate"><span>Donate</span></a>
+		<li>
+		<form action="https://www.google.com/cse" class="search">
+			<input type="hidden" name="cx" value="011549293477758430224:vxofa9ufnhc"><input type="hidden" name="ie" value="UTF-8"><input type="search" name="q" class="text" size="30" placeholder="Search"><input type="image" src="https://files.nette.org/images/search.png" alt="Search">
+		</form>
+		</li>
+	</ul>
+</div></div>
+
+</body>
+</html>

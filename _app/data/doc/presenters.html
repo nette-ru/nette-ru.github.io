@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html class="nette-doc">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Nette Foundation; c 2008">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>MVC Applications &amp; Presenters | Nette Framework</title>
+
+	<link rel="stylesheet" href="https://files.nette.org/css/combined.css?v=1468405828">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://nette.org/opensearch.xml" title="Nette Framework">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://forum.nette.org/opensearch.xml" title="Nette Framework forum">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://api.nette.org/opensearch.xml" title="Nette Framework API">
+	<link rel="canonical" href="/en/2.4/presenters">
+	<link rel="image_src" href="https://files.nette.org/images/fb-preview.png">
+
+		<link rel="alternate" hreflang="cs" href="/cs/2.4/presenters">
+	<link rel="alternate" hreflang="en" href="/en/2.4/presenters">
+</head>
+
+
+<body>
+<script>
+	ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-95238-14','auto'); ga('send','pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+<script src="https://api.nette.org/2.4/elementlist.js" async></script>
+<script src="https://files.nette.org/js/combined.js?v=1468489896" async></script>
+
+<div class="page">
+	<header class="main">
+		<a class="logo" title="Homepage" href="https://nette.org/en/"><span>Homepage</span></a>
+
+		<nav class="main">
+			<ul>
+	<li><a href="//nette.org/en/download">Download</a></li>
+
+	<li class="item-doc"><a href="/en/">Documentation</a></li>
+
+	<li><a href="https://api.nette.org">API</a></li>
+
+	<li><a href="https://github.com/nette">GitHub</a></li>
+</ul>
+
+		</nav>
+	</header>
+
+		<div class="wikimenu">
+	<div>
+		<div><a href="https://github.com/nette/web-content/blob/doc-2.4/en/presenters.texy">Edit</a></div>
+		<ul>
+			<li><a href="https://nette.org/en/writing">How to write?</a></li>
+
+			<li><a href="/en/2.4/presenters?view=links">Backlinks</a></li>
+
+			<li>Languages: <a href="/cs/2.4/presenters">cs</a> <a href="/en/2.4/presenters">en</a> </li>
+
+			<li>changed 10. 7. 2016</li>
+
+			<li><a href="/special/sitemap?lang=en">All pages</a></li>
+
+			<li><a href="/special/broken-links?lang=en">Broken links</a></li>
+		</ul>
+	</div>
+
+	<div>
+		<div>Lang</div>
+		<ul>
+			<li><a href="/cs/2.4/presenters">cs</a></li>
+			<li><a href="/en/2.4/presenters">en</a></li>
+		</ul>
+	</div>
+
+	<div class=versionmenu>
+		<div>Version 2.4</div>
+		<ul>
+			<li><a href="/en/2.3/presenters">Version 2.3</a></li>
+			<li><a href="/en/2.2/presenters">Version 2.2</a></li>
+			<li><a href="/en/2.1/presenters">Version 2.1</a></li>
+			<li><a href="/en/2.0/presenters">Version 2.0</a></li>
+		</ul>
+	</div>
+</div>
+
+
+	<div class="main">
+		<div class="content has-sidebar">
+			
+
+			<ul class="breadcrumbs">
+				<li><a href="/en/2.4/">Documentation</a></li>
+				<li>MVC Applications &amp; Presenters</li>
+			</ul>
+
+
+<h1 id="toc-mvc-applications-presenters">MVC Applications &amp; Presenters</h1>
+
+<div class="perex">
+	<p>We will learn how to create applications in Nette Framework. After this chapter you will know:</p>
+
+	<ul>
+		<li>MVC, directory structure and <code>bootstrap.php</code> file</li>
+
+		<li>what are presenters and actions</li>
+
+		<li>how to use templates</li>
+
+		<li>what are persistent parameters</li>
+	</ul>
+</div>
+
+<h2 id="toc-model-view-controller-mvc">Model-View-Controller (MVC)</h2>
+
+<p>Model-View-Controller is a software architecture that was created to separate utility code (controller) from application logic
+code (model) and from code for displaying data (view) in applications with a graphical user interface. With this approach the
+application is easier to understand, it will simplify future development and enables us to test each unit of the application
+separately.</p>
+
+<h3 id="toc-model">Model</h3>
+
+<p>Model is data and it is the functional base of the whole application. It contains application logic. Any user action (login,
+insertion of goods to basket, a change of value in the database) represents a model action. The Model is managing its internal
+state and provides a stable interface to the outside. By calling methods on this interface, we can read or update its state. The
+Model doesn't know anything about View or Controller.</p>
+
+<p class="note">Concept of <i>Model</i> represents whole layer, not only a single class.</p>
+
+<h3 id="toc-view">View</h3>
+
+<p>View is an application layer that is taking care of displaying. It usually uses the templating engine and knows how each
+component should be rendered by getting data from the model.</p>
+
+<h3 id="toc-controller">Controller</h3>
+
+<p>A controller handles requests from the user, calls relevant application logic (Model) and then asks the View to display data.
+In Nette Framework, controllers are represented by <a href="/en/2.4/glossary#toc-presenter">presenters</a>.</p>
+
+<h2 id="toc-directory-structure">Directory structure</h2>
+
+<p>When you look at <code>sandbox</code> after downloading the Nette Framework package you will see the following recommended
+directory structure:</p>
+
+<pre><b>sandbox/</b>
+├── <b>app/</b>                  ← directory with application
+│   ├── <b>config/</b>           ← configuration files
+│   │   ├── <b>config.neon</b>   ← main config file
+│   │   └── <b>config.local.neon</b>
+│   │
+│   ├── <b>forms/</b>            ← form classes
+│   ├── <b>model/</b>            ← model layer and its classes
+│   ├── <b>presenters/</b>       ← presenter classes
+│   │   ├── <b>HomepagePresenter.php</b>  ← Homepage presenter class
+│   │   └── <b>templates/</b>    ← templates directory
+│   │       ├── <b>@layout.latte</b> ← template of shared layout
+│   │       └── <b>Homepage/</b>     ← templates for Homepage presenter
+│   │           └── <b>default.latte</b>  ← template for default action
+│   ├── <b>router/</b>           ← router classes
+│   │
+│   └── <b>bootstrap.php</b>     ← application boot file
+│
+├── <b>log/</b>                  ← contains logs, errors, etc.
+├── <b>temp/</b>                 ← for temporary files, cache, ...
+│
+├── <b>vendor/</b>               ← directory with libraries (for example 3rd party)
+│   ├── <b>nette/</b>            ← all Nette Framework libraries
+│   │   └── <b>nette/Nette</b>   ← Nette Framework itself installed by Composer
+│   ├── ...
+│   │
+│   └── <b>autoload.php</b>      ← script that handles autoloading of all classes from installed packages
+│
+└── <b>www/</b>                  ← public directory, document root of project
+    ├── <b>.htaccess</b>         ← rules for mod_rewrite
+    ├── <b>index.php</b>         ← triggers the application
+    └── <b>images/</b>           ← other directories, images, styles, ..</pre>
+
+<p>Moreover in some directories, there are <code>.htaccess</code> and <code>web.config</code> files, which deny access from
+browser (for Apache or IIS). Make sure that these are working, and that you cannot reach <code>app/</code> and <code>libs/</code>
+directories from your browser.</p>
+
+<p class="note">Don't forget to grant write privilege (<code>chmod 0777</code>) to directories <code>log/</code> and
+<code>temp/</code>.</p>
+
+<h3 id="toc-index-php-bootstrap-php">index.php &amp; bootstrap.php</h3>
+
+<p>The browser is sending all requests through one and only one file, located in public directory <code>www/</code> and that is
+<code>index.php</code>. It only passes the control to the application (that is the <code>app/</code> directory), to a boot file
+<code>bootstrap.php</code>.</p>
+
+<p class="note">Nette Framework saves all its paths consistently, without the right trailing slash.</p>
+
+<p>The described directory structure is only a recommendation. You can easily change it to whatever you want. All you have to do
+is rename directories and change paths in <code>bootstrap.php</code>.</p>
+
+<p>Firstly, the file <code>bootstrap.php</code> loads Nette Framework and all libraries that we depend on:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">require</span> __DIR__ . <span
+class="php-quote">'/../vendor/autoload.php'</span>;</code></pre>
+
+<p>The class <code>Configurator</code> creates so called <a href="/en/2.4/configuring">DI context</a> and handles application
+initialization.</p>
+
+<pre class="src-php"><code><span class="php-var">$configurator</span> = <span
+class="php-keyword1">new</span> Nette\Configurator;</code></pre>
+
+<p>Activates <a href="//tracy.nette.org/en/">debugger and logger</a> in strict mode:</p>
+
+<pre class="src-php"><code><span class="php-comment">//$configurator-&gt;setDebugMode(TRUE);</span>
+<span
+class="php-var">$configurator</span>-&gt;enableDebugger(__DIR__ . <span class="php-quote">'/../log'</span>);</code></pre>
+
+<p>Setup directory for temporary files</p>
+
+<pre class="src-php"><code><span class="php-var">$configurator</span>-&gt;setTempDirectory(__DIR__ . <span
+class="php-quote">'/../temp'</span>);</code></pre>
+
+<p>Activate <a href="/en/2.4/auto-loading#toc-nette-loaders-robotloader">autoloading</a>, that will automatically load all the
+files with our classes:</p>
+
+<pre class="src-php"><code><span
+class="php-var">$configurator</span>-&gt;createRobotLoader()
+    -&gt;addDirectory(__DIR__)
+    -&gt;addDirectory(__DIR__ . <span
+class="php-quote">'/../vendor/others'</span>)
+    -&gt;register();</code></pre>
+
+<p>And according to the configuration files it generates a DI container. Everything else depends on it.</p>
+
+<p>We will return this DI Container as a result of calling <code>app/boostrap.php</code></p>
+
+<pre class="src-php"><code><span class="php-var">$configurator</span>-&gt;addConfig(__DIR__ . <span
+class="php-quote">'/config/config.neon'</span>);
+<span class="php-var">$configurator</span>-&gt;addConfig(__DIR__ . <span
+class="php-quote">'/config/config.local.neon'</span>);
+<span class="php-keyword1">return</span> <span
+class="php-var">$configurator</span>-&gt;createContainer();</code></pre>
+
+<p>and we will store it as a local variable in <code>www/index.php</code> and run the application:</p>
+
+<pre class="src-php"><code><span class="php-var">$container</span> = <span class="php-keyword1">require</span> __DIR__ . <span
+class="php-quote">'/../app/bootstrap.php'</span>;
+<span class="php-var">$container</span>-&gt;getService(<span
+class="php-quote">'application'</span>)-&gt;run();</code></pre>
+
+<p>That's it.</p>
+
+<h2 id="toc-processing-presenter-action">Processing presenter action</h2>
+
+<p>So how are requests handled? Every request to our application will pass via <code>index.php</code> and
+<code>bootstrap.php</code> to the <code>$application</code> object. But this object does not understand http requests, so it will
+ask the <a href="/en/2.4/routing">router</a> to translate the request. The router will look at the request, and tells what
+<b>presenter</b> is needed, and what <b>action</b> it should execute. For example, the router answers, that the user wants action
+<code>show</code> of presenter <code>Product</code> (it's a good habit to write it like <code>Product:show</code>) and pass it
+parameter <code>id = 123</code>. You can read it like: user wants to show product with id 123.</p>
+
+<p>This is finally understandable to the <code>$application</code> and it will proceed to fulfill the request. It will create an
+object of class <code>ProductPresenter</code>, that represents presenter <code>Product</code>. (To be completely accurate, the
+application asks the <code>presenterFactory</code> service for creation of a presenter). This new presenter will be asked for
+execution of action (<code>show</code> with parameter <code>id</code>).</p>
+
+<p>The presenter is an object that takes the request, translated by router, and computes the answer. This can be an HTML page, an
+image, an XML document, a file, JSON, redirection or anything that you need. In detail, the <code>ProductPresenter</code> will
+query the model for data, and pass that data to the template for displaying. This is usually done in method
+<code>renderShow</code>, where the word <code>Show</code> must match the name of the action and request parameter <code>id</code>
+will be passed to the method as argument:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> ProductPresenter <span
+class="php-keyword1">extends</span> Nette\Application\UI\Presenter
+{
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> renderShow(<span class="php-var">$id</span>)
+    {
+        <span
+class="php-comment">// we will get data from model and pass it to template</span>
+        <span
+class="php-var">$this</span>-&gt;template-&gt;product = <span class="php-var">$this</span>-&gt;model-&gt;getProduct(<span
+class="php-var">$id</span>);
+    }
+}</code></pre>
+
+<p>If you really want, you can get an array of all the GET request parameters by calling
+<code>$this-&gt;request-&gt;getParameters()</code>, but usually you shouldn't need them, bu instead use <a
+href="/en/2.4/routing">routing</a> and <a href="#toc-processing-presenter-action">action parameters</a>.</p>
+
+<p>Similarly you can get all received POST parameters by calling <code>$this-&gt;request-&gt;getPost()</code>. And normally,
+neither should you need this method. Mostly you're processing form requests and there is a <a
+href="/en/2.4/forms#toc-presenter-forms">form component for that</a>.</p>
+
+<p>Then the presenter will render the template.</p>
+
+<h3 id="toc-templates">Templates</h3>
+
+<p>The presenter will deduce the path to the template file from a few simple rules. It will try, for presenter
+<code>Product</code> and action <code>show</code>, if one of these files exists:</p>
+
+<pre>- templates/Product/show.latte
+- templates/Product.show.latte</pre>
+
+<p>Presenter will also try to search for a layout (that is optional):</p>
+
+<pre>- templates/Product/@layout.latte
+- templates/Product.@layout.latte
+- templates/@layout.latte layout shared by multiple presenters</pre>
+
+<p class="tip">You can change the way of searching the templates by overriding the <a
+href="//api.nette.org/2.4/Nette.Application.UI.Presenter.html#_formatTemplateFiles">formatTemplateFiles</a> or <a
+href="//api.nette.org/2.4/Nette.Application.UI.Presenter.html#_formatLayoutTemplateFiles">formatLayoutTemplateFiles</a>
+methods.</p>
+
+<p>Presenters and its components pass a few useful variables to the templates:</p>
+
+<ul>
+	<li><code>$basePath</code> is an absolute URL path to root dir (for example <code>/CD-collection</code>)</li>
+
+	<li><code>$baseUrl</code> is an absolute URL to root dir (for example <code>http://localhost/CD-collection</code>)</li>
+
+	<li><code>$user</code> is a object <a href="/en/2.4/access-control">representing the user</a></li>
+
+	<li><code>$presenter</code> is the current presenter</li>
+
+	<li><code>$control</code> is the current component or presenter</li>
+
+	<li><code>$flashes</code> list of <a href="#toc-flash-messages">messages</a> sent by method <code>flashMessage()</code></li>
+</ul>
+
+<p>You can read more details about template rendering in a <a href="//latte.nette.org/en/">separate chapter</a>.</p>
+
+<p>Actually it's not hard at all! When you're requesting an action, for example <code>Homepage:default</code>, then</p>
+
+<ol>
+	<li>an object of class <code>HomepagePresenter</code> will be created</li>
+
+	<li>method <code>renderDefault()</code> will be called (if it exists, but it doesn't have to)</li>
+
+	<li>template, for example <code>templates/Homepage/default.latte</code> with layout, for example
+	<code>templates/@layout.latte</code>, will be rendered</li>
+</ol>
+
+<p>and in template we can <a href="#toc-linking">create a link</a> to mentioned <code>Product:show($id)</code>, roughly
+like this:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;a</span><span class="html-tagin"> n:href=</span><span
+class="html-quote">&quot;Product:show $productId&quot;</span><span class="html-tag">&gt;</span>product detail<span
+class="html-tag">&lt;/a&gt;</span></code></pre>
+
+<p>It looks like creating applications in Nette Framework will be child's play.</p>
+
+<h3 id="toc-modules">Modules</h3>
+
+<p>When developing complex applications, we can separate directories with presenters and templates to subdirectories. We call them
+modules. If our application would contain for example modules <code>Front</code> and <code>Admin</code>, its structure could look
+like this:</p>
+
+<pre><b>sandbox/</b>
+    <b>app/</b>                ← directory with application
+        <b>AdminModule/</b>    ← Admin module
+            <b>presenters/</b> ← its presenters
+            <b>templates/</b>  ← its templates
+
+        <b>FrontModule/</b>    ← Front module
+            <b>presenters/</b> ← its presenters
+            <b>templates/</b>  ← its templates
+
+        ...</pre>
+
+<p>Modules don't have to be arranged in flat structures, you can even create submodules.</p>
+
+<p>If module <code>Front</code> would contain presenter <code>Product</code>. Action <code>show</code> can than be written as
+<code>Front:Product:show</code> and class <code>ProductPresenter</code> will be placed into namespace
+<code>FrontModule</code>:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">namespace</span> FrontModule;
+
+<span
+class="php-keyword1">class</span> ProductPresenter <span
+class="php-keyword1">extends</span> \Nette\Application\UI\Presenter
+{
+    <span class="php-comment">// ...</span>
+}</code></pre>
+
+<h2 id="toc-link-creation">Link creation</h2>
+
+<p>Creation of links belongs to the strongest features of Nette Framework. Thanks to <a href="/en/2.4/routing">two-way routing</a>
+you don't have to hardcode your URLs or nastily assemble them. You can just refer to actions of presenters, and pass them
+parameters and the framework will generate URLs by itself. Creating links is as easy as calling a function. You will really
+like it!</p>
+
+<p>When programming and coding templates, we don't have to care about URLs design, we will refer directly to action of presenter,
+that's for example the already mentioned <code>Product:show</code>.</p>
+
+<h3 id="toc-links-in-templates">Links in templates</h3>
+
+<p>Most often we create links in templates. To make it as easy as possible the framework offers three macros. The smartest of them
+is <code>n:href</code></p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;a</span><span class="html-tagin"> n:href=</span><span
+class="html-quote">&quot;Product:show $productId&quot;</span><span class="html-tag">&gt;</span>product detail<span
+class="html-tag">&lt;/a&gt;</span></code></pre>
+
+<p>Note, that instead of the HTML attribute <code>href</code> we've used <a href="//latte.nette.org/en/#toc-n-macros">n:macro</a>
+<code>n:href</code>. Its value isn't a URL, as you are used to with the <code>href</code> attribute, but directly an action of a
+presenter. The syntax is</p>
+
+<pre>[Presenter:]action [,] [arg1] [, arg2] [, ...]</pre>
+
+<p>After clicking on the link, method <code>ProductPresenter::renderShow()</code> will get its word and as parameter
+<code>$id</code> will get the value of <code>$productId</code>. We can pass even more parameters in the same way, just like we
+call a method. Could it get any easier?</p>
+
+<p class="note">Best practise is to write the presenter with a capital letter and the action without. The separator is
+a colon.</p>
+
+<p>Besides that, it's even possible to pass named parameters. The next link passes the parameter <code>lang</code> with value
+<code>cs</code>:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;a</span><span class="html-tagin"> n:href=</span><span
+class="html-quote">&quot;Product:show $productId, lang =&gt; cs&quot;</span><span class="html-tag">&gt;</span>product detail<span
+class="html-tag">&lt;/a&gt;</span></code></pre>
+
+<p>Although the method <code>renderShow</code> doesn't have <code>$lang</code> in its declaration, it can read the value of this
+parameter by calling <code>$lang = $this-&gt;getParameter('lang')</code>.</p>
+
+<p>If we have all parameters in an array, we can expand them with <code>(expand)</code> operator:</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">var</span> <span class="php-var">$args</span> = [<span
+class="php-var">$productId</span>, lang =&gt; cs]}
+<span class="html-tag">&lt;a</span><span
+class="html-tagin"> n:href=</span><span class="html-quote">&quot;Product:show (expand) $args&quot;</span><span
+class="html-tag">&gt;</span>product detail<span class="html-tag">&lt;/a&gt;</span></code></pre>
+
+<p>If the template, in which we are creating links, is part of the <code>Product</code> presenter, we can omit the name of the
+presenter and write directly <code>n:href="show $productId"</code>. Similarly, if a link leads to the an action named
+<code>default</code>, you can skip that and write <code>n:href="Product: $id"</code> (don't forget the colon).</p>
+
+<p>Links can even refer to other <a href="#toc-modules">modules</a>. Here we distinguish, if it's refering “relatively” to a
+submodule, or “absolutely” to a different module – then the path begins with a colon. Let's assume that the actual
+presenter is part of module <code>Front</code>, then we will write:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;a</span><span class="html-tagin"> n:href=</span><span
+class="html-quote">&quot;Shop:Product:show&quot;</span><span class="html-tag">&gt;</span>link for Front:Shop:Product:show<span
+class="html-tag">&lt;/a&gt;</span>
+<span class="html-tag">&lt;a</span><span class="html-tagin"> n:href=</span><span
+class="html-quote">&quot;:Admin:Product:show&quot;</span><span class="html-tag">&gt;</span>link for Admin:Product:show<span
+class="html-tag">&lt;/a&gt;</span></code></pre>
+
+<p class="note">A special case is linking to itself. Here we'll write <code>this</code> as the target.</p>
+
+<p>The generated link is in absolute path format. When you want to generate an absolute link including the domain, for example
+<code>http://example.com</code>, simply supply two slashes at the beginning <code>n:href="//show $productId"</code>. If we set the
+property <a href="//api.nette.org/2.4/Nette.Application.UI.Presenter.html#$absoluteUrls">$absoluteUrls</a> in presenter to
+<code>TRUE</code>, all the links will be absolute by default.</p>
+
+<p>We can refer to specific parts on the page using so called fragments, or anchors, with the hash <code>#</code> symbol:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;a</span><span class="html-tagin"> n:href=</span><span
+class="html-quote">&quot;show#comments&quot;</span><span
+class="html-tag">&gt;</span>link to Product:show and fragment #comments<span class="html-tag">&lt;/a&gt;</span></code></pre>
+
+<p>The macro <code>n:href</code> is realy handy if we are creating an HTML tag <code>&lt;a&gt;</code>. When we want to have this
+link elsewhere, for example in the text of the template, we can use the <code>{link}</code> macro with the same internal
+syntax:</p>
+
+<pre class="src-html"><code>The address is: {<span class="php-keyword1">link</span> Product:show <span
+class="php-var">$productId</span>}</code></pre>
+
+<p><code>{ifCurrent $link}...{/ifCurrent}</code> is a conditional statement. If the link is referring to the current page, the
+block inside the tags is executed; otherwise it is discarded. Typical use case is adding CSS classes to the active link.</p>
+
+<pre class="src-html"><code><span class="html-comment">&lt;!-- use cases --&gt;</span>
+<span class="html-tag">&lt;a</span><span
+class="html-tagin"> href=</span><span class="html-quote">&quot;{</span><span class="php-keyword1">link</span> edit, <span
+class="php-num">10</span>}<span class="html-quote">&quot;</span><span class="html-tag">&gt;</span>edit<span
+class="html-tag">&lt;/a&gt;</span>
+<span class="html-tag">&lt;ul</span><span class="html-tagin"> class=</span><span
+class="html-quote">&quot;menu&quot;</span><span class="html-tag">&gt;</span>
+    <span
+class="html-tag">&lt;li&gt;&lt;a</span><span class="html-tagin"> href=</span><span class="html-quote">&quot;{</span><span
+class="php-keyword1">link</span> <span class="php-keyword1">Default</span>:<span class="php-keyword1">default</span>}<span
+class="html-quote">&quot;</span><span class="html-tag">&gt;</span>...<span class="html-tag">&lt;/a&gt;&lt;/li&gt;</span>
+    <span
+class="html-tag">&lt;li&gt;&lt;a</span><span class="html-tagin"> href=</span><span class="html-quote">&quot;{</span><span
+class="php-keyword1">link</span>}<span class="html-quote">&quot;</span><span class="html-tag">&gt;</span>...<span
+class="html-tag">&lt;/a&gt;&lt;/li&gt;</span>
+    ...
+    <span class="html-tag">&lt;li</span><span
+class="html-tagin"> {</span>ifCurrent <span class="php-keyword1">Default</span>:<span class="php-keyword1">default</span>}<span
+class="html-tagin">class=</span><span class="html-quote">&quot;active&quot;</span><span
+class="html-tagin">{</span>/ifCurrent}<span class="html-tag">&gt;&lt;a</span><span class="html-tagin"> href=</span><span
+class="html-quote">&quot;{</span><span class="php-keyword1">link</span> <span class="php-keyword1">Default</span>:<span
+class="php-keyword1">default</span>}<span class="html-quote">&quot;</span><span class="html-tag">&gt;</span>...<span
+class="html-tag">&lt;/a&gt;&lt;/li&gt;</span>
+
+    <span class="html-comment">&lt;!-- scope expanding --&gt;</span>
+    <span
+class="html-tag">&lt;li</span><span class="html-tagin"> {</span>ifCurrent <span class="php-keyword1">Default</span>:*}<span
+class="html-tagin">class=</span><span class="html-quote">&quot;active&quot;</span><span
+class="html-tagin">{</span>/ifCurrent}<span class="html-tag">&gt;&lt;a</span><span class="html-tagin"> href=</span><span
+class="html-quote">&quot;{</span><span class="php-keyword1">link</span> <span class="php-keyword1">Default</span>:<span
+class="php-keyword1">default</span>}<span class="html-quote">&quot;</span><span class="html-tag">&gt;</span>...<span
+class="html-tag">&lt;/a&gt;&lt;/li&gt;</span>
+<span class="html-tag">&lt;/ul&gt;</span>
+<span
+class="html-comment">&lt;!-- negation --&gt;</span>
+{ifCurrent Admin:login}{<span class="php-keyword1">else</span>}<span
+class="html-tag">&lt;a</span><span class="html-tagin"> href=</span><span class="html-quote">&quot;{</span><span
+class="php-keyword1">link</span> Admin:login}<span class="html-quote">&quot;</span><span class="html-tag">&gt;</span>Sign in!<span
+class="html-tag">&lt;/a&gt;</span>{/ifCurrent}</code></pre>
+
+<p>Read more details about the syntax of <a href="//latte.nette.org/en/macros">Latte templates</a>.</p>
+
+<h3 id="toc-linking-in-presenter">Linking in presenter</h3>
+
+<p>Presenter and <a href="//api.nette.org/2.4/Nette.Application.UI.PresenterComponent.html">a component</a> have the method
+<code>link</code>, which can be used to create links just like in a template. The first argument is presenters target action,
+followed by passed arguments:</p>
+
+<pre class="src-php"><code><span class="php-var">$url</span> = <span class="php-var">$this</span>-&gt;<span
+class="php-keyword2">link</span>(destination [,arg [,arg ...]]);</code></pre>
+
+<p>They can also be passed using an array. Examples:</p>
+
+<pre class="src-php"><code><span class="php-var">$url</span> = <span class="php-var">$this</span>-&gt;<span
+class="php-keyword2">link</span>(<span class="php-quote">'Product:show'</span>, <span class="php-var">$productId</span>);
+
+<span
+class="php-var">$url</span> = <span class="php-var">$this</span>-&gt;<span class="php-keyword2">link</span>(<span
+class="php-quote">'Product:show'</span>, [<span class="php-var">$productId</span>, <span
+class="php-quote">'lang'</span> =&gt; <span class="php-quote">'en'</span>]);</code></pre>
+
+<p class="caution">If you pass <code>FALSE</code> as method parameter when generating a link, it won't be added to the link at
+all. The solution is to define this parameter with default value <code>TRUE</code> or <code>FALSE</code>. Nette will then
+understand that its type is boolean, and it will be passed to the url as 1 or 0, and converted back to boolean when processed by
+a presenter.</p>
+
+<h3 id="toc-invalid-links">Invalid links</h3>
+
+<p>It may happen that we create an invalid link – either because it refers to a non-existing presenter, or because it passes
+more parameters that the target method receives in its definition, or when there can't be a generated URL for the targeted action.
+What to do with invalid links is determined by the static variable <code>Presenter::$invalidLinkMode</code>. It can have one of
+these values (constants):</p>
+
+<ul>
+	<li><code>Presenter::INVALID_LINK_SILENT</code> – silent mode, returns symbol <code>#</code> as URL</li>
+
+	<li><code>Presenter::INVALID_LINK_WARNING</code> – E_USER_WARNING will be produced</li>
+
+	<li><code>Presenter::INVALID_LINK_TEXTUAL</code> – visual warning, the error text is displayed in the link</li>
+
+	<li><code>Presenter::INVALID_LINK_EXCEPTION</code> – InvalidLinkException will be thrown</li>
+</ul>
+
+<p>Default setup in production mode is <code>INVALID_LINK_WARNING</code> and in development mode is
+<code>INVALID_LINK_WARNING | INVALID_LINK_TEXTUAL</code>. <code>INVALID_LINK_WARNING</code> doesn't kill the script in the
+production environment, but the warning will be logged. In the development environment, Tracy will intercept the warning and
+display the error bluescreen. If the <code>INVALID_LINK_TEXTUAL</code> is set, presenter and components returns error message as
+URL which stars with <code>#error:</code>. To make such links visible, we can add a CSS rule to our stylesheet:</p>
+
+<pre class="src-css"><code><span class="css-tag">a[href^=&quot;#error</span><span class="css-pseudo">:&quot;]</span> {
+    <span
+class="css-property">background</span>:<span class="css-value"> red</span>;
+    <span class="css-property">color</span>:<span
+class="css-value"> white</span>;
+}</code></pre>
+
+<p>If we don't want warnings to be produced in the development enviroment we can turn on silent invalid link mode in the
+configuration.</p>
+
+<pre>application:
+    silentLinks: yes</pre>
+
+<h3 id="toc-persistent-parameters">Persistent parameters</h3>
+
+<p>Except classic parameters, that we know by now, there are so called persistent parameters. Those are different in a very
+essential way: <b>they are passed through requests automatically.</b> That means, we don't have to explicitly mention them in
+links, but they are passed anyway.</p>
+
+<p>When your application has multiple language variants passing the actual language in every link will be incredibly tiring. But
+that's not needed with Nette Framework. You can simply mark the <code>$lang</code> parameter as persistent just like this:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> ProductPresenter <span
+class="php-keyword1">extends</span> Presenter
+{
+    <span class="php-comment">/** @persistent */</span>
+    <span
+class="php-keyword1">public</span> <span class="php-var">$lang</span>;
+
+    ...</code></pre>
+
+<p>If the actual value of parameter <code>$lang</code> will be <code>'en'</code>, the into the link</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;a</span><span class="html-tagin"> n:href=</span><span
+class="html-quote">&quot;Product:show $productId&quot;</span><span class="html-tag">&gt;</span>product detail<span
+class="html-tag">&lt;/a&gt;</span></code></pre>
+
+<p>the parameter <code>lang =&gt; en</code> will be passed automatically. Great!</p>
+
+<p>But we can also add parameter <code>lang</code> and by that, change its value:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;a</span><span class="html-tagin"> n:href=</span><span
+class="html-quote">&quot;Product:show $productId, lang =&gt; cs&quot;</span><span
+class="html-tag">&gt;</span>detail in Czech language<span class="html-tag">&lt;/a&gt;</span></code></pre>
+
+<p>The parameter will be accessible in the class variable <code>$lang</code> in objects of <code>ProductPresenter</code> and it
+can be accessed through <code>$this-&gt;lang</code>. We can even set the default value of the persistent parameter to presenter
+class. If the parameter value will correspond to the default value, it will not be passed in a URL.</p>
+
+<p class="note">A persistent variable must be declared as public.</p>
+
+<p>Persistence reflects hierarchy of presenter classes, thus parameter defined in specific presenter will be automaticaly taken
+into account in every single presenter inheriting from it.</p>
+
+<h2 id="toc-life-cycle-of-presenter">Life cycle of presenter</h2>
+
+<p>We know by now that a presenter action causes invoking <code>render&lt;Action&gt;</code> method, thus for example
+<code>renderShow</code>. But it's not the only method that gets invoked. When writing presenters, we can write the following
+methods:</p>
+
+<div style="text-align:center" class="figure"><img src="//files.nette.org/git/doc-2.4/lifecycle2.gif" alt="">
+	<p><em>Life cycle of presenter</em></p>
+</div>
+
+<h3 id="toc-startup"><code>startup()</code></h3>
+
+<p>Method <code>startup()</code> gets invoked immediately after the presenter is created. It initializes variables or checks user
+privileges.</p>
+
+<p class="note">If you write your own <code>startup()</code> method, don't forget to call its parent
+<code>parent::startup()</code>.</p>
+
+<h3 id="toc-action-action"><code>action&lt;Action&gt;()</code></h3>
+
+<p>Analogous to the method <code>render&lt;View&gt;()</code>. There are situations when the presenter executes some specific
+action (authenticates the user, writes to database) and then redirects to somewhere else. To call it <code>render</code> would be
+inappropriate, because nothing is rendered. Because of that, there is an alternative called <code>action</code>.</p>
+
+<p>It's important to know that the method <code>action&lt;Action&gt;()</code> gets called before
+<code>render&lt;View&gt;()</code>. It can even decide to change what render method gets invoked, by calling
+<code>$this-&gt;setView('otherView')</code> (<code>renderOtherView()</code> will get invoked).</p>
+
+<h3 id="toc-handle-signal"><code>handle&lt;Signal&gt;()</code></h3>
+
+<p>Method handles so called <a href="/en/2.4/components#toc-signal-aka-subrequest">signals</a> aka subrequests. Designed mainly
+for components and handling of AJAX requests. Processing of forms is also performed on this level.</p>
+
+<h3 id="toc-beforerender"><code>beforeRender()</code></h3>
+
+<p>Method <code>beforeRender</code>, as the name suggests, gets invoked before <code>render&lt;View&gt;()</code> and it can
+contain for example setup of template, passing variables to template common for more views and so on.</p>
+
+<h3 id="toc-render-view"><code>render&lt;View&gt;()</code></h3>
+
+<p>Usualy passes required data to templates.</p>
+
+<h3 id="toc-shutdown"><code>shutdown()</code></h3>
+
+<p>Gets invoked at the end of the presenters life cycle.</p>
+
+<p class="note">More accurate would be to say, that we were talking about life cycle of the class <a
+href="//api.nette.org/2.4/Nette.Application.UI.Presenter.html">Nette\Application\UI\Presenter</a>, from which presenters are
+inherited most often. In general, a presenter is any class implementing the simple interface <a
+href="//api.nette.org/2.4/Nette.Application.IPresenter.html">Nette\Application\IPresenter</a>.</p>
+
+<h3 id="toc-termination-of-presenter">Termination of presenter</h3>
+
+<p>We can terminate a presenter anytime during its life cycle. We usualy do this to prevent rendering a template.</p>
+
+<ul>
+	<li>termination of presenter directly by method: <code>$presenter-&gt;terminate()</code></li>
+
+	<li>termination of presenter and immediate render the template: <code>$presenter-&gt;sendTemplate()</code></li>
+
+	<li>termination of presenter and dispatch of the payload: <code>$presenter-&gt;sendPayload()</code> (for AJAX)</li>
+
+	<li>termination of presenter and dispatch of own response: <code>$presenter-&gt;sendResponse($response)</code></li>
+</ul>
+
+<p>A presenter can be terminated also by redirecting or by throwing a <code>BadRequestException</code>.</p>
+
+<h2 id="toc-redirection">Redirection</h2>
+
+<p>There are two methods <code>redirect()</code> and <code>forward()</code> for jumping to another presenter, which have similar
+syntax as mentioned <a href="#toc-linking">link()</a>. For example, after submitting a form and writing to the database, we will
+redirect to the product's detail by calling:</p>
+
+<pre class="src-php"><code><span class="php-var">$this</span>-&gt;redirect(<span class="php-quote">'Product:show'</span>, <span
+class="php-var">$id</span>);</code></pre>
+
+<p>While <code>forward()</code> will pass to new action without redirecting, method <code>redirect()</code> will redirect the
+browser with HTTP code 302 or 303. If we would want to use a different code, we will put it before the name of the action of a
+presenter:</p>
+
+<pre class="src-php"><code><span class="php-var">$this</span>-&gt;redirect(<span class="php-num">301</span>, <span
+class="php-quote">'Product:show'</span>, <span class="php-var">$id</span>);</code></pre>
+
+<p>To go to URLs outside of your application, you can redirect using <code>redirectUrl()</code>:</p>
+
+<pre class="src-php"><code><span class="php-var">$this</span>-&gt;redirectUrl(<span
+class="php-quote">'https://nette.org'</span>);</code></pre>
+
+<p>Redirection immediately terminates activity of the presenter by throwing the so called terminating exception
+<code>Nette\Application\AbortException</code>.</p>
+
+<p>Sometimes, before redirection, we want to send a so called <a href="#toc-flash-messages">flash message</a>. That's a message
+that will appear after redirection in template.</p>
+
+<h2 id="toc-error-404-etc">Error 404, etc.</h2>
+
+<p>When we can't fulfill the request, because for example the record is missing in the database, we will throw an exception
+<code>Nette\Application\BadRequestException</code>, which represents HTTP error 404:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">public</span> <span class="php-keyword1">function</span> renderShow(<span
+class="php-var">$id</span>)
+{
+    <span class="php-var">$product</span> = <span
+class="php-var">$this</span>-&gt;model-&gt;getProduct(<span class="php-var">$id</span>);
+    <span
+class="php-keyword1">if</span> (!<span class="php-var">$product</span>) {
+        <span class="php-keyword1">throw</span> <span
+class="php-keyword1">new</span> Nette\Application\BadRequestException;
+    }
+
+    <span
+class="php-comment">// ...</span>
+}</code></pre>
+
+<p>When a user is not authorized to see the page, we will throw a <code>Nette\Application\ForbiddenRequestException</code>
+exception (error 403). Other error codes can be returned using second argument of
+<code>Nette\Application\BadRequestException</code>.</p>
+
+<h2 id="toc-flash-messages">Flash messages</h2>
+
+<p>These are messages informing about a result of some operation. An important feature of flash messages is that they are
+available in template, even after redirection. Even when displayed, they are available for three seconds – in case that a user
+would unintentionally refresh the page – thus messages will not be lost.</p>
+
+<p>Just call the <a href="//api.nette.org/2.4/Nette.Application.UI.Control.html#_flashMessage">flashMessage()</a> method and
+presenter will take care about passing the message to template. First argument is the text of the message and second optional
+argument is its type (error, warning, info etc.). The method <code>flashMessage()</code> returns an instance of flash message, to
+allow us to add more information.</p>
+
+<pre class="src-php"><code><span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> deleteFormSubmitted(<span class="php-var">$form</span>)
+{
+    <span
+class="php-comment">// ... model asks for deletion of record ...</span>
+
+    <span
+class="php-comment">// we will pass the flash message</span>
+    <span class="php-var">$this</span>-&gt;flashMessage(<span
+class="php-quote">'Item was removed.'</span>);
+
+    <span class="php-var">$this</span>-&gt;redirect(...); <span
+class="php-comment">// and redirect</span>
+}</code></pre>
+
+<p>These messages are available in templates variable <code>$flashes</code> as anonymous objects, that contains
+<code>message</code> and <code>type</code> properties and they can even contain previously mentioned user-defined information.
+They can be rendered for example like this:</p>
+
+<pre class="src-php"><code>{<span class="php-keyword1">foreach</span> <span class="php-var">$flashes</span> <span
+class="php-keyword1">as</span> <span class="php-var">$flash</span>}
+&lt;div <span class="php-keyword1">class</span>=<span
+class="php-quote">&quot;flash </span><span class="php-var">{$flash-&gt;type}</span><span class="php-quote">&quot;</span>&gt;{<span
+class="php-var">$flash</span>-&gt;message}&lt;/div&gt;
+{/<span class="php-keyword1">foreach</span>}</code></pre>
+
+<h2 id="toc-usage-of-model-classes">Usage of model classes</h2>
+
+<p>As we've said before, model is a whole layer composed of many classes, where each one is taking care of one part of application
+logic. If we'd have for example a model <code>App\Articles</code>, which would take care of loading and saving articles, we may
+ask for it in a presenter using <a href="/en/2.4/dependency-injection">Dependency Injection</a>, assuming we've <a
+href="/en/2.4/configuring#toc-services-definitions">properly registered it as a service</a> in <a
+href="/en/2.4/dependency-injection#toc-nette-di-container">DI Container</a>.</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> ArticlePresenter <span
+class="php-keyword1">extends</span> Presenter
+{
+
+    <span class="php-comment">/** @var \App\Articles @inject */</span>
+    <span
+class="php-keyword1">public</span> <span class="php-var">$articles</span>;
+
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> renderShow(<span class="php-var">$id</span>)
+    {
+        <span
+class="php-var">$this</span>-&gt;template-&gt;article = <span class="php-var">$this</span>-&gt;articles-&gt;find(<span
+class="php-var">$id</span>);
+    }
+
+}</code></pre>
+
+<p>What just happened? Let's go through it together. As we've said before, instances of presenters are created using the <a
+href="//api.nette.org/2.4/Nette.Application.PresenterFactory.html">PresenterFactory</a> and what this class does after creation,
+is that it checks if the presenter has some public properties, that are annotated with <code>@inject</code> and if so, it tries to
+find a service that implements or is instance of the type, that is in <code>@var</code> and passes this service to the property
+from DI Container.</p>
+
+<p>Thanks to this mechanism, we can use the service right away, without caring where it came from or trying to instantiate it,
+because we're sure that it will be passed to the property, as long as it's correctly registered in the DI Container.</p>
+
+<p>You can only inject into public properties of classes.</p>
+
+<h2 id="toc-presenter-and-components">Presenter and components</h2>
+
+<p>When we talk about presenters, then under the term <a href="/en/2.4/components">components</a> we usually mean descendants of
+class <a href="//api.nette.org/2.4/Nette.Application.UI.Control.html">Control</a>. More accurate would be to use term
+“controls”, but it has a different meaning in czech and “components” did better catch on.</p>
+
+<p>Presenter <code>Nette\Application\UI\Presenter</code> by itself, is descendant of class <code>Control</code>, so there is major
+similarity between components and presenter. But <code>UI\Control</code> (and thus even <code>UI\Presenter</code>) is primarily a
+so called component container. Which means that you can add to it other components. Just like we add to <a
+href="/en/2.4/forms">form</a> inputs (text field, button, …). And just like with forms, you can access them through
+brackets:</p>
+
+<pre class="src-php"><code><span class="php-comment">// attach component to presenter</span>
+<span
+class="php-var">$presenter</span>[<span class="php-quote">'mymenu'</span>] = <span
+class="php-keyword1">new</span> MenuControl;
+
+<span class="php-comment">// get component from presenter and render it</span>
+<span
+class="php-var">$presenter</span>[<span class="php-quote">'mymenu'</span>]-&gt;render();</code></pre>
+
+<p>Attaching the component to the presenter (binding them) you will be able to:</p>
+
+<ul>
+	<li>create links in component</li>
+
+	<li>use <a href="/en/2.4/components#toc-signal-aka-subrequest">signals</a></li>
+
+	<li>use persistent parameters in components</li>
+</ul>
+
+<p>When you don't need any of these features, you don't have to bind the component with the presenter.</p>
+
+<h3 id="toc-component-factories">Component factories</h3>
+
+<p>Component factories are an elegant way to create components only when they are realy needed (lazy / on demand). The whole magic
+is in implementation of a method called <code>createComponent&lt;Name&gt;()</code>, where <code>&lt;Name&gt;</code> is the name of
+component, that will create and return the desired component. This component is then attached to the presenter. The method
+<code>createComponent&lt;Name&gt;()</code> is optionaly passed the <code>$name</code> of the component, that is being created, as
+an argument.</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> DefaultPresenter <span
+class="php-keyword1">extends</span> Nette\Application\UI\Presenter
+{
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> renderDefault()
+    {
+        <span class="php-var">$menu</span> = <span
+class="php-var">$this</span>[<span class="php-quote">'menu'</span>]; <span
+class="php-comment">// access to component</span>
+        <span
+class="php-comment">// if this was the first access, method createComponentMenu() will be called</span>
+        <span
+class="php-comment">// ...</span>
+    }
+
+    <span class="php-keyword1">protected</span> <span
+class="php-keyword1">function</span> createComponentMenu()
+    {
+        <span
+class="php-comment">// create and configure component</span>
+        <span class="php-var">$menu</span> = <span
+class="php-keyword1">new</span> MenuControl;
+        <span class="php-var">$menu</span>-&gt;items = <span
+class="php-var">$this</span>-&gt;item;
+        <span class="php-comment">// and return it</span>
+        <span
+class="php-keyword1">return</span> <span class="php-var">$menu</span>;
+    }
+}</code></pre>
+
+<p class="note">The first letter of a component name is always lower case, despite that the first letter in the factory name is
+upper case.</p>
+
+<p>Because all components are created in separate methods, the code is cleaner and easier to read.</p>
+
+<p>We never call factories directly, they get called automatically, when we use components for the first time. Thanks to that, a
+component is created at the right moment, and only if it's really needed. If we wouldn't use the component (for example on some
+AJAX request, where we return only part of the page, or when parts are cached), it wouldn't even be created and we save
+performance of the server.</p>
+
+<p>You can access and render component using <a href="//latte.nette.org/en/macros#toc-components-rendering">macro {control}</a>.
+So there is no need of manualy passing the components to template.</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;h2&gt;</span>Edit form<span class="html-tag">&lt;/h2&gt;</span>
+
+{<span
+class="php-keyword1">control</span> editForm}</code></pre>
+
+<p>You can read more detailed information about components on a <a href="/en/2.4/components">separate page</a>.</p>
+
+<h3 id="toc-persistent-components">Persistent components</h3>
+
+<p>Not only parameters, but also components can be persistent. Their state is then passed around when jumping to another
+presenter, just like with <a href="#toc-persistent-parameters">persistent parameters</a>. We mark persistent components with this
+annotation (here we mark components <code>calendar</code> and <code>menu</code>):</p>
+
+<pre class="src-php"><code><span class="php-comment">/**
+ * @persistent(calendar, menu)
+ */</span>
+<span
+class="php-keyword1">class</span> DefaultPresenter <span class="php-keyword1">extends</span> Presenter
+{
+    <span
+class="php-comment">// ...</span>
+}</code></pre>
+
+<p>You don't have to mark subcomponents as persistent, they are persistent automatically.</p>
+
+<h3 id="toc-where-can-i-get-some-components">Where can i get some components?</h3>
+
+<p>On page <a href="https://addons.nette.org/">Add-ons, plugins and components</a> you can find some open-source components that
+were made and shared by community of Nette Framework. Nette Foundation is not liable for them.</p>
+
+<h2 id="toc-configuration">Configuration</h2>
+
+<p>We can modify application settings in the <code>config.neon</code> configuration file, under <code>application</code>
+section.</p>
+
+<h3 id="toc-errorpresenter">errorPresenter</h3>
+
+<p>Default value: <code>Nette:Error</code></p>
+
+<p>This parameter specifies the presenter which is invoked when an error occurs. We can find <a
+href="https://github.com/nette/sandbox/blob/v2.4/app/presenters/ErrorPresenter.php">an example</a> in the sandbox.</p>
+
+<p class="note">If an error has occurred while the error presenter is being executed, Tracy will show only a simple
+error page.</p>
+
+<h3 id="toc-catchexceptions">catchExceptions</h3>
+
+<p>Default value: <code>TRUE</code> in production mode, <code>FALSE</code> in debug mode</p>
+
+<p>This parameter decides if the error presenter will be invoked. By changing this value to <code>TRUE</code> in the debug mode we
+can test functionality of the error presenter.</p>
+
+<h3 id="toc-mapping">mapping</h3>
+
+<p>Default value: <code>*: *Module\*Presenter</code> (in the sandbox <code>*: App\*Module\Presenters\*Presenter</code>)</p>
+
+<p>This parameter contains an array with rules for converting presenter name to the class name. In the key we define a module name
+or <code>*</code> as a fallback for other modules. The value contains the rule mask:</p>
+
+<pre class="src-neon"><code><span class="neon-section">application</span><span class="neon-sep">:</span><span
+class="neon-section">
+    mapping</span><span class="neon-sep">:</span><span class="neon-section">
+        </span><span
+class="neon-key">Admin</span><span class="neon-sep">:</span><span
+class="neon-value"> App\Admin\*Module\*Presenter</span>
+        *: App\*Module\Presenters\*Presenter</code></pre>
+
+<p>The presenter <code>Front:Blog:Article</code> is contained inside the Front module. Since this module has no explicit mapping,
+the mapping with asterisk will be used and the class will be called
+<code>App\FrontModule\BlogModule\Presenters\ArticlePresenter</code>. The presenter <code>Admin:User:Edit</code> is part of the
+<code>Admin</code> module which has separate mapping so the name of the presenter class will be
+<code>App\Admin\UserModule\EditPresenter</code> (note that since the <code>Admin</code> is already in the mapping definition, it
+will be stripped from the resulting class name).</p>
+
+<h3 id="toc-silentlinks">silentLinks</h3>
+
+<p>Default value: <code>FALSE</code></p>
+
+<p>This option specifies Nette behaviour in the debug mode when a link generation fails. With <code>FALSE</code> value Nette will
+trigger <code>E_USER_WARNING</code>. Changing this configuration option to <code>TRUE</code> will suppress this error. In
+production environment, E_USER_WARNING will be always triggered.</p>
+
+<p>We can also adjust this behaviour using class property <a href="#toc-invalid-links">Presenter::$invalidLinkMode</a>.</p>
+
+<h3 id="toc-scan">scan*</h3>
+
+<p>Nette allows automatic registration of presenters as services. This step improves presenter creation speed. There are few
+configuration options that adjust where and how Nette looks for them.</p>
+
+<h4 id="toc-scandirs">scanDirs</h4>
+
+<p>Default value: <code>%appDir%</code> (<code>/app</code>)</p>
+
+<p>This value contains an array with directories where Nette looks for the presenters. If we specify another value in the
+configuration, it will be merged with the default one:</p>
+
+<pre class="src-neon"><code><span class="neon-section">application</span><span class="neon-sep">:</span><span
+class="neon-section">
+    scanDirs</span><span class="neon-sep">:</span><span class="neon-section">
+        </span><span
+class="neon-sep">-</span><span class="neon-value"> foo</span></code></pre>
+
+<p>In this case <code>scanDirs</code> will contain values <code>%appDir%</code> and <code>foo</code>. If we want to disable or
+overwrite this configuration option, we need to use <code>!</code> modifier:</p>
+
+<pre class="src-neon"><code><span class="neon-section">application</span><span class="neon-sep">:</span><span
+class="neon-section">
+    scanDirs!</span><span class="neon-sep">:</span><span class="neon-section">
+        </span><span
+class="neon-sep">-</span><span class="neon-value"> foo</span></code></pre>
+
+<p>Now <code>scanDirs</code> will contain only <code>foo</code>.</p>
+
+<h4 id="toc-scancomposer">scanComposer</h4>
+
+<p>Default value: <code>TRUE</code></p>
+
+<p>This parameter specifies if Nette should look for presenters in the Composer classmap.</p>
+
+<h4 id="toc-scanfilter">scanFilter</h4>
+
+<p>Default value: <code>Presenter</code></p>
+
+<p>Specifies the string which must be included in the file and class name.</p>
+
+
+<div class="paginator">
+	<small><a href="/en/2.4/forms">« Forms</a></small>
+	<a href="/en/2.4/configuring">Configuring »</a>
+</div>
+		</div>
+
+			<aside class="main">
+		<div>
+			<p><a href="https://github.com/nette/application">GitHub</a> | <a href="https://api.nette.org/2.4/namespace-Nette.Application.html">API</a>
+			<br>composer: <a href="https://packagist.org/packages/nette/application">nette/application</a></p>
+
+
+			<ul class="toc">
+				<li class="up" value="0"><a href="#">▲</a></li>
+				<li><a href="#toc-model-view-controller-mvc">Model-View-Controller (MVC)</a>
+				<ul>
+				
+				<li><a href="#toc-model">Model</a>
+				</li>
+				<li><a href="#toc-view">View</a>
+				</li>
+				<li><a href="#toc-controller">Controller</a>
+				</ul>
+				
+				<li><a href="#toc-directory-structure">Directory structure</a>
+				<ul>
+				
+				<li><a href="#toc-index-php-bootstrap-php">index.php &amp; bootstrap.php</a>
+				</ul>
+				
+				<li><a href="#toc-processing-presenter-action">Processing presenter action</a>
+				<ul>
+				
+				<li><a href="#toc-templates">Templates</a>
+				</li>
+				<li><a href="#toc-modules">Modules</a>
+				</ul>
+				
+				<li><a href="#toc-link-creation">Link creation</a>
+				<ul>
+				
+				<li><a href="#toc-links-in-templates">Links in templates</a>
+				</li>
+				<li><a href="#toc-linking-in-presenter">Linking in presenter</a>
+				</li>
+				<li><a href="#toc-invalid-links">Invalid links</a>
+				</li>
+				<li><a href="#toc-persistent-parameters">Persistent parameters</a>
+				</ul>
+				
+				<li><a href="#toc-life-cycle-of-presenter">Life cycle of presenter</a>
+				<ul>
+				
+				<li><a href="#toc-startup">startup()</a>
+				</li>
+				<li><a href="#toc-action-action">action&lt;Action&gt;()</a>
+				</li>
+				<li><a href="#toc-handle-signal">handle&lt;Signal&gt;()</a>
+				</li>
+				<li><a href="#toc-beforerender">beforeRender()</a>
+				</li>
+				<li><a href="#toc-render-view">render&lt;View&gt;()</a>
+				</li>
+				<li><a href="#toc-shutdown">shutdown()</a>
+				</li>
+				<li><a href="#toc-termination-of-presenter">Termination of presenter</a>
+				</ul>
+				
+				<li><a href="#toc-redirection">Redirection</a>
+				</li>
+				<li><a href="#toc-error-404-etc">Error 404, etc.</a>
+				</li>
+				<li><a href="#toc-flash-messages">Flash messages</a>
+				</li>
+				<li><a href="#toc-usage-of-model-classes">Usage of model classes</a>
+				</li>
+				<li><a href="#toc-presenter-and-components">Presenter and components</a>
+				<ul>
+				
+				<li><a href="#toc-component-factories">Component factories</a>
+				</li>
+				<li><a href="#toc-persistent-components">Persistent components</a>
+				</li>
+				<li><a href="#toc-where-can-i-get-some-components">Where can i get some components?</a>
+				</ul>
+				
+				<li><a href="#toc-configuration">Configuration</a>
+				<ul>
+				
+				<li><a href="#toc-errorpresenter">errorPresenter</a>
+				</li>
+				<li><a href="#toc-catchexceptions">catchExceptions</a>
+				</li>
+				<li><a href="#toc-mapping">mapping</a>
+				</li>
+				<li><a href="#toc-silentlinks">silentLinks</a>
+				</li>
+				<li><a href="#toc-scan">scan*</a>
+				<ul>
+				
+				<li><a href="#toc-scandirs">scanDirs</a>
+				</li>
+				<li><a href="#toc-scancomposer">scanComposer</a>
+				</li>
+				<li><a href="#toc-scanfilter">scanFilter</a>
+				</li>
+			</ul>
+		</div>
+	</aside>
+	</div>
+
+	<footer class="main">
+		<p>&copy; 2008, 2016 <a href="https://nettefoundation.com">Nette Foundation</a> | <a href="http://php7.org/guidelines/">PHP Coding Guidelines</a>
+		| <a href="https://nette.org/terms-of-use">Terms of use</a> | If not stated otherwise, the contents are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cz/">Creative Commons CC-BY-SA</a>.</p>
+	</footer>
+
+	<div class="docmenu">
+		<div class="column">
+	<h3 id="toc-programmer-s-guide"><img src="//files.nette.org/git/doc-2.4/icon-guides-small.png" alt=""> Programmer's Guide</h3>
+
+	<ul>
+		<li><a href="/en/2.4/forms">Forms</a></li>
+
+		<li><a href="//latte.nette.org/en/">Templates</a>, <a href="//latte.nette.org/en/macros">Latte Macros</a> and <a
+		href="//latte.nette.org/en/filters">Filters</a></li>
+
+		<li><a href="/en/2.4/presenters">MVC Application &amp; Presenters</a></li>
+
+		<li><a href="/en/2.4/configuring">Configuration</a>, <a href="/en/2.4/dependency-injection">Dependency Injection</a>, <a
+		href="/en/2.4/di-usage">Getting Dependencies</a> and <a href="/en/2.4/di-extensions">DI extensions</a></li>
+
+		<li><a href="/en/2.4/components">Components and Controls</a></li>
+
+		<li><a href="/en/2.4/routing">Routing</a></li>
+
+		<li><a href="/en/2.4/access-control">Authentication &amp; Authorization</a></li>
+
+		<li><a href="//tracy.nette.org/en/">Debugging and Error Handling</a>, <a href="//tracy.nette.org/en/extensions">Debugger
+		extensions</a></li>
+
+		<li><a href="/en/2.4/ajax">AJAX</a></li>
+
+		<li><a href="/en/2.4/php-language-enhancements">PHP Language Enhancements</a></li>
+
+		<li><a href="/en/2.4/http-request-response">HTTP request &amp; response</a></li>
+
+		<li><a href="/en/2.4/database">Database</a>, <a href="/en/2.4/database-table">Table</a>, <a
+		href="/en/2.4/database-selection">Selection</a>, <a href="/en/2.4/database-activerow">ActiveRow</a></li>
+
+		<li><a href="/en/2.4/sessions">Sessions</a></li>
+
+		<li><a href="/en/2.4/mailing">Mailing</a></li>
+
+		<li><a href="/en/2.4/images">Image Manipulation</a></li>
+
+		<li><a href="/en/2.4/caching">Caching</a></li>
+
+		<li><a href="/en/2.4/localization">Localization</a></li>
+
+		<li><a href="//tester.nette.org/en/">Testing</a>, <a href="//tester.nette.org/en/testing-with-travis">Continuous
+		integration</a></li>
+
+		<li><a href="/en/2.4/pagination">Pagination</a></li>
+
+		<li><a href="/en/2.4/auto-loading">Auto-loading</a></li>
+
+		<li><a href="/en/2.4/finder">Browsing files on disk</a></li>
+
+		<li><a href="/en/2.4/atomicity">Atomic Operations</a></li>
+
+		<li><a href="/en/2.4/validators">Validation</a></li>
+
+		<li><a href="/en/2.4/strings">Strings</a>, <a href="/en/2.4/arrays">arrays</a>, <a href="/en/2.4/html-elements">HTML elements</a>
+		and <a href="/en/2.4/urls">URLs</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-getting-started"><img src="//files.nette.org/git/doc-2.4/icon-welcome-small.png" alt=""> Getting Started</h3>
+
+	<ul>
+		<li><a href="/en/2.4/getting-started">Introduction to Nette</a></li>
+
+		<li><b><a href="/en/2.4/quickstart">Create First Application!</a></b></li>
+
+		<li><a href="/en/2.4/glossary">Glossary</a></li>
+	</ul>
+
+	<h3 id="toc-general-info"><img src="//files.nette.org/git/doc-2.4/icon-question-small.png" alt=""> General Info</h3>
+
+	<ul>
+		<li><a href="https://api.nette.org/2.4">API Reference</a></li>
+
+		<li><a href="/en/2.4/migration-2-3">Migrating from 2.2 to 2.3</a></li>
+
+		<li><a href="/en/2.4/code-checker">Code-Checker</a></li>
+
+		<li><a href="/en/2.4/vulnerability-protection">Vulnerability Protection</a></li>
+
+		<li><a href="/en/2.4/requirements">Server Requirements</a></li>
+
+		<li><a href="//nette.org/en/license">License</a> and <a href="https://nette.org/contributors">contributors</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-development"><img src="//files.nette.org/git/doc-2.4/icon-ruler-small.png" alt=""> Development</h3>
+
+	<ul>
+		<li><a href="//nette.org/en/contributing">Contributing</a></li>
+
+		<li><a href="//nette.org/en/writing">Writing Documentation</a></li>
+
+		<li><a href="irc://irc.freenode.net/nettefw">IRC #nettefw</a></li>
+
+		<li><a href="/en/2.4/troubleshooting">Troubleshooting</a></li>
+	</ul>
+</div>
+
+	</div>
+</div>
+
+<div class="bar"><div>
+
+	<ul class="user" style="opacity:.6">
+		<li><a href="https://addons.nette.org/"><span>Add-ons</span></a>
+		<li><a href="https://pla.nette.org/en/"><span>Planette</span></a>
+		<li><a href="https://forum.nette.org/en/"><span>Forum</span></a>
+		<li><a href="https://blog.nette.org"><span>Blog</span></a>
+		<li><a href="https://nette.org/donate"><span>Donate</span></a>
+		<li>
+		<form action="https://www.google.com/cse" class="search">
+			<input type="hidden" name="cx" value="011549293477758430224:vxofa9ufnhc"><input type="hidden" name="ie" value="UTF-8"><input type="search" name="q" class="text" size="30" placeholder="Search"><input type="image" src="https://files.nette.org/images/search.png" alt="Search">
+		</form>
+		</li>
+	</ul>
+</div></div>
+
+</body>
+</html>

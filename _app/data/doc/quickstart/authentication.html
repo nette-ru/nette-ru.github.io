@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html class="nette-doc">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Nette Foundation; c 2008">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Authentication | Nette Framework</title>
+
+	<link rel="stylesheet" href="https://files.nette.org/css/combined.css?v=1468405828">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://nette.org/opensearch.xml" title="Nette Framework">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://forum.nette.org/opensearch.xml" title="Nette Framework forum">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://api.nette.org/opensearch.xml" title="Nette Framework API">
+	<link rel="canonical" href="/en/2.4/quickstart/authentication">
+	<link rel="image_src" href="https://files.nette.org/images/fb-preview.png">
+
+		<link rel="alternate" hreflang="cs" href="/cs/2.4/quickstart/authentication">
+	<link rel="alternate" hreflang="en" href="/en/2.4/quickstart/authentication">
+</head>
+
+
+<body>
+<script>
+	ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-95238-14','auto'); ga('send','pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+<script src="https://api.nette.org/2.4/elementlist.js" async></script>
+<script src="https://files.nette.org/js/combined.js?v=1468489896" async></script>
+
+<div class="page">
+	<header class="main">
+		<a class="logo" title="Homepage" href="https://nette.org/en/"><span>Homepage</span></a>
+
+		<nav class="main">
+			<ul>
+	<li><a href="//nette.org/en/download">Download</a></li>
+
+	<li class="item-doc"><a href="/en/">Documentation</a></li>
+
+	<li><a href="https://api.nette.org">API</a></li>
+
+	<li><a href="https://github.com/nette">GitHub</a></li>
+</ul>
+
+		</nav>
+	</header>
+
+		<div class="wikimenu">
+	<div>
+		<div><a href="https://github.com/nette/web-content/blob/doc-2.4/en/quickstart/authentication.texy">Edit</a></div>
+		<ul>
+			<li><a href="https://nette.org/en/writing">How to write?</a></li>
+
+			<li><a href="/en/2.4/quickstart/authentication?view=links">Backlinks</a></li>
+
+			<li>Languages: <a href="/cs/2.4/quickstart/authentication">cs</a> <a href="/en/2.4/quickstart/authentication">en</a> </li>
+
+			<li>changed 11. 7. 2016</li>
+
+			<li><a href="/special/sitemap?lang=en">All pages</a></li>
+
+			<li><a href="/special/broken-links?lang=en">Broken links</a></li>
+		</ul>
+	</div>
+
+	<div>
+		<div>Lang</div>
+		<ul>
+			<li><a href="/cs/2.4/quickstart/authentication">cs</a></li>
+			<li><a href="/en/2.4/quickstart/authentication">en</a></li>
+		</ul>
+	</div>
+
+	<div class=versionmenu>
+		<div>Version 2.4</div>
+		<ul>
+			<li><a href="/en/2.3/quickstart/authentication">Version 2.3</a></li>
+			<li><a href="/en/2.2/quickstart/authentication">Version 2.2</a></li>
+			<li><a href="/en/2.1/quickstart/authentication">Version 2.1</a></li>
+			<li><a href="/en/2.0/quickstart/authentication">Version 2.0</a></li>
+		</ul>
+	</div>
+</div>
+
+
+	<div class="main">
+		<div class="content has-sidebar">
+			
+
+			<ul class="breadcrumbs">
+				<li><a href="/en/2.4/">Documentation</a></li>
+				<li><a href="/en/2.4/quickstart">QuickStart</a></li>
+				<li>Authentication</li>
+			</ul>
+
+
+<h1 id="toc-authentication">Authentication</h1>
+
+<p>Nette provides you with guidelines how to program authentication on your page, but it doesn't force you to do it any particular
+way. The implementation is up to you. Nette has a <code>Nette\Security\IAuthenticator</code> interface which forces you to
+implement just a single method called <code>authenticate</code>, which finds the user anyhow you want.</p>
+
+<p>There are many ways how a user can authenticate himself. The most common way is <em>password-based authentication</em> (user
+provides his name or email and a password), but there are other means as well. You may be familiar with “Login with Facebook”
+buttons on many websites, or login via Google/Twitter/GitHub or any other site. With Nette, you can have any authentication method
+you want, or you can combine them. It's up to you.</p>
+
+<p>Normally you would write your own authenticator, but for this simple small blog, we can use the
+<code>SimpleAuthenticator</code> which is bundled with Nette. It provides password-based authentication and the usernames and
+passwords are stored in config file. Add a <i>security</i> section to your <code>config.neon</code> (and don't forget to change
+the password):</p>
+
+<pre class="src-neon"><code><span class="neon-section">security</span><span class="neon-sep">:</span><span
+class="neon-section">
+    users</span><span class="neon-sep">:</span><span class="neon-section">
+        </span><span
+class="neon-key">admin</span><span class="neon-sep">:</span><span class="neon-value"> secret  </span><span
+class="neon-comment"># user 'admin', password 'secret'</span></code></pre>
+
+<p>Nette will automatically create a service called <code>authenticator</code> in the DI container.</p>
+
+<p class="note">You can read more about <a href="/en/2.4/dependency-injection">Dependency Injection here</a>, and about <a
+href="/en/2.4/configuring">Configuration here</a></p>
+
+<h2 id="toc-sign-in-form">Sign-in Form</h2>
+
+<p>We now have the backend part of authentication ready and we need to provide a user interface, through which the user would log
+in. Let's create a new presenter called <i>SignPresenter</i>, which will</p>
+
+<ul>
+	<li>display a login form (asking for username and password)</li>
+
+	<li>authenticate the user when the form is submitted</li>
+
+	<li>provide log out action.</li>
+</ul>
+
+<p>Let's start with the login form. You already know how forms work in a presenter. Create the <code>SignPresenter</code> and
+method <code>createComponentSignInForm</code>. It should look like this:</p>
+
+<pre class="src-php"><code><span class="xlang">&lt;?php</span>
+
+<span class="php-keyword1">namespace</span> App\Presenters;
+
+<span
+class="php-keyword1">use</span> Nette;
+<span class="php-keyword1">use</span> Nette\Application\UI\Form;
+
+
+<span
+class="php-keyword1">class</span> SignPresenter <span
+class="php-keyword1">extends</span> Nette\Application\UI\Presenter
+{
+
+    <span class="php-keyword1">protected</span> <span
+class="php-keyword1">function</span> createComponentSignInForm()
+    {
+        <span class="php-var">$form</span> = <span
+class="php-keyword1">new</span> Form;
+        <span class="php-var">$form</span>-&gt;addText(<span
+class="php-quote">'username'</span>, <span class="php-quote">'Username:'</span>)
+            -&gt;setRequired(<span
+class="php-quote">'Please enter your username.'</span>);
+
+        <span class="php-var">$form</span>-&gt;addPassword(<span
+class="php-quote">'password'</span>, <span class="php-quote">'Password:'</span>)
+            -&gt;setRequired(<span
+class="php-quote">'Please enter your password.'</span>);
+
+        <span class="php-var">$form</span>-&gt;addSubmit(<span
+class="php-quote">'send'</span>, <span class="php-quote">'Sign in'</span>);
+
+        <span
+class="php-var">$form</span>-&gt;onSuccess[] = [<span class="php-var">$this</span>, <span
+class="php-quote">'signInFormSucceeded'</span>];
+        <span class="php-keyword1">return</span> <span
+class="php-var">$form</span>;
+    }</code></pre>
+
+<p>There is an input for username and password.</p>
+
+<h3 id="toc-view">View</h3>
+
+<p>The form will be rendered in the template <code>app/presenters/templates/Sign/in.latte</code></p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">block</span> content}
+<span class="html-tag">&lt;h1</span><span
+class="html-tagin"> n:block=title</span><span class="html-tag">&gt;</span>Sign in<span class="html-tag">&lt;/h1&gt;</span>
+
+{<span
+class="php-keyword1">control</span> signInForm}</code></pre>
+
+<h3 id="toc-login-handler">Login Handler</h3>
+
+<p>We add also a <em>form handler</em> for signing in the user, that gets invoked right after the form is submitted.</p>
+
+<p>The handler will just take the username and password the user entered and will pass it to the authenticator defined earlier.
+After the user has logged in, we will redirect him to the homepage.</p>
+
+<pre class="src-php"><code><span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> signInFormSucceeded(<span class="php-var">$form</span>, <span
+class="php-var">$values</span>)
+{
+    <span class="php-keyword1">try</span> {
+        <span
+class="php-var">$this</span>-&gt;getUser()-&gt;login(<span class="php-var">$values</span>-&gt;username, <span
+class="php-var">$values</span>-&gt;password);
+        <span class="php-var">$this</span>-&gt;redirect(<span
+class="php-quote">'Homepage:'</span>);
+
+    } <span
+class="php-keyword1">catch</span> (Nette\Security\AuthenticationException <span class="php-var">$e</span>) {
+        <span
+class="php-var">$form</span>-&gt;addError(<span
+class="php-quote">'Nesprávné přihlašovací jméno nebo heslo.'</span>);
+    }
+}</code></pre>
+
+<p>The method <a href="//api.nette.org/2.4/Nette.Security.User.html#_login">User::login()</a> should throw an exception when the
+username or password doesn't match those we've defined earlier. As we already know, that would result in a Tracy red-screen, or,
+in production mode, a message informing about internal server error. We wouldn't like that. That's why we catch the exception and
+add a nice and friendly error message to the form.</p>
+
+<p>When the error occurs in the form, the page with the form will be rendered again, and above the form, there will be a nice
+message, informing the user that they have entered a wrong username or password.</p>
+
+<h2 id="toc-post-form">Post Form</h2>
+
+<p>First of all, let's secure the form for creating new posts. It's defined in <code>PostPresenter</code> and rendered in
+<code>app/presenters/templates/Post/create.latte</code>. Our first goal is not to allow the user to view the page if he's not
+logged in.</p>
+
+<h3 id="toc-presenter-views">Presenter Views</h3>
+
+<p>Let's create an action method <code>actionCreate</code> that will redirect the user to the sign in form and require
+authentication if the user is not logged in.</p>
+
+<pre class="src-php"><code><span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> actionCreate()
+{
+    <span class="php-keyword1">if</span> (!<span
+class="php-var">$this</span>-&gt;getUser()-&gt;isLoggedIn()) {
+        <span class="php-var">$this</span>-&gt;redirect(<span
+class="php-quote">'Sign:in'</span>);
+    }
+}</code></pre>
+
+<p>We should also secure the edit view, so simply add those three lines there too.</p>
+
+<pre class="src-php"><code><span class="php-keyword1">public</span> <span class="php-keyword1">function</span> actionEdit(<span
+class="php-var">$postId</span>)
+{
+    <span class="php-keyword1">if</span> (!<span
+class="php-var">$this</span>-&gt;getUser()-&gt;isLoggedIn()) {
+        <span class="php-var">$this</span>-&gt;redirect(<span
+class="php-quote">'Sign:in'</span>);
+    }</code></pre>
+
+<h3 id="toc-hide-links">Hide Links</h3>
+
+<p>An unauthenticated user cannot see the <i>create</i> nor <em>edit page</em>, but he can still see the links pointing to them.
+Let's hide those as well. One such link is in <code>app/presenters/templates/Homepage/default.latte</code>, and it should be
+visible only if the user is logged in.</p>
+
+<p>We can hide it using <i>n:macro</i> called <code>n:if</code>. If the statement inside it is <code>false</code>, the whole
+<code>&lt;a&gt;</code> tag and it's contents will be not displayed</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;a</span><span class="html-tagin"> n:href=</span><span
+class="html-quote">&quot;Post:create&quot;</span><span class="html-tagin"> n:if=</span><span
+class="html-quote">&quot;$user-&gt;loggedIn&quot;</span><span class="html-tag">&gt;</span>Create post<span
+class="html-tag">&lt;/a&gt;</span></code></pre>
+
+<p>this is a shortcut for (do not confuse it with <code>tag-if</code>)</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">if</span> <span class="php-var">$user</span>-&gt;loggedIn}<span
+class="html-tag">&lt;a</span><span class="html-tagin"> n:href=</span><span class="html-quote">&quot;Post:create&quot;</span><span
+class="html-tag">&gt;</span>Create post<span class="html-tag">&lt;/a&gt;</span>{/<span
+class="php-keyword1">if</span>}</code></pre>
+
+<p>You should hide the edit link located in <code>app/presenters/templates/Post/show.latte</code> in a similar fashion.</p>
+
+<h3 id="toc-form-handlers">Form Handlers</h3>
+
+<p>The last, and <b>the most important thing</b> is to <b>secure the form handler</b>. Because components are reusable, they can
+be rendered in several views. And because they can be rendered in several views, they can also be submitted from any such view,
+even the ones that do not really exist. This means, even if the view <code>create</code> is not rendered, by tweaking the url, a
+user can still submit the form (and add/edit posts).</p>
+
+<p>It can be prevented with a simple <i>if</i> that we will add at the beginning of <code>postFormSucceeded</code></p>
+
+<pre class="src-php"><code><span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> postFormSucceeded(<span class="php-var">$form</span>)
+{
+    <span
+class="php-keyword1">if</span> (!<span class="php-var">$this</span>-&gt;getUser()-&gt;isLoggedIn()) {
+        <span
+class="php-var">$this</span>-&gt;error(<span
+class="php-quote">'You need to log in to create or edit posts'</span>);
+    }</code></pre>
+
+<p>It's simple as that, but you shall <b>never forget to do this</b> as it's really crucial for securing your app.</p>
+
+<h2 id="toc-login-form-link">Login Form Link</h2>
+
+<p>Hey, but how do we get to the login page? There is no link pointing to it. Let's add one in the
+<code>app/presenters/templates/@layout.latte</code> template file. Try finding a nice place, it can be anywhere you like it
+the most.</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;ul</span><span class="html-tagin"> class=</span><span
+class="html-quote">&quot;navig&quot;</span><span class="html-tag">&gt;</span>
+    <span
+class="html-tag">&lt;li&gt;&lt;a</span><span class="html-tagin"> n:href=</span><span
+class="html-quote">&quot;Homepage:&quot;</span><span class="html-tag">&gt;</span>Homepage<span
+class="html-tag">&lt;/a&gt;&lt;/li&gt;</span>
+    {<span class="php-keyword1">if</span> <span
+class="php-var">$user</span>-&gt;loggedIn}
+        <span class="html-tag">&lt;li&gt;&lt;a</span><span
+class="html-tagin"> n:href=</span><span class="html-quote">&quot;Sign:out&quot;</span><span
+class="html-tag">&gt;</span>Sign out<span class="html-tag">&lt;/a&gt;&lt;/li&gt;</span>
+    {<span
+class="php-keyword1">else</span>}
+        <span class="html-tag">&lt;li&gt;&lt;a</span><span
+class="html-tagin"> n:href=</span><span class="html-quote">&quot;Sign:in&quot;</span><span
+class="html-tag">&gt;</span>Sign in<span class="html-tag">&lt;/a&gt;&lt;/li&gt;</span>
+    {/<span
+class="php-keyword1">if</span>}
+<span class="html-tag">&lt;/ul&gt;</span></code></pre>
+
+<p>If the user is not yet logged in, we will show the “Sign in” link. Otherwise, we will show the “Sign out” link. We add
+that action in SignPresenter.</p>
+
+<p>The logout action looks like this, and because we redirect the user immediately, there is no need for a view template.</p>
+
+<pre class="src-php"><code><span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> actionOut()
+{
+    <span class="php-var">$this</span>-&gt;getUser()-&gt;logout();
+    <span
+class="php-var">$this</span>-&gt;flashMessage(<span class="php-quote">'You have been signed out.'</span>);
+    <span
+class="php-var">$this</span>-&gt;redirect(<span class="php-quote">'Homepage:'</span>);
+}</code></pre>
+
+<p>It just calls the <code>logout()</code> method and then shows a nice message to the user.</p>
+
+<h2 id="toc-summary">Summary</h2>
+
+<p>There is a <code>Sign in</code> link pointing to a new presenter, which asks the user for his credentials and authenticates
+him. We used <i>SimpleAuthenticator</i> and configured the usernames and passwords in config file, because it was a very easy way
+and we don't need more users at the moment. We also secured all required actions and forms, so that only logged in users can add
+new posts or edit existing ones.</p>
+
+
+<div class="paginator">
+	<small><a href="/en/2.4/quickstart/creating-posts">« Creating and Editing Posts</a></small>
+	<a href="/en/2.4/quickstart/refactoring-model">Model »</a>
+</div>
+		</div>
+
+			<aside class="main">
+		<div>
+
+
+			<ul class="toc">
+				<li class="up" value="0"><a href="#">▲</a></li>
+				<li><a href="#toc-sign-in-form">Sign-in Form</a>
+				<ul>
+				
+				<li><a href="#toc-view">View</a>
+				</li>
+				<li><a href="#toc-login-handler">Login Handler</a>
+				</ul>
+				
+				<li><a href="#toc-post-form">Post Form</a>
+				<ul>
+				
+				<li><a href="#toc-presenter-views">Presenter Views</a>
+				</li>
+				<li><a href="#toc-hide-links">Hide Links</a>
+				</li>
+				<li><a href="#toc-form-handlers">Form Handlers</a>
+				</ul>
+				
+				<li><a href="#toc-login-form-link">Login Form Link</a>
+				</li>
+				<li><a href="#toc-summary">Summary</a>
+				</li>
+			</ul>
+		</div>
+	</aside>
+	</div>
+
+	<footer class="main">
+		<p>&copy; 2008, 2016 <a href="https://nettefoundation.com">Nette Foundation</a> | <a href="http://php7.org/guidelines/">PHP Coding Guidelines</a>
+		| <a href="https://nette.org/terms-of-use">Terms of use</a> | If not stated otherwise, the contents are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cz/">Creative Commons CC-BY-SA</a>.</p>
+	</footer>
+
+	<div class="docmenu">
+		<div class="column">
+	<h3 id="toc-programmer-s-guide"><img src="//files.nette.org/git/doc-2.4/icon-guides-small.png" alt=""> Programmer's Guide</h3>
+
+	<ul>
+		<li><a href="/en/2.4/forms">Forms</a></li>
+
+		<li><a href="//latte.nette.org/en/">Templates</a>, <a href="//latte.nette.org/en/macros">Latte Macros</a> and <a
+		href="//latte.nette.org/en/filters">Filters</a></li>
+
+		<li><a href="/en/2.4/presenters">MVC Application &amp; Presenters</a></li>
+
+		<li><a href="/en/2.4/configuring">Configuration</a>, <a href="/en/2.4/dependency-injection">Dependency Injection</a>, <a
+		href="/en/2.4/di-usage">Getting Dependencies</a> and <a href="/en/2.4/di-extensions">DI extensions</a></li>
+
+		<li><a href="/en/2.4/components">Components and Controls</a></li>
+
+		<li><a href="/en/2.4/routing">Routing</a></li>
+
+		<li><a href="/en/2.4/access-control">Authentication &amp; Authorization</a></li>
+
+		<li><a href="//tracy.nette.org/en/">Debugging and Error Handling</a>, <a href="//tracy.nette.org/en/extensions">Debugger
+		extensions</a></li>
+
+		<li><a href="/en/2.4/ajax">AJAX</a></li>
+
+		<li><a href="/en/2.4/php-language-enhancements">PHP Language Enhancements</a></li>
+
+		<li><a href="/en/2.4/http-request-response">HTTP request &amp; response</a></li>
+
+		<li><a href="/en/2.4/database">Database</a>, <a href="/en/2.4/database-table">Table</a>, <a
+		href="/en/2.4/database-selection">Selection</a>, <a href="/en/2.4/database-activerow">ActiveRow</a></li>
+
+		<li><a href="/en/2.4/sessions">Sessions</a></li>
+
+		<li><a href="/en/2.4/mailing">Mailing</a></li>
+
+		<li><a href="/en/2.4/images">Image Manipulation</a></li>
+
+		<li><a href="/en/2.4/caching">Caching</a></li>
+
+		<li><a href="/en/2.4/localization">Localization</a></li>
+
+		<li><a href="//tester.nette.org/en/">Testing</a>, <a href="//tester.nette.org/en/testing-with-travis">Continuous
+		integration</a></li>
+
+		<li><a href="/en/2.4/pagination">Pagination</a></li>
+
+		<li><a href="/en/2.4/auto-loading">Auto-loading</a></li>
+
+		<li><a href="/en/2.4/finder">Browsing files on disk</a></li>
+
+		<li><a href="/en/2.4/atomicity">Atomic Operations</a></li>
+
+		<li><a href="/en/2.4/validators">Validation</a></li>
+
+		<li><a href="/en/2.4/strings">Strings</a>, <a href="/en/2.4/arrays">arrays</a>, <a href="/en/2.4/html-elements">HTML elements</a>
+		and <a href="/en/2.4/urls">URLs</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-getting-started"><img src="//files.nette.org/git/doc-2.4/icon-welcome-small.png" alt=""> Getting Started</h3>
+
+	<ul>
+		<li><a href="/en/2.4/getting-started">Introduction to Nette</a></li>
+
+		<li><b><a href="/en/2.4/quickstart">Create First Application!</a></b></li>
+
+		<li><a href="/en/2.4/glossary">Glossary</a></li>
+	</ul>
+
+	<h3 id="toc-general-info"><img src="//files.nette.org/git/doc-2.4/icon-question-small.png" alt=""> General Info</h3>
+
+	<ul>
+		<li><a href="https://api.nette.org/2.4">API Reference</a></li>
+
+		<li><a href="/en/2.4/migration-2-3">Migrating from 2.2 to 2.3</a></li>
+
+		<li><a href="/en/2.4/code-checker">Code-Checker</a></li>
+
+		<li><a href="/en/2.4/vulnerability-protection">Vulnerability Protection</a></li>
+
+		<li><a href="/en/2.4/requirements">Server Requirements</a></li>
+
+		<li><a href="//nette.org/en/license">License</a> and <a href="https://nette.org/contributors">contributors</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-development"><img src="//files.nette.org/git/doc-2.4/icon-ruler-small.png" alt=""> Development</h3>
+
+	<ul>
+		<li><a href="//nette.org/en/contributing">Contributing</a></li>
+
+		<li><a href="//nette.org/en/writing">Writing Documentation</a></li>
+
+		<li><a href="irc://irc.freenode.net/nettefw">IRC #nettefw</a></li>
+
+		<li><a href="/en/2.4/troubleshooting">Troubleshooting</a></li>
+	</ul>
+</div>
+
+	</div>
+</div>
+
+<div class="bar"><div>
+
+	<ul class="user" style="opacity:.6">
+		<li><a href="https://addons.nette.org/"><span>Add-ons</span></a>
+		<li><a href="https://pla.nette.org/en/"><span>Planette</span></a>
+		<li><a href="https://forum.nette.org/en/"><span>Forum</span></a>
+		<li><a href="https://blog.nette.org"><span>Blog</span></a>
+		<li><a href="https://nette.org/donate"><span>Donate</span></a>
+		<li>
+		<form action="https://www.google.com/cse" class="search">
+			<input type="hidden" name="cx" value="011549293477758430224:vxofa9ufnhc"><input type="hidden" name="ie" value="UTF-8"><input type="search" name="q" class="text" size="30" placeholder="Search"><input type="image" src="https://files.nette.org/images/search.png" alt="Search">
+		</form>
+		</li>
+	</ul>
+</div></div>
+
+</body>
+</html>

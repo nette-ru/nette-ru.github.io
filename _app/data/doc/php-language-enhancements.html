@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html class="nette-doc">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Nette Foundation; c 2008">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>PHP Language Enhancements | Nette Framework</title>
+
+	<link rel="stylesheet" href="https://files.nette.org/css/combined.css?v=1468405828">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://nette.org/opensearch.xml" title="Nette Framework">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://forum.nette.org/opensearch.xml" title="Nette Framework forum">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://api.nette.org/opensearch.xml" title="Nette Framework API">
+	<link rel="canonical" href="/en/2.4/php-language-enhancements">
+	<link rel="image_src" href="https://files.nette.org/images/fb-preview.png">
+
+		<link rel="alternate" hreflang="cs" href="/cs/2.4/php-language-enhancements">
+	<link rel="alternate" hreflang="en" href="/en/2.4/php-language-enhancements">
+</head>
+
+
+<body>
+<script>
+	ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-95238-14','auto'); ga('send','pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+<script src="https://api.nette.org/2.4/elementlist.js" async></script>
+<script src="https://files.nette.org/js/combined.js?v=1468489896" async></script>
+
+<div class="page">
+	<header class="main">
+		<a class="logo" title="Homepage" href="https://nette.org/en/"><span>Homepage</span></a>
+
+		<nav class="main">
+			<ul>
+	<li><a href="//nette.org/en/download">Download</a></li>
+
+	<li class="item-doc"><a href="/en/">Documentation</a></li>
+
+	<li><a href="https://api.nette.org">API</a></li>
+
+	<li><a href="https://github.com/nette">GitHub</a></li>
+</ul>
+
+		</nav>
+	</header>
+
+		<div class="wikimenu">
+	<div>
+		<div><a href="https://github.com/nette/web-content/blob/doc-2.4/en/php-language-enhancements.texy">Edit</a></div>
+		<ul>
+			<li><a href="https://nette.org/en/writing">How to write?</a></li>
+
+			<li><a href="/en/2.4/php-language-enhancements?view=links">Backlinks</a></li>
+
+			<li>Languages: <a href="/cs/2.4/php-language-enhancements">cs</a> <a href="/en/2.4/php-language-enhancements">en</a> </li>
+
+			<li>changed 23. 5. 2016</li>
+
+			<li><a href="/special/sitemap?lang=en">All pages</a></li>
+
+			<li><a href="/special/broken-links?lang=en">Broken links</a></li>
+		</ul>
+	</div>
+
+	<div>
+		<div>Lang</div>
+		<ul>
+			<li><a href="/cs/2.4/php-language-enhancements">cs</a></li>
+			<li><a href="/en/2.4/php-language-enhancements">en</a></li>
+		</ul>
+	</div>
+
+	<div class=versionmenu>
+		<div>Version 2.4</div>
+		<ul>
+			<li><a href="/en/2.3/php-language-enhancements">Version 2.3</a></li>
+			<li><a href="/en/2.2/php-language-enhancements">Version 2.2</a></li>
+			<li><a href="/en/2.1/php-language-enhancements">Version 2.1</a></li>
+			<li><a href="/en/2.0/php-language-enhancements">Version 2.0</a></li>
+		</ul>
+	</div>
+</div>
+
+
+	<div class="main">
+		<div class="content has-sidebar">
+			
+
+			<ul class="breadcrumbs">
+				<li><a href="/en/2.4/">Documentation</a></li>
+				<li>PHP Language Enhancements</li>
+			</ul>
+
+
+<h1 id="toc-php-language-enhancements">PHP Language Enhancements</h1>
+
+<div class="perex">
+	<p>Nette Framework extends the object model of PHP with a few syntax candies. Do you like candy? Continue reading and you will
+	find out more.</p>
+
+	<ul>
+		<li>why you should use <code>Nette\Object</code></li>
+
+		<li>what is a <i>property</i></li>
+
+		<li>how to call events</li>
+
+		<li>how to add methods to a class</li>
+
+		<li>how to use @annotations</li>
+	</ul>
+</div>
+
+<p>In this chapter we are focusing on <code>Nette\Object</code>, a class extending PHP's object model. It is the ancestor of
+almost all classes in Nette Framework. Being transparent and non-conflicting, it can be used as an ancestor for every class
+you make.</p>
+
+<h2 id="toc-strict-classes">Strict classes</h2>
+
+<p>PHP gives a huge freedom to developers, which makes it a perfect language for making mistakes. But you can stop this bad
+behavior and start writing applications without hardly discoverable mistakes. Do you wonder how? It's really simple – you just
+need to have stricter rules.</p>
+
+<p>Can you find an error in this example?</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> Circle
+{
+    <span class="php-keyword1">public</span> <span
+class="php-var">$radius</span>;
+
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> getArea()
+    {
+        <span class="php-keyword1">return</span> <span
+class="php-var">$this</span>-&gt;radius * <span class="php-var">$this</span>-&gt;radius * M_PI;
+    }
+
+}
+
+<span
+class="php-var">$circle</span> = <span class="php-keyword1">new</span> Circle;
+<span
+class="php-var">$circle</span>-&gt;raduis = <span class="php-num">10</span>;
+<span class="php-keyword1">echo</span> <span
+class="php-var">$circle</span>-&gt;getArea(); <span class="php-comment">// 10² * π ≈ 314</span></code></pre>
+
+<p>On the first look it seems that code will print out 314; but it returns 0. How is this even possible? Accidentaly,
+<code>$circle-&gt;radius</code> was mistyped to <code>raduis</code>. Just a small typo, which will give you a hard time correcting
+it, because PHP does not say a thing when something is wrong. Not even a Warning or Notice error message. Because PHP does not
+think it is an error.</p>
+
+<p>The mentioned mistake could be corrected immediately, if class <code>Circle</code> would be descendant of <a
+href="//api.nette.org/2.4/Nette.Object.html">Nette\Object</a>:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> Circle <span
+class="php-keyword1">extends</span> Nette\Object
+{
+    ...</code></pre>
+
+<p>Whereas the former code executed successfully (although it contained an error), the latter did not:</p>
+
+<div><img src="//files.nette.org/git/doc-2.4/debugger-circle.png" alt=""></div>
+
+<p>Class <code>Nette\Object</code> made <code>Circle</code> more strict and threw an exception when you tried to access an
+undeclared property. And Tracy displayed error message about it. Line of code with fatal typo is now highlighted and error message
+has meaningful description: <em>Cannot write to an undeclared property Circle::$raduis</em>. Programmer can now fix the mistake he
+might have otherwise missed and which could be a real pain to find later.</p>
+
+<p>One of many remarkable abilities of <code>Nette\Object</code> is throwing exceptions when accessing undeclared members.</p>
+
+<pre class="src-php"><code><span class="php-var">$circle</span> = <span class="php-keyword1">new</span> Circle;
+<span
+class="php-keyword1">echo</span> <span class="php-var">$circle</span>-&gt;undeclared; <span
+class="php-comment">// throws Nette\MemberAccessException</span>
+<span class="php-var">$circle</span>-&gt;undeclared = <span
+class="php-num">1</span>; <span class="php-comment">// throws Nette\MemberAccessException</span>
+<span
+class="php-var">$circle</span>-&gt;unknownMethod(); <span
+class="php-comment">// throws Nette\MemberAccessException</span></code></pre>
+
+<p>But it has much more to offer!</p>
+
+<h2 id="toc-properties-getters-and-setters">Properties, getters and setters</h2>
+
+<p>In modern object oriented languages <i>property</i> describes members of class, which look like variables but are represented
+by methods. When reading or assigning values to those “variables”, methods are called instead (so-called getters and setters).
+It is really useful feature, which allows us to control the access to these variables. Using this we can validate inputs or
+postpone the computation of values of these variables to the time when it is actually accessed.</p>
+
+<p>Any class that is a descendant of <code>Nette\Object</code> acquires the ability to imitate properties. Only thing you need to
+do is to keep simple convention:</p>
+
+<ul>
+	<li>Getter and setter have to be <i>public</i> methods.</li>
+
+	<li>Getter's name is <code>getXyz()</code> or <code>isXyz()</code>, setter's is <code>setXyz()</code></li>
+
+	<li>Getter and setter are optional, so it is possible to have <i>read-only</i> or <i>write-only</i> properties</li>
+
+	<li>Names of properties are case-sensitive (first letter being an exception)</li>
+</ul>
+
+<p>We will make use of properties in the class Circle to make sure variable <code>$radius</code> contains only non-negative
+numbers:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> Circle <span
+class="php-keyword1">extends</span> Nette\Object
+{
+    <span class="php-keyword1">private</span> <span
+class="php-var">$radius</span>; <span class="php-comment">// not public anymore!</span>
+
+    <span
+class="php-keyword1">public</span> <span class="php-keyword1">function</span> getRadius()
+    {
+        <span
+class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;radius;
+    }
+
+    <span
+class="php-keyword1">public</span> <span class="php-keyword1">function</span> setRadius(<span
+class="php-var">$radius</span>)
+    {
+        <span class="php-comment">// sanitizing value before saving it</span>
+        <span
+class="php-var">$this</span>-&gt;radius = <span class="php-keyword2">max</span>(<span class="php-num">0.0</span>, (float) <span
+class="php-var">$radius</span>);
+    }
+
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> getArea()
+    {
+        <span class="php-keyword1">return</span> <span
+class="php-var">$this</span>-&gt;radius * <span class="php-var">$this</span>-&gt;radius * M_PI;
+    }
+
+    <span
+class="php-keyword1">public</span> <span class="php-keyword1">function</span> isVisible()
+    {
+        <span
+class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;radius &gt; <span
+class="php-num">0</span>;
+    }
+
+}
+
+<span class="php-var">$circle</span> = <span class="php-keyword1">new</span> Circle;
+<span
+class="php-comment">// the classic way using method calls</span>
+<span class="php-var">$circle</span>-&gt;setRadius(<span
+class="php-num">10</span>); <span class="php-comment">// sets circle's radius</span>
+<span class="php-keyword1">echo</span> <span
+class="php-var">$circle</span>-&gt;getArea(); <span class="php-comment">// gets circle's area</span>
+
+<span
+class="php-comment">// the alternative way using properties</span>
+<span class="php-var">$circle</span>-&gt;radius = <span
+class="php-num">10</span>; <span class="php-comment">// calls setRadius()</span>
+<span class="php-keyword1">echo</span> <span
+class="php-var">$circle</span>-&gt;area; <span class="php-comment">// calls getArea()</span>
+<span
+class="php-keyword1">echo</span> <span class="php-var">$circle</span>-&gt;visible; <span
+class="php-comment">// calls $circle-&gt;isVisible()</span></code></pre>
+
+<p>Properties are mostly a syntactic sugar to beautify the code and make programmer's life easier. You do not have to use them,
+if you don't want to.</p>
+
+<h2 id="toc-events">Events</h2>
+
+<p>Now we are going to create functions, which will be called when border radius changes. Let's call it <code>change</code> event
+and those functions event handlers:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> Circle <span
+class="php-keyword1">extends</span> Nette\Object
+{
+    <span class="php-comment">/** @var array */</span>
+    <span
+class="php-keyword1">public</span> <span class="php-var">$onChange</span>;
+
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> setRadius(<span class="php-var">$radius</span>)
+    {
+        <span
+class="php-comment">// call events in onChange</span>
+        <span class="php-var">$this</span>-&gt;onChange(<span
+class="php-var">$this</span>, <span class="php-var">$this</span>-&gt;radius, <span class="php-var">$radius</span>);
+
+        <span
+class="php-var">$this</span>-&gt;radius = <span class="php-keyword2">max</span>(<span class="php-num">0.0</span>, (float) <span
+class="php-var">$radius</span>);
+    }
+}
+
+<span class="php-var">$circle</span> = <span
+class="php-keyword1">new</span> Circle;
+
+<span class="php-comment">// adding an event handler</span>
+<span
+class="php-var">$circle</span>-&gt;onChange[] = <span class="php-keyword1">function</span>(<span
+class="php-var">$circle</span>, <span class="php-var">$oldValue</span>, <span class="php-var">$newValue</span>) {
+    <span
+class="php-keyword1">echo</span> <span class="php-quote">'there was a change!'</span>;
+};
+
+<span
+class="php-var">$circle</span>-&gt;setRadius(<span class="php-num">10</span>);</code></pre>
+
+<p>There is another syntactic sugar in <code>setRadius</code>'s code. Instead of iteration on <code>$onChange</code> array and
+calling each method one by one with unreliable (does not report if callback has any errors) function <a
+href="http://php.net/call_user_func">call_user_func</a>, you just have to write simple <code>onChange(...)</code> and given
+parameters will be handed over to the handlers.</p>
+
+<h2 id="toc-extension-methods">Extension methods</h2>
+
+<p>Do you need to add a new method to an existing object or class at runtime? <b>Extension methods</b> is just what you need.</p>
+
+<pre class="src-php"><code><span
+class="php-comment">// declaration of future method Circle::getCircumference()</span>
+Circle::extensionMethod(<span
+class="php-quote">'getCircumference'</span>, <span class="php-keyword1">function</span> (Circle <span
+class="php-var">$that</span>) {
+    <span class="php-keyword1">return</span> <span class="php-var">$that</span>-&gt;radius * <span
+class="php-num">2</span> * M_PI;
+});
+
+<span class="php-var">$circle</span> = <span class="php-keyword1">new</span> Circle;
+<span
+class="php-var">$circle</span>-&gt;radius = <span class="php-num">10</span>;
+<span class="php-keyword1">echo</span> <span
+class="php-var">$circle</span>-&gt;getCircumference(); <span class="php-comment">// ≈ 62.8</span></code></pre>
+
+<p>Extensions methods can also take parameters. They don't break encapsulation, because they only have access to the public
+members of the class. You can also connect them with interfaces, therefore every class implementing that interface will have that
+method available.</p>
+
+<h2 id="toc-reflection">Reflection</h2>
+
+<p>If you need to find every information about any class, reflection is the right tool to do it. You can easily find out which
+methods does any class have, what parameters do those methods accept, etc. <code>Nette\Object</code> simplifies access to class'
+self-reflection with method <code>getReflection()</code>, returning a <a
+href="//api.nette.org/2.4/Nette.Reflection.ClassType.html">ClassType</a>) object:</p>
+
+<pre class="src-php"><code><span class="php-var">$circle</span> = <span class="php-keyword1">new</span> Circle;
+<span
+class="php-keyword1">echo</span> <span class="php-var">$circle</span>-&gt;getReflection()-&gt;hasMethod(<span
+class="php-quote">'getArea'</span>); <span class="php-comment">// does method 'test' exist?</span>
+<span
+class="php-keyword1">echo</span> <span class="php-var">$circle</span>-&gt;getReflection()-&gt;getName(); <span
+class="php-comment">// returns the name of the class ('Circle')</span></code></pre>
+
+<p>Even in this case we can make use of <a href="#toc-properties-getters-and-setters">property</a> conventions and change the last
+line to:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">echo</span> <span
+class="php-var">$circle</span>-&gt;reflection-&gt;name; <span class="php-comment">// returns 'Circle'</span></code></pre>
+
+<p>Reflection can be obtained without using <code>Nette\Object</code>:</p>
+
+<pre class="src-php"><code><span class="php-comment">// getting PDO class reflection</span>
+<span
+class="php-var">$classReflection</span> = <span class="php-keyword1">new</span> Nette\Reflection\ClassType(<span
+class="php-quote">'PDO'</span>);
+
+<span class="php-comment">// getting PDO::query method reflection</span>
+<span
+class="php-var">$methodReflection</span> = <span class="php-keyword1">new</span> Nette\Reflection\Method(<span
+class="php-quote">'PDO'</span>, <span class="php-quote">'query'</span>);</code></pre>
+
+<h2 id="toc-annotations">Annotations</h2>
+
+<p>Reflection has really a lot to do with annotations. The annotations are written into phpDoc comments (two opening asterisks are
+mandatory!) and start with <code>@</code>. You can annotate classes, variables and methods:</p>
+
+<pre class="src-php"><code><span class="php-comment">/**
+ * @author John Doe
+ * @author Tomas Marny
+ * @secured
+ */</span>
+<span
+class="php-keyword1">class</span> FooClass
+{
+    <span class="php-comment">/** @Persistent */</span>
+    <span
+class="php-keyword1">public</span> <span class="php-var">$foo</span>;
+
+    <span
+class="php-comment">/** @User(loggedIn, role=Admin) */</span>
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> bar() {}
+}</code></pre>
+
+<p>In the code there are these annotations:</p>
+
+<ul>
+	<li><code>@author John Doe</code> – string, contains text value <code>'John Doe'</code></li>
+
+	<li><code>@Persistent</code> – boolean, its presence means <code>TRUE</code></li>
+
+	<li><code>@User(loggedIn, role=Admin)</code> – contains associative <code>['loggedIn', 'role' =&gt; 'Admin']</code></li>
+</ul>
+
+<p>The existence of a class annotation can be checked via <code>hasAnnotation()</code> method:</p>
+
+<pre class="src-php"><code><span class="php-var">$fooReflection</span> = <span
+class="php-keyword1">new</span> Nette\Reflection\ClassType(<span class="php-quote">'FooClass'</span>);
+<span
+class="php-var">$fooReflection</span>-&gt;hasAnnotation(<span class="php-quote">'author'</span>); <span
+class="php-comment">// returns TRUE</span>
+<span class="php-var">$fooReflection</span>-&gt;hasAnnotation(<span
+class="php-quote">'copyright'</span>); <span class="php-comment">// returns FALSE</span></code></pre>
+
+<p>Values can be acquired with <code>getAnnotation()</code>:</p>
+
+<pre class="src-php"><code><span class="php-var">$fooReflection</span>-&gt;getAnnotation(<span
+class="php-quote">'author'</span>); <span class="php-comment">// returns string 'Tomas Marny'</span>
+
+<span
+class="php-var">$fooReflection</span>-&gt;getMethod(<span class="php-quote">'bar'</span>)-&gt;getAnnotation(<span
+class="php-quote">'User'</span>);
+<span class="php-comment">// returns ['loggedIn', 'role' =&gt; 'Admin']</span></code></pre>
+
+<p class="caution">Previous definitions are overwritten with the latter ones, so you will always get the last one.</p>
+
+<p>All annotations can be obtained with <code>getAnnotations()</code>:</p>
+
+<pre>array(3) {
+    "author" =&gt; array(2) {
+        0 =&gt; string(8) "John Doe"
+        1 =&gt; string(11) "Tomas Marny"
+    }
+    "secured" =&gt; array(1) {
+        0 =&gt; bool(TRUE)
+    }
+}</pre>
+
+
+<div class="paginator">
+	<small><a href="/en/2.4/ajax">« AJAX &amp; Snippets</a></small>
+	<a href="/en/2.4/http-request-response">HTTP Request &amp; Response »</a>
+</div>
+		</div>
+
+			<aside class="main">
+		<div>
+			<p><a href="https://github.com/nette/utils">GitHub</a> | <a href="https://api.nette.org/2.4/namespace-Nette.Utils.html">API</a>
+			<br>composer: <a href="https://packagist.org/packages/nette/utils">nette/utils</a></p>
+
+
+			<ul class="toc">
+				<li class="up" value="0"><a href="#">▲</a></li>
+				<li><a href="#toc-strict-classes">Strict classes</a>
+				</li>
+				<li><a href="#toc-properties-getters-and-setters">Properties, getters and setters</a>
+				</li>
+				<li><a href="#toc-events">Events</a>
+				</li>
+				<li><a href="#toc-extension-methods">Extension methods</a>
+				</li>
+				<li><a href="#toc-reflection">Reflection</a>
+				</li>
+				<li><a href="#toc-annotations">Annotations</a>
+				</li>
+			</ul>
+		</div>
+	</aside>
+	</div>
+
+	<footer class="main">
+		<p>&copy; 2008, 2016 <a href="https://nettefoundation.com">Nette Foundation</a> | <a href="http://php7.org/guidelines/">PHP Coding Guidelines</a>
+		| <a href="https://nette.org/terms-of-use">Terms of use</a> | If not stated otherwise, the contents are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cz/">Creative Commons CC-BY-SA</a>.</p>
+	</footer>
+
+	<div class="docmenu">
+		<div class="column">
+	<h3 id="toc-programmer-s-guide"><img src="//files.nette.org/git/doc-2.4/icon-guides-small.png" alt=""> Programmer's Guide</h3>
+
+	<ul>
+		<li><a href="/en/2.4/forms">Forms</a></li>
+
+		<li><a href="//latte.nette.org/en/">Templates</a>, <a href="//latte.nette.org/en/macros">Latte Macros</a> and <a
+		href="//latte.nette.org/en/filters">Filters</a></li>
+
+		<li><a href="/en/2.4/presenters">MVC Application &amp; Presenters</a></li>
+
+		<li><a href="/en/2.4/configuring">Configuration</a>, <a href="/en/2.4/dependency-injection">Dependency Injection</a>, <a
+		href="/en/2.4/di-usage">Getting Dependencies</a> and <a href="/en/2.4/di-extensions">DI extensions</a></li>
+
+		<li><a href="/en/2.4/components">Components and Controls</a></li>
+
+		<li><a href="/en/2.4/routing">Routing</a></li>
+
+		<li><a href="/en/2.4/access-control">Authentication &amp; Authorization</a></li>
+
+		<li><a href="//tracy.nette.org/en/">Debugging and Error Handling</a>, <a href="//tracy.nette.org/en/extensions">Debugger
+		extensions</a></li>
+
+		<li><a href="/en/2.4/ajax">AJAX</a></li>
+
+		<li><a href="/en/2.4/php-language-enhancements">PHP Language Enhancements</a></li>
+
+		<li><a href="/en/2.4/http-request-response">HTTP request &amp; response</a></li>
+
+		<li><a href="/en/2.4/database">Database</a>, <a href="/en/2.4/database-table">Table</a>, <a
+		href="/en/2.4/database-selection">Selection</a>, <a href="/en/2.4/database-activerow">ActiveRow</a></li>
+
+		<li><a href="/en/2.4/sessions">Sessions</a></li>
+
+		<li><a href="/en/2.4/mailing">Mailing</a></li>
+
+		<li><a href="/en/2.4/images">Image Manipulation</a></li>
+
+		<li><a href="/en/2.4/caching">Caching</a></li>
+
+		<li><a href="/en/2.4/localization">Localization</a></li>
+
+		<li><a href="//tester.nette.org/en/">Testing</a>, <a href="//tester.nette.org/en/testing-with-travis">Continuous
+		integration</a></li>
+
+		<li><a href="/en/2.4/pagination">Pagination</a></li>
+
+		<li><a href="/en/2.4/auto-loading">Auto-loading</a></li>
+
+		<li><a href="/en/2.4/finder">Browsing files on disk</a></li>
+
+		<li><a href="/en/2.4/atomicity">Atomic Operations</a></li>
+
+		<li><a href="/en/2.4/validators">Validation</a></li>
+
+		<li><a href="/en/2.4/strings">Strings</a>, <a href="/en/2.4/arrays">arrays</a>, <a href="/en/2.4/html-elements">HTML elements</a>
+		and <a href="/en/2.4/urls">URLs</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-getting-started"><img src="//files.nette.org/git/doc-2.4/icon-welcome-small.png" alt=""> Getting Started</h3>
+
+	<ul>
+		<li><a href="/en/2.4/getting-started">Introduction to Nette</a></li>
+
+		<li><b><a href="/en/2.4/quickstart">Create First Application!</a></b></li>
+
+		<li><a href="/en/2.4/glossary">Glossary</a></li>
+	</ul>
+
+	<h3 id="toc-general-info"><img src="//files.nette.org/git/doc-2.4/icon-question-small.png" alt=""> General Info</h3>
+
+	<ul>
+		<li><a href="https://api.nette.org/2.4">API Reference</a></li>
+
+		<li><a href="/en/2.4/migration-2-3">Migrating from 2.2 to 2.3</a></li>
+
+		<li><a href="/en/2.4/code-checker">Code-Checker</a></li>
+
+		<li><a href="/en/2.4/vulnerability-protection">Vulnerability Protection</a></li>
+
+		<li><a href="/en/2.4/requirements">Server Requirements</a></li>
+
+		<li><a href="//nette.org/en/license">License</a> and <a href="https://nette.org/contributors">contributors</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-development"><img src="//files.nette.org/git/doc-2.4/icon-ruler-small.png" alt=""> Development</h3>
+
+	<ul>
+		<li><a href="//nette.org/en/contributing">Contributing</a></li>
+
+		<li><a href="//nette.org/en/writing">Writing Documentation</a></li>
+
+		<li><a href="irc://irc.freenode.net/nettefw">IRC #nettefw</a></li>
+
+		<li><a href="/en/2.4/troubleshooting">Troubleshooting</a></li>
+	</ul>
+</div>
+
+	</div>
+</div>
+
+<div class="bar"><div>
+
+	<ul class="user" style="opacity:.6">
+		<li><a href="https://addons.nette.org/"><span>Add-ons</span></a>
+		<li><a href="https://pla.nette.org/en/"><span>Planette</span></a>
+		<li><a href="https://forum.nette.org/en/"><span>Forum</span></a>
+		<li><a href="https://blog.nette.org"><span>Blog</span></a>
+		<li><a href="https://nette.org/donate"><span>Donate</span></a>
+		<li>
+		<form action="https://www.google.com/cse" class="search">
+			<input type="hidden" name="cx" value="011549293477758430224:vxofa9ufnhc"><input type="hidden" name="ie" value="UTF-8"><input type="search" name="q" class="text" size="30" placeholder="Search"><input type="image" src="https://files.nette.org/images/search.png" alt="Search">
+		</form>
+		</li>
+	</ul>
+</div></div>
+
+</body>
+</html>

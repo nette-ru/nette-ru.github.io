@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html class="nette-doc">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Nette Foundation; c 2008">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Getting Dependencies | Nette Framework</title>
+
+	<link rel="stylesheet" href="https://files.nette.org/css/combined.css?v=1468405828">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://nette.org/opensearch.xml" title="Nette Framework">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://forum.nette.org/opensearch.xml" title="Nette Framework forum">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://api.nette.org/opensearch.xml" title="Nette Framework API">
+	<link rel="canonical" href="/en/2.4/di-usage">
+	<link rel="image_src" href="https://files.nette.org/images/fb-preview.png">
+
+		<link rel="alternate" hreflang="cs" href="/cs/2.4/di-usage">
+	<link rel="alternate" hreflang="en" href="/en/2.4/di-usage">
+</head>
+
+
+<body>
+<script>
+	ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-95238-14','auto'); ga('send','pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+<script src="https://api.nette.org/2.4/elementlist.js" async></script>
+<script src="https://files.nette.org/js/combined.js?v=1468489896" async></script>
+
+<div class="page">
+	<header class="main">
+		<a class="logo" title="Homepage" href="https://nette.org/en/"><span>Homepage</span></a>
+
+		<nav class="main">
+			<ul>
+	<li><a href="//nette.org/en/download">Download</a></li>
+
+	<li class="item-doc"><a href="/en/">Documentation</a></li>
+
+	<li><a href="https://api.nette.org">API</a></li>
+
+	<li><a href="https://github.com/nette">GitHub</a></li>
+</ul>
+
+		</nav>
+	</header>
+
+		<div class="wikimenu">
+	<div>
+		<div><a href="https://github.com/nette/web-content/blob/doc-2.4/en/di-usage.texy">Edit</a></div>
+		<ul>
+			<li><a href="https://nette.org/en/writing">How to write?</a></li>
+
+			<li><a href="/en/2.4/di-usage?view=links">Backlinks</a></li>
+
+			<li>Languages: <a href="/cs/2.4/di-usage">cs</a> <a href="/en/2.4/di-usage">en</a> </li>
+
+			<li>changed 19. 5. 2016</li>
+
+			<li><a href="/special/sitemap?lang=en">All pages</a></li>
+
+			<li><a href="/special/broken-links?lang=en">Broken links</a></li>
+		</ul>
+	</div>
+
+	<div>
+		<div>Lang</div>
+		<ul>
+			<li><a href="/cs/2.4/di-usage">cs</a></li>
+			<li><a href="/en/2.4/di-usage">en</a></li>
+		</ul>
+	</div>
+
+	<div class=versionmenu>
+		<div>Version 2.4</div>
+		<ul>
+			<li><a href="/en/2.3/di-usage">Version 2.3</a></li>
+			<li><a href="/en/2.2/di-usage">Version 2.2</a></li>
+			<li><a href="/en/2.1/di-usage">Version 2.1</a></li>
+		</ul>
+	</div>
+</div>
+
+
+	<div class="main">
+		<div class="content has-sidebar">
+			
+
+			<ul class="breadcrumbs">
+				<li><a href="/en/2.4/">Documentation</a></li>
+				<li>Getting Dependencies</li>
+			</ul>
+
+
+<h1 id="toc-getting-dependencies">Getting Dependencies</h1>
+
+<div class="perex">
+	<p>There are several possibilities of injecting dependencies to presenters, components and services. This article discusses:</p>
+
+	<ul>
+		<li>dependency injection in general, not limited to the dependencies in Nette <a href="/en/2.4/dependency-injection">DI
+		Container</a>, and</li>
+
+		<li>practical examples and recommendations for presenters, components and services.</li>
+	</ul>
+</div>
+
+<h2 id="toc-how-to-get-dependencies">How To Get Dependencies?</h2>
+
+<p>Dependencies can be injected to the application classes in one of the following ways:</p>
+
+<ul>
+	<li>through the class constructor,</li>
+
+	<li>via setter or a member variable,</li>
+
+	<li>through the <code>inject*</code> method,</li>
+
+	<li>using the <code>@inject</code> annotation on a <code>public</code> member variable.</li>
+</ul>
+
+<p>First two ways can be used in all object-oriented programming languages, last two are available in Nette Framework. Let's walk
+through all these ways and then show their application in practical examples.</p>
+
+<h3 id="toc-constructor-passing">Constructor Passing</h3>
+
+<p>All dependencies are passed when the object is being created. The dependency is declared as a constructor parameter and its
+type is given in the Type Hint:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> MyService
+{
+    <span
+class="php-comment">/** @var AnotherService */</span>
+    <span class="php-keyword1">private</span> <span
+class="php-var">$anotherService</span>;
+
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> __construct(AnotherService <span class="php-var">$service</span>)
+    {
+        <span
+class="php-var">$this</span>-&gt;anotherService = <span class="php-var">$service</span>;
+    }
+}</code></pre>
+
+<p>The <code>MyService</code> class declares that an instance of <code>AnotherService</code> class must be passed during the
+object creation. This declaration is suitable for all mandatory dependencies, which are required for the functioning of the class.
+The class could not be instantiated without these dependencies.</p>
+
+<h3 id="toc-passing-by-setter-or-a-public-variable">Passing by Setter or a Public Variable</h3>
+
+<p>These dependencies are passed after the object has been created. Take a look at the example of passing dependency by a setter
+method. The type of the dependency is given in the Type Hint:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> MyService
+{
+    <span
+class="php-comment">/** @var AnotherService */</span>
+    <span class="php-keyword1">private</span> <span
+class="php-var">$anotherService</span>;
+
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> setAnotherService(AnotherService <span class="php-var">$service</span>)
+    {
+        <span
+class="php-var">$this</span>-&gt;anotherService = <span class="php-var">$service</span>;
+    }
+}</code></pre>
+
+<p>These dependencies can be passed only after the object has been created. This method is suitable only for non-mandatory
+dependencies, because there is no guarantee that the dependencies will be passed to the object.</p>
+
+<p>Passing by a public variable works in a very similar way:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> MyService
+{
+    <span
+class="php-comment">/** @var AnotherService */</span>
+    <span class="php-keyword1">public</span> <span
+class="php-var">$anotherService</span>;
+}</code></pre>
+
+<p>However, this method is not recommended, because the variable must be declared as public and there is no way how you can ensure
+that the passed object will be of the given type. We also lose the ability to handle the assigned dependency in our code and we
+violate the principles of encapsulation.</p>
+
+<h3 id="toc-passing-by-an-inject-method">Passing by an <code>inject*</code> Method</h3>
+
+<p>This method is specific for the DI Container in Nette Framework. It is a special case of setter method which starts with an
+<code>inject*</code> prefix.</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> MyService
+{
+    <span
+class="php-comment">/** @var AnotherService */</span>
+    <span class="php-keyword1">private</span> <span
+class="php-var">$anotherService</span>;
+
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> injectAnotherService(AnotherService <span
+class="php-var">$service</span>)
+    {
+        <span class="php-var">$this</span>-&gt;anotherService = <span
+class="php-var">$service</span>;
+    }
+}</code></pre>
+
+<p>The class can contain multiple <code>inject*</code> methods, each with multiple parameters and a unique name.</p>
+
+<p>Nette is able to find these methods in presenters and automatically call them with proper parameters. This behaviour could be
+also enabled in services in configuration file. This will be explained later.</p>
+
+<h3 id="toc-inject-annotations"><code>@inject</code> Annotations</h3>
+
+<p>Second method specific for Nette Framework. It is a special case of passing by a public variable. The variable is marked by an
+<code>@inject</code> annotation in a docblock comment:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> MyService
+{
+    <span
+class="php-comment">/** @inject @var \App\AnotherService */</span>
+    <span class="php-keyword1">public</span> <span
+class="php-var">$anotherService</span>;
+}</code></pre>
+
+<p>Nette Framework can also scan the presenter for these variables and automatically inject these dependencies. The variable type
+in <code>@var</code> annotation must be given by its fully qualified name, including namespace. Aliases defined in
+<code>use</code> directives can be used since version 2.2.</p>
+
+<p>This approach has the same drawbacks as ordinary passing by a public variable – we cannot enforce the type of passed
+dependency.</p>
+
+<p>However, the code is very simple and short, which can be an advantage in some cases.</p>
+
+<h2 id="toc-which-way-should-i-choose">Which Way Should I Choose?</h2>
+
+<p>Constructor passing and passing optional dependencies by setters are available for all instantiated classes. The following two
+techniques, passing dependencies by <code>inject*</code> methods and by public variables marked by the <code>@inject</code>
+annotation, are less clean techniques and are available only in presenters and services in DI container with explicit
+configuration. We use them only in a few specific cases.</p>
+
+<p>The one thing that all these methods have in common, is that <a href="/en/2.4/configuring#toc-auto-wiring">auto-wiring</a> is
+only available for objects created by Nette DI Container or one of the factories in Nette. When we create the object by calling
+<code>new</code>, we have to pass the dependencies manually.</p>
+
+<p>Lets have a look at the examples and preferred method of dependency injection.</p>
+
+<h3 id="toc-presenters">Presenters</h3>
+
+<p>Presenters in Nette Framework is created by the <code>PresenterFactory</code>. This factory also automatically injects
+dependencies declared:</p>
+
+<ol>
+	<li>in a constructor,</li>
+
+	<li>using the <code>inject*</code> methods,</li>
+
+	<li>by public properties with the <code>@inject</code> annotation.</li>
+</ol>
+
+<p>The following presenter shows all three ways of dependency passing:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> MyPresenter <span
+class="php-keyword1">extends</span> Nette\Application\UI\Presenter
+{
+    <span
+class="php-comment">// 1) Constructor passing:</span>
+    <span class="php-keyword1">private</span> <span
+class="php-var">$service1</span>;
+
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> __construct(Service1 <span class="php-var">$service</span>)
+    {
+        <span
+class="php-var">$this</span>-&gt;service1 = <span class="php-var">$service</span>;
+    }
+
+    <span
+class="php-comment">// 2) Using the inject* method:</span>
+    <span class="php-keyword1">private</span> <span
+class="php-var">$service2</span>;
+
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> injectService2(Service2 <span class="php-var">$service</span>)
+    {
+        <span
+class="php-var">$this</span>-&gt;service2 = <span class="php-var">$service</span>;
+    }
+
+    <span
+class="php-comment">// 3) Public variable with the @inject annotation:</span>
+    <span
+class="php-comment">/** @inject @var \App\Service3 */</span>
+    <span class="php-keyword1">public</span> <span
+class="php-var">$service3</span>;
+}</code></pre>
+
+<p>The preferred way of passing dependencies for presenters is using the constructor, or in case of parent presenters using the
+<code>inject*</code> method. The usage of <code>inject*</code> method in parent presenters allows us to preserve encapsulation and
+to keep the constructor clean for child presenters.</p>
+
+<p>We can also use <code>@inject</code> annotation for both cases, but we have to keep in mind that this breaks encapsulation.</p>
+
+<p>Passing dependencies to parent presenters through the constructor is not recommended, since it complicates the constructor
+signature when using the presenter inheritance: you have to get and pass dependencies to all parent presenter classes.</p>
+
+<h3 id="toc-components">Components</h3>
+
+<p>Components are usually instantiated directly in the code of presenter, or through the application-specific factories. In these
+cases, Nette cannot automatically inject the dependencies and you cannot use <code>inject*</code> methods or variables with the
+<code>@inject</code> annotations.</p>
+
+<p>Lets consider we have the following component:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> MyControl <span
+class="php-keyword1">extends</span> Nette\Application\UI\Control
+{
+    <span
+class="php-comment">// 1) Constructor passing:</span>
+    <span class="php-keyword1">private</span> <span
+class="php-var">$service1</span>;
+
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> __construct(Service1 <span
+class="php-var">$service</span>)
+    {
+        parent::__construct();
+        <span
+class="php-var">$this</span>-&gt;service1 = <span class="php-var">$service</span>;
+    }
+
+    <span
+class="php-comment">// 2) Optional dependency injected by setter:</span>
+    <span class="php-keyword1">private</span> <span
+class="php-var">$service2</span>;
+
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> setService2(Service2 <span class="php-var">$service</span>)
+    {
+        <span
+class="php-var">$this</span>-&gt;service2 = <span class="php-var">$service</span>;
+    }
+}</code></pre>
+
+<p>The component could be used in the presenter in the following way:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> MyPresenter <span
+class="php-keyword1">extends</span> Nette\Application\UI\Presenter
+{
+    <span
+class="php-comment">/** @inject @var \App\Service1 */</span>
+    <span class="php-keyword1">public</span> <span
+class="php-var">$service1</span>;
+
+    <span class="php-comment">/** @inject @var \App\Service2 */</span>
+    <span
+class="php-keyword1">public</span> <span class="php-var">$service2</span>;
+
+    <span class="php-keyword1">protected</span> <span
+class="php-keyword1">function</span> createComponentMyControl()
+    {
+        <span class="php-var">$control</span> = <span
+class="php-keyword1">new</span> MyControl(<span class="php-var">$this</span>-&gt;service1);
+        <span
+class="php-var">$control</span>-&gt;setService2(<span class="php-var">$this</span>-&gt;service2);
+        <span
+class="php-keyword1">return</span> <span class="php-var">$control</span>;
+    }
+}</code></pre>
+
+<p>Because dependencies are not automatically injected by the DI container, we have to obtain all the required dependencies also
+in the class, that creates our component – the presenter in our example. If we create the component in another component, the
+component dependencies will be added to the dependencies of the parent component:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> MySecondControl <span
+class="php-keyword1">extends</span> Nette\Application\UI\Control
+{
+    <span
+class="php-comment">// Dependencies for MySecondControl:</span>
+    <span class="php-keyword1">private</span> <span
+class="php-var">$service3</span>;
+
+    <span class="php-comment">// Dependencies for the child MyControl:</span>
+    <span
+class="php-keyword1">private</span> <span class="php-var">$service1</span>;
+    <span class="php-keyword1">private</span> <span
+class="php-var">$service2</span>;
+
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> __construct(Service1 <span class="php-var">$service1</span>, Service2 <span
+class="php-var">$service2</span>, Service3 <span
+class="php-var">$service3</span>)
+    {
+        parent::__construct();
+        <span
+class="php-comment">// assign dependencies to members $service1, $service2, $service3</span>
+    }
+
+    <span
+class="php-keyword1">protected</span> <span class="php-keyword1">function</span> createComponentMyControl()
+    {
+        <span
+class="php-var">$control</span> = <span class="php-keyword1">new</span> MyControl(<span
+class="php-var">$this</span>-&gt;service1);
+        <span class="php-var">$control</span>-&gt;setService2(<span
+class="php-var">$this</span>-&gt;service2);
+        <span class="php-keyword1">return</span> <span
+class="php-var">$control</span>;
+    }
+}</code></pre>
+
+<p>Because we usually instantiate the components by hand, the preferred way of dependency injection depends on whether the
+dependency is mandatory or optional. Constructor should be used for mandatory dependencies and setter for optional ones.</p>
+
+<p class="caution">If we use the constructor for dependency passing, we must not forget to call the constructor from the parent
+class: <code>parent::__construct()</code>!</p>
+
+<h3 id="toc-services">Services</h3>
+
+<p>Services are registered in the DI container and dependencies are therefore automatically passed. We can declare dependencies
+only in constructor, unless we provide additional configuration:</p>
+
+<pre class="src-neon"><code><span class="neon-section">services</span><span class="neon-sep">:</span><span
+class="neon-section">
+    </span><span class="neon-key">service1</span><span class="neon-sep">:</span><span
+class="neon-value"> App\Service1</span></code></pre>
+
+<p>All dependencies declared in the constructor of this service will be automatically passed:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">namespace</span> App;
+
+<span
+class="php-keyword1">class</span> Service1
+{
+    <span class="php-keyword1">private</span> <span
+class="php-var">$anotherService</span>;
+
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> __construct(AnotherService <span class="php-var">$service</span>)
+    {
+        <span
+class="php-var">$this</span>-&gt;anotherService = <span class="php-var">$service</span>;
+    }
+}</code></pre>
+
+<p>Constructor passing is the preferred way of dependency injection for services.</p>
+
+<p>If we want to pass dependencies by the setter, we can add the <code>setup</code> section to the service definition:</p>
+
+<pre class="src-neon"><code><span class="neon-section">services</span><span class="neon-sep">:</span><span
+class="neon-section">
+    service2</span><span class="neon-sep">:</span><span class="neon-section">
+        </span><span
+class="neon-key">class</span><span class="neon-sep">:</span><span class="neon-value"> App\Service2</span>
+        <span
+class="neon-section">setup</span><span class="neon-sep">:</span><span class="neon-section">
+            </span><span
+class="neon-sep">-</span><span class="neon-value"> setAnotherService</span></code></pre>
+
+<p>Class of the service:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">namespace</span> App;
+
+<span
+class="php-keyword1">class</span> Service2
+{
+    <span class="php-keyword1">private</span> <span
+class="php-var">$anotherService</span>;
+
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> setAnotherService(AnotherService <span class="php-var">$service</span>)
+    {
+        <span
+class="php-var">$this</span>-&gt;anotherService = <span class="php-var">$service</span>;
+    }
+}</code></pre>
+
+<p>We can also add the <code>inject: yes</code> directive. This directive will enable automatic call of <code>inject*</code>
+methods and passing dependencies to public variables with <code>@inject</code> annotations:</p>
+
+<pre class="src-neon"><code><span class="neon-section">services</span><span class="neon-sep">:</span><span
+class="neon-section">
+    service3</span><span class="neon-sep">:</span><span class="neon-section">
+        </span><span
+class="neon-key">class</span><span class="neon-sep">:</span><span class="neon-value"> App\Service3</span>
+        <span
+class="neon-key">inject</span><span class="neon-sep">:</span><span class="neon-value"> yes</span></code></pre>
+
+<p>Dependency <code>Service1</code> will be passed by calling the <code>inject*</code> method, dependency <code>Service2</code>
+will be assigned to the <code>$service2</code> variable:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">namespace</span> App;
+
+<span
+class="php-keyword1">class</span> Service3
+{
+    <span class="php-comment">// 1) inject* method:</span>
+    <span
+class="php-keyword1">private</span> <span class="php-var">$service1</span>;
+
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> injectService1(Service1 <span class="php-var">$service</span>)
+    {
+        <span
+class="php-var">$this</span>-&gt;service1 = <span class="php-var">$service1</span>;
+    }
+
+    <span
+class="php-comment">// 2) Assign to the variable with the @inject annotation:</span>
+    <span
+class="php-comment">/** @inject @var \App\Service2 */</span>
+    <span class="php-keyword1">public</span> <span
+class="php-var">$service2</span>;
+}</code></pre>
+
+<h2 id="toc-other-possibilities">Other Possibilities</h2>
+
+<p>There are also a few other possibilities, how we can change the configuration and dependency injection for presenters and
+components.</p>
+
+<h3 id="toc-presenter-as-a-service">Presenter as a Service</h3>
+
+<p>Beginning with the Nette 2.1, you can register the presenter as a service to the configuration file. It will be created as any
+other service in the DI container. You can pass any parameters that could not be auto-wired (strings, numbers, etc.), and add
+setter calls.</p>
+
+<p>All <code>inject*</code> methods will be called automatically and all dependencies will be automatically assigned to the public
+variables with the <code>@inject</code> annotation. You do not have to add the <code>inject: yes</code> directive.</p>
+
+<p>The presenter definition in the configuration file could look as following:</p>
+
+<pre class="src-neon"><code><span class="neon-section">services</span><span class="neon-sep">:</span><span
+class="neon-section">
+    </span><span class="neon-sep">-</span><span
+class="neon-value"> App\Presenters\ImagePresenter(&quot;</span><span class="neon-var">%wwwDir%</span><span
+class="neon-value">/media&quot;)</span></code></pre>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> ImagePresenter <span
+class="php-keyword1">extends</span> Nette\Application\UI\Presenter
+{
+    <span class="php-keyword1">private</span> <span
+class="php-var">$imageDir</span>;
+    <span class="php-keyword1">private</span> <span
+class="php-var">$optimizer</span>;
+
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> __construct(<span class="php-var">$imageDir</span>, ImageOptimizer <span
+class="php-var">$optimizer</span>)
+    {
+        <span class="php-var">$this</span>-&gt;imageDir = <span
+class="php-var">$imageDir</span>;
+        <span class="php-var">$this</span>-&gt;optimizer = <span
+class="php-var">$optimizer</span>;
+    }
+}</code></pre>
+
+<p>The string from the configuration will be passed as the first parameter of the constructor, the remaining parameters will be
+auto-wired.</p>
+
+<p class="caution">However, you have to be careful when designing presenters. All application logic should be in services, not in
+presenters. The need of additional presenter configuration is often a sign of a bad decomposition of the challenge.</p>
+
+<h3 id="toc-component-factory">Component Factory</h3>
+
+<p>Like presenters, components can be also registered in the configuration file. However, the presenter is usually created only
+once during the handling of a single request, while components can be instantiated at multiple locations. Therefore we have to
+register a component factory instead of a service.</p>
+
+<p>Beginning with Nette 2.1, we can use factories generated from an interface. The interface must declare the returning type in
+the <code>@return</code> annotation of the method. Nette will generate a proper implementation of the interface.</p>
+
+<p>The interface must have exactly one method named <code>create</code>. Our component factory interface could be declared in the
+following way:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">namespace</span> App\Components;
+
+<span
+class="php-keyword1">interface</span> IUserTableFactory
+{
+    <span
+class="php-comment">/**
+     * @return UserTable
+     */</span>
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> create();
+}</code></pre>
+
+<p>The <code>create</code> method will instantiate an <code>UserTable</code> component with the following definition:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">namespace</span> App\Components;
+
+<span
+class="php-keyword1">class</span> UserTable <span class="php-keyword1">extends</span> Control
+{
+    <span
+class="php-keyword1">private</span> <span class="php-var">$userManager</span>;
+
+    <span class="php-keyword1">public</span> <span
+class="php-keyword1">function</span> __construct(UserManager <span class="php-var">$userManager</span>)
+    {
+        <span
+class="php-var">$this</span>-&gt;userManager = <span class="php-var">$userManager</span>;
+    }
+}</code></pre>
+
+<p>The factory will be registered in the <code>config.neon</code> file:</p>
+
+<pre class="src-neon"><code><span class="neon-section">services</span><span class="neon-sep">:</span><span
+class="neon-section">
+    </span><span class="neon-sep">-</span><span
+class="neon-value"> App\Components\IUserTableFactory</span></code></pre>
+
+<p>Nette will check if the declared service is an interface. If yes, it will also generate the corresponding implementation of the
+factory. The definition can be also written in a more verbose form:</p>
+
+<pre class="src-neon"><code><span class="neon-section">services</span><span class="neon-sep">:</span><span
+class="neon-section">
+    userTableFactory</span><span class="neon-sep">:</span><span class="neon-section">
+        </span><span
+class="neon-key">implement</span><span class="neon-sep">:</span><span
+class="neon-value"> App\Components\IUserTableFactory</span></code></pre>
+
+<p>This full definition allows us to declare additional configuration of the component using the <code>arguments</code> and
+<code>setup</code> sections, similarly as for all other services.</p>
+
+<p>In the presenter, we only have to obtain the factory instance and call the <code>create</code> method:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> UserPresenter <span
+class="php-keyword1">extends</span> Nette\Application\UI\Presenter
+{
+    <span
+class="php-comment">/** @var \App\Components\IUserTableFactory @inject */</span>
+    <span
+class="php-keyword1">public</span> <span class="php-var">$userTableFactory</span>;
+
+    <span
+class="php-keyword1">protected</span> <span class="php-keyword1">function</span> createComponentUserTable()
+    {
+        <span
+class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;userTableFactory-&gt;create();
+    }
+}</code></pre>
+
+<p>Constructor dependencies will be automatically passed to the created control.</p>
+
+
+<div class="paginator">
+	<small><a href="/en/2.4/dependency-injection">« Dependency Injection</a></small>
+	<a href="/en/2.4/di-extensions">DI Container Extensions »</a>
+</div>
+		</div>
+
+			<aside class="main">
+		<div>
+
+
+			<ul class="toc">
+				<li class="up" value="0"><a href="#">▲</a></li>
+				<li><a href="#toc-how-to-get-dependencies">How To Get Dependencies?</a>
+				<ul>
+				
+				<li><a href="#toc-constructor-passing">Constructor Passing</a>
+				</li>
+				<li><a href="#toc-passing-by-setter-or-a-public-variable">Passing by Setter or a Public Variable</a>
+				</li>
+				<li><a href="#toc-passing-by-an-inject-method">Passing by an inject* Method</a>
+				</li>
+				<li><a href="#toc-inject-annotations">@inject Annotations</a>
+				</ul>
+				
+				<li><a href="#toc-which-way-should-i-choose">Which Way Should I Choose?</a>
+				<ul>
+				
+				<li><a href="#toc-presenters">Presenters</a>
+				</li>
+				<li><a href="#toc-components">Components</a>
+				</li>
+				<li><a href="#toc-services">Services</a>
+				</ul>
+				
+				<li><a href="#toc-other-possibilities">Other Possibilities</a>
+				<ul>
+				
+				<li><a href="#toc-presenter-as-a-service">Presenter as a Service</a>
+				</li>
+				<li><a href="#toc-component-factory">Component Factory</a>
+				</li>
+			</ul>
+		</div>
+	</aside>
+	</div>
+
+	<footer class="main">
+		<p>&copy; 2008, 2016 <a href="https://nettefoundation.com">Nette Foundation</a> | <a href="http://php7.org/guidelines/">PHP Coding Guidelines</a>
+		| <a href="https://nette.org/terms-of-use">Terms of use</a> | If not stated otherwise, the contents are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cz/">Creative Commons CC-BY-SA</a>.</p>
+	</footer>
+
+	<div class="docmenu">
+		<div class="column">
+	<h3 id="toc-programmer-s-guide"><img src="//files.nette.org/git/doc-2.4/icon-guides-small.png" alt=""> Programmer's Guide</h3>
+
+	<ul>
+		<li><a href="/en/2.4/forms">Forms</a></li>
+
+		<li><a href="//latte.nette.org/en/">Templates</a>, <a href="//latte.nette.org/en/macros">Latte Macros</a> and <a
+		href="//latte.nette.org/en/filters">Filters</a></li>
+
+		<li><a href="/en/2.4/presenters">MVC Application &amp; Presenters</a></li>
+
+		<li><a href="/en/2.4/configuring">Configuration</a>, <a href="/en/2.4/dependency-injection">Dependency Injection</a>, <a
+		href="/en/2.4/di-usage">Getting Dependencies</a> and <a href="/en/2.4/di-extensions">DI extensions</a></li>
+
+		<li><a href="/en/2.4/components">Components and Controls</a></li>
+
+		<li><a href="/en/2.4/routing">Routing</a></li>
+
+		<li><a href="/en/2.4/access-control">Authentication &amp; Authorization</a></li>
+
+		<li><a href="//tracy.nette.org/en/">Debugging and Error Handling</a>, <a href="//tracy.nette.org/en/extensions">Debugger
+		extensions</a></li>
+
+		<li><a href="/en/2.4/ajax">AJAX</a></li>
+
+		<li><a href="/en/2.4/php-language-enhancements">PHP Language Enhancements</a></li>
+
+		<li><a href="/en/2.4/http-request-response">HTTP request &amp; response</a></li>
+
+		<li><a href="/en/2.4/database">Database</a>, <a href="/en/2.4/database-table">Table</a>, <a
+		href="/en/2.4/database-selection">Selection</a>, <a href="/en/2.4/database-activerow">ActiveRow</a></li>
+
+		<li><a href="/en/2.4/sessions">Sessions</a></li>
+
+		<li><a href="/en/2.4/mailing">Mailing</a></li>
+
+		<li><a href="/en/2.4/images">Image Manipulation</a></li>
+
+		<li><a href="/en/2.4/caching">Caching</a></li>
+
+		<li><a href="/en/2.4/localization">Localization</a></li>
+
+		<li><a href="//tester.nette.org/en/">Testing</a>, <a href="//tester.nette.org/en/testing-with-travis">Continuous
+		integration</a></li>
+
+		<li><a href="/en/2.4/pagination">Pagination</a></li>
+
+		<li><a href="/en/2.4/auto-loading">Auto-loading</a></li>
+
+		<li><a href="/en/2.4/finder">Browsing files on disk</a></li>
+
+		<li><a href="/en/2.4/atomicity">Atomic Operations</a></li>
+
+		<li><a href="/en/2.4/validators">Validation</a></li>
+
+		<li><a href="/en/2.4/strings">Strings</a>, <a href="/en/2.4/arrays">arrays</a>, <a href="/en/2.4/html-elements">HTML elements</a>
+		and <a href="/en/2.4/urls">URLs</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-getting-started"><img src="//files.nette.org/git/doc-2.4/icon-welcome-small.png" alt=""> Getting Started</h3>
+
+	<ul>
+		<li><a href="/en/2.4/getting-started">Introduction to Nette</a></li>
+
+		<li><b><a href="/en/2.4/quickstart">Create First Application!</a></b></li>
+
+		<li><a href="/en/2.4/glossary">Glossary</a></li>
+	</ul>
+
+	<h3 id="toc-general-info"><img src="//files.nette.org/git/doc-2.4/icon-question-small.png" alt=""> General Info</h3>
+
+	<ul>
+		<li><a href="https://api.nette.org/2.4">API Reference</a></li>
+
+		<li><a href="/en/2.4/migration-2-3">Migrating from 2.2 to 2.3</a></li>
+
+		<li><a href="/en/2.4/code-checker">Code-Checker</a></li>
+
+		<li><a href="/en/2.4/vulnerability-protection">Vulnerability Protection</a></li>
+
+		<li><a href="/en/2.4/requirements">Server Requirements</a></li>
+
+		<li><a href="//nette.org/en/license">License</a> and <a href="https://nette.org/contributors">contributors</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-development"><img src="//files.nette.org/git/doc-2.4/icon-ruler-small.png" alt=""> Development</h3>
+
+	<ul>
+		<li><a href="//nette.org/en/contributing">Contributing</a></li>
+
+		<li><a href="//nette.org/en/writing">Writing Documentation</a></li>
+
+		<li><a href="irc://irc.freenode.net/nettefw">IRC #nettefw</a></li>
+
+		<li><a href="/en/2.4/troubleshooting">Troubleshooting</a></li>
+	</ul>
+</div>
+
+	</div>
+</div>
+
+<div class="bar"><div>
+
+	<ul class="user" style="opacity:.6">
+		<li><a href="https://addons.nette.org/"><span>Add-ons</span></a>
+		<li><a href="https://pla.nette.org/en/"><span>Planette</span></a>
+		<li><a href="https://forum.nette.org/en/"><span>Forum</span></a>
+		<li><a href="https://blog.nette.org"><span>Blog</span></a>
+		<li><a href="https://nette.org/donate"><span>Donate</span></a>
+		<li>
+		<form action="https://www.google.com/cse" class="search">
+			<input type="hidden" name="cx" value="011549293477758430224:vxofa9ufnhc"><input type="hidden" name="ie" value="UTF-8"><input type="search" name="q" class="text" size="30" placeholder="Search"><input type="image" src="https://files.nette.org/images/search.png" alt="Search">
+		</form>
+		</li>
+	</ul>
+</div></div>
+
+</body>
+</html>

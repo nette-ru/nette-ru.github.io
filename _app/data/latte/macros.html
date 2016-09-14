@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html class="nette-latte">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Nette Foundation; c 2008">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Default Latte Macros | Nette Framework</title>
+
+	<link rel="stylesheet" href="https://files.nette.org/css/combined.css?v=1468405828">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://nette.org/opensearch.xml" title="Nette Framework">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://forum.nette.org/opensearch.xml" title="Nette Framework forum">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://api.nette.org/opensearch.xml" title="Nette Framework API">
+	<link rel="canonical" href="/en/macros">
+	<link rel="image_src" href="https://files.nette.org/images/fb-preview.png">
+
+		<link rel="alternate" hreflang="cs" href="/cs/macros">
+	<link rel="alternate" hreflang="en" href="/en/macros">
+</head>
+
+
+<body>
+<script>
+	ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-95238-14','auto'); ga('send','pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+<script src="https://api.nette.org/2.4/elementlist.js" async></script>
+<script src="https://files.nette.org/js/combined.js?v=1468489896" async></script>
+
+<div class="page">
+	<header class="main">
+		<a class="logo" title="Homepage" href="https://nette.org/en/"><span>Homepage</span></a>
+
+		<nav class="main">
+			<ul>
+	<li><a href="/en/#toc-installation-and-usage">Download</a></li>
+
+	<li><a href="/en/">Documentation</a></li>
+
+	<li><a href="https://api.nette.org/latte/">API</a></li>
+
+	<li><a href="https://github.com/nette/latte">GitHub</a></li>
+</ul>
+
+		</nav>
+	</header>
+
+		<div class="wikimenu">
+	<div>
+		<div><a href="https://github.com/nette/web-content/blob/nette.org/latte/en/macros.texy">Edit</a></div>
+		<ul>
+			<li><a href="https://nette.org/en/writing">How to write?</a></li>
+
+			<li><a href="/en/macros?view=links">Backlinks</a></li>
+
+			<li>Languages: <a href="/cs/macros">cs</a> <a href="/en/macros">en</a> </li>
+
+			<li>changed 23. 5. 2016</li>
+
+			<li><a href="/special/sitemap?lang=en">All pages</a></li>
+
+			<li><a href="/special/broken-links?lang=en">Broken links</a></li>
+		</ul>
+	</div>
+
+	<div>
+		<div>Lang</div>
+		<ul>
+			<li><a href="/cs/macros">cs</a></li>
+			<li><a href="/en/macros">en</a></li>
+		</ul>
+	</div>
+
+</div>
+
+
+	<div class="main">
+		<div class="content has-sidebar">
+			
+
+
+
+<h1 id="toc-default-latte-macros">Default Latte Macros</h1>
+
+<p class="perex">Summary and description of all Latte template engine macros which are available by default.</p>
+
+<p>Are you interested in taking a closer look at <a href="/en/templating#toc-latte">Latte syntax</a>?</p>
+
+<table class="wide">
+	<thead>
+		<tr>
+			<th colspan="2">Variable and expression printing</th>
+		</tr>
+	</thead>
+
+	<tbody>
+		<tr class="alt">
+			<td><code>{$variable}</code></td>
+
+			<td><a href="#toc-variable-printing">prints an escaped variable</a></td>
+		</tr>
+
+		<tr>
+			<td><code>{$variable|noescape}</code></td>
+
+			<td><a href="#toc-variable-printing">prints a variable without escaping</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>{expression}</code></td>
+
+			<td><a href="#toc-variable-printing">prints an escaped expression</a></td>
+		</tr>
+
+		<tr>
+			<td><code>{expression|noescape}</code></td>
+
+			<td><a href="#toc-variable-printing">prints an expression without escaping</a></td>
+		</tr>
+
+		<tr class="alt">
+			<th colspan="2">Conditions</th>
+		</tr>
+
+		<tr>
+			<td colspan="2"><code>{if $cond} … {elseif $cond} … {else} … {/if}</code> <a href="#toc-conditions">if condition</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td colspan="2"><code>{ifset $var} … {elseifset $var} … {/ifset}</code> <a href="#toc-conditions">if (isset())
+			condition</a></td>
+		</tr>
+
+		<tr>
+			<th colspan="2">Loops</th>
+		</tr>
+
+		<tr class="alt">
+			<td><code>{foreach $arr as $item} … {/foreach}</code></td>
+
+			<td><a href="#toc-loops">foreach loop</a></td>
+		</tr>
+
+		<tr>
+			<td><code>{for expr; expr; expr} … {/for}</code></td>
+
+			<td><a href="#toc-loops">for loop</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>{while expr} … {/while}</code></td>
+
+			<td><a href="#toc-loops">while loop</a></td>
+		</tr>
+
+		<tr>
+			<td><code>{continueIf $cond}</code></td>
+
+			<td><a href="#toc-loops">conditional jump to the next iteration</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>{breakIf $cond}</code></td>
+
+			<td><a href="#toc-loops">conditional loop break</a></td>
+		</tr>
+
+		<tr>
+			<td><code>{first} … {/first}</code></td>
+
+			<td><a href="#toc-loops">prints if first iteration</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>{last} … {/last}</code></td>
+
+			<td><a href="#toc-loops">prints if last iteration</a></td>
+		</tr>
+
+		<tr>
+			<td><code>{sep} … {/sep}</code></td>
+
+			<td><a href="#toc-loops">separator</a></td>
+		</tr>
+
+		<tr class="alt">
+			<th colspan="2">Variables</th>
+		</tr>
+
+		<tr>
+			<td><code>{var $foo = value}</code></td>
+
+			<td><a href="#toc-variable-declaration">variable creation</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>{default $foo = value}</code></td>
+
+			<td><a href="#toc-variable-declaration">default value when variable isn't declared</a></td>
+		</tr>
+
+		<tr>
+			<td><code>{capture $var} … {/capture}</code></td>
+
+			<td><a href="#toc-capturing-to-variables">captures a section to a variable</a></td>
+		</tr>
+
+		<tr class="alt">
+			<th colspan="2">Engine</th>
+		</tr>
+
+		<tr>
+			<td><code>{include 'file.latte'}</code></td>
+
+			<td><a href="#toc-file-including">includes a template from other file</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>{cache $key} … {/cache}</code></td>
+
+			<td><a href="//doc.nette.org/en/caching#toc-caching-in-templates">caches a template section</a></td>
+		</tr>
+
+		<tr>
+			<td><code>{php expression}</code></td>
+
+			<td><a href="#toc-code-evaluation">evaluates an expression without printing it</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>{* comment text *}</code></td>
+
+			<td>a comment (removed from evaluation)</td>
+		</tr>
+
+		<tr>
+			<td><code>{syntax mode}</code></td>
+
+			<td><a href="#toc-syntax-switching">switches the syntax at runtime</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>{use Class}</code></td>
+
+			<td>loads new user-defined macros</td>
+		</tr>
+
+		<tr>
+			<td><code>{l}</code> or <code>{r}</code></td>
+
+			<td>prints { and } characters, respectively</td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>{contentType $type}</code></td>
+
+			<td><a href="#toc-header-contenttype">switches the escaping mode and sends HTTP header</a></td>
+		</tr>
+
+		<tr>
+			<td><code>{status $code}</code></td>
+
+			<td><a href="#toc-header-status">sets an HTTP status code</a></td>
+		</tr>
+
+		<tr class="alt">
+			<th colspan="2">HTML tag attributes</th>
+		</tr>
+
+		<tr>
+			<td><code>n:class</code></td>
+
+			<td><a href="#toc-n-class">smart class attribute</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>n:attr</code></td>
+
+			<td><a href="#toc-n-attr">smart HTML attributes</a></td>
+		</tr>
+
+		<tr>
+			<td><code>n:ifcontent</code></td>
+
+			<td><a href="#toc-n-ifcontent">Omit empty HTML tag</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>n:tag-if</code></td>
+
+			<td>Omit HTML tag if condition is FALSE</td>
+		</tr>
+
+		<tr>
+			<th colspan="2">Translations</th>
+		</tr>
+
+		<tr class="alt">
+			<td><code>{_}Text{/_}</code></td>
+
+			<td><a href="#toc-localization">translates a text</a></td>
+		</tr>
+
+		<tr>
+			<td><code>{_expression}</code></td>
+
+			<td><a href="#toc-localization">translates an expression and prints it with escaping</a></td>
+		</tr>
+
+		<tr class="alt">
+			<th colspan="2">Blocks, layouts, template inheritance</th>
+		</tr>
+
+		<tr>
+			<td><code>{block block}</code></td>
+
+			<td><a href="#toc-blocks">block definition and immediate print out</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>{define block}</code></td>
+
+			<td><a href="#toc-blocks">block defintion for future use</a></td>
+		</tr>
+
+		<tr>
+			<td><code>{include block}</code></td>
+
+			<td><a href="#toc-block-including">inserts a block</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>{include mytemplate.latte}</code></td>
+
+			<td><a href="#toc-block-including">inserts a template</a></td>
+		</tr>
+
+		<tr>
+			<td><code>{includeblock 'file.latte'}</code></td>
+
+			<td><a href="#toc-template-expanding-inheritance">loads blocks from external template</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>{layout 'file.latte'}</code></td>
+
+			<td><a href="#toc-template-expanding-inheritance">specifies a layout file</a></td>
+		</tr>
+
+		<tr>
+			<td><code>{extends 'file.latte'}</code></td>
+
+			<td><a href="#toc-template-expanding-inheritance">alias for <code>{layout}</code></a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>{ifset #block} … {/ifset}</code></td>
+
+			<td><a href="#toc-blocks">condition if block is defined</a></td>
+		</tr>
+
+		<tr>
+			<th colspan="2">Links</th>
+		</tr>
+
+		<tr class="alt">
+			<td><code>n:href</code></td>
+
+			<td><a href="//doc.nette.org/en/presenters#toc-links-in-templates">link in <code>&lt;a&gt;</code> HTML elements</a></td>
+		</tr>
+
+		<tr>
+			<td><code>{link Presenter:action}</code></td>
+
+			<td><a href="//doc.nette.org/en/presenters#toc-links-in-templates">generates a link</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>{plink Presenter:action}</code></td>
+
+			<td><a href="//doc.nette.org/en/presenters#toc-links-in-templates">generates a link to a presenter</a></td>
+		</tr>
+
+		<tr>
+			<td><code>{ifCurrent $link} … {/ifCurrent}</code></td>
+
+			<td><a href="//doc.nette.org/en/presenters#toc-links-in-templates">executes block if the given link is current</a></td>
+		</tr>
+
+		<tr class="alt">
+			<th colspan="2">Controls and forms</th>
+		</tr>
+
+		<tr>
+			<td><code>{control loginForm}</code></td>
+
+			<td><a href="#toc-component-rendering">prints a component</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>{form formName} … {/form}</code></td>
+
+			<td><a href="#toc-forms">prints a form element</a></td>
+		</tr>
+
+		<tr>
+			<td><code>{label fieldName} … {/label}</code></td>
+
+			<td><a href="#toc-forms">prints a form input label</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>{input fieldName}</code></td>
+
+			<td><a href="#toc-forms">prints a form input element</a></td>
+		</tr>
+
+		<tr>
+			<td><code>{inputError fieldName}</code></td>
+
+			<td><a href="#toc-forms">prints error message for form input element</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>n:name</code></td>
+
+			<td><a href="#toc-forms">activates an HTML input element</a></td>
+		</tr>
+
+		<tr>
+			<th colspan="2">AJAX</th>
+		</tr>
+
+		<tr class="alt">
+			<td><code>{snippet name} … {/snippet}</code></td>
+
+			<td><a href="//doc.nette.org/en/ajax#toc-makro-snippet">a template snippet that can be sent by AJAX</a></td>
+		</tr>
+
+		<tr>
+			<th colspan="2">Debugging</th>
+		</tr>
+
+		<tr class="alt">
+			<td><code>{dump $variable}</code></td>
+
+			<td><a href="#toc-variable-dumping">dumps variables to the Debugger Bar</a></td>
+		</tr>
+
+		<tr>
+			<td><code>{debugbreak $cond}</code></td>
+
+			<td><a href="#toc-debugbreak">sets breakpoint to the code</a></td>
+		</tr>
+	</tbody>
+</table>
+
+<h2 style="toc:Variable printing" id="toc-variable-and-expression-printing-expression">Variable and expression printing
+<code>{expression}</code></h2>
+
+<p><b>With escaping:</b> (eliminates the <a href="//doc.nette.org/en/vulnerability-protection#toc-cross-site-scripting-xss">Cross
+Site Scripting</a> vulnerability):</p>
+
+<pre class="src-html"><code>Full Name: {<span class="php-var">$name</span>} {<span class="php-var">$surname</span>}<span
+class="html-tag">&lt;br&gt;</span>
+Age: {date(<span class="php-quote">'Y'</span>) - <span class="php-var">$birth</span>}<span
+class="html-tag">&lt;br&gt;</span></code></pre>
+
+<p><b>Without escaping</b> by using the <code>|noescape</code> modifier (an exclamation mark was used in older Nette
+versions):</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;div</span><span class="html-tagin"> class=</span><span
+class="html-quote">&quot;article&quot;</span><span class="html-tag">&gt;</span>
+    {<span
+class="php-var">$content</span>|noescape}
+    {nl2br(<span class="php-var">$notes</span>)|noescape}
+<span
+class="html-tag">&lt;/div&gt;</span></code></pre>
+
+<p>Alternatively you can use notations with equals sign <code>{=expression}</code>.</p>
+
+<p>With technology of <a href="/en/#toc-context-aware-escaping">Context-Aware Escaping</a> it is also possible to use PHP
+variables inside the JavaScript safely:</p>
+
+<pre class="src-php"><code><span class="php-var">$template</span>-&gt;arr = [<span class="php-num">1</span>, <span
+class="php-num">2</span>, <span class="php-num">3</span>];
+<span class="php-var">$template</span>-&gt;name = <span
+class="php-quote">'Jim Beam'</span>;</code></pre>
+
+<pre class="src-html"><code><span class="html-tag">&lt;script</span><span class="html-tagin"> type=</span><span
+class="html-quote">&quot;text/javascript&quot;</span><span class="html-tag">&gt;</span><span class="js-out">
+</span><span
+class="js-keywords1">var</span><span class="js-out"> pole = </span><span class="xlang">{</span><span
+class="php-var">$arr</span>}<span class="js-out">;
+</span><span class="js-keywords1">var</span><span
+class="js-out"> name = </span><span class="xlang">{</span><span class="php-var">$name</span>}<span class="js-out">; </span><span
+class="js-comment">// strings are printed with quotes!</span><span class="js-out">
+</span><span
+class="html-tag">&lt;/script&gt;</span></code></pre>
+
+<h2 style="toc:Conditions" id="toc-conditions-if-cond-if">Conditions <code>{if $cond} … {/if}</code></h2>
+
+<p>Conditions behave exactly the same way as their PHP counterparts:</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">if</span> <span class="php-var">$stock</span>}
+    In stock
+{<span
+class="php-keyword1">elseif</span> <span class="php-var">$onWay</span>}
+    On the way
+{<span
+class="php-keyword1">else</span>}
+    Not available
+{/<span class="php-keyword1">if</span>}</code></pre>
+
+<p>You can also use <code>{ifset}</code> macro which checks variable existence and corresponds to the
+<code>if (isset($var))</code> PHP code. <code>{ifset}</code> macro can check for <a href="#toc-blocks">block</a> existence
+as well.</p>
+
+<p>Expression in the <code>{if}</code> condition can be placed in the closing macro which is useful in situations when we don't
+know the expression at the time of opening the condition block:</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">if</span>}
+    <span
+class="html-tag">&lt;h1&gt;</span>Printing rows from the database<span class="html-tag">&lt;/h1&gt;</span>
+
+    {<span
+class="php-keyword1">foreach</span> <span class="php-var">$database</span>-&gt;table <span class="php-keyword1">as</span> <span
+class="php-var">$row</span>} ... {/<span class="php-keyword1">foreach</span>}
+{/<span class="php-keyword1">if</span> <span
+class="php-var">$row</span>}</code></pre>
+
+<h2 style="toc:Loops" id="toc-loops-foreach-for-while">Loops <code>{foreach}</code>, <code>{for}</code>, <code>{while}</code></h2>
+
+<p><code>foreach</code>, <code>for</code> and <code>while</code> loops behave exactly the same as their PHP counterparts.</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">foreach</span> <span class="php-var">$result</span> <span
+class="php-keyword1">as</span> <span class="php-var">$row</span>}
+    <span class="html-tag">&lt;span&gt;</span>{<span
+class="php-var">$row</span>-&gt;title}<span class="html-tag">&lt;/span&gt;</span>
+{/<span
+class="php-keyword1">foreach</span>}</code></pre>
+
+<pre class="src-html"><code>{<span class="php-keyword1">while</span> <span class="php-var">$row</span> = <span
+class="php-var">$result</span>-&gt;fetch()}
+    <span class="html-tag">&lt;span&gt;</span>{<span
+class="php-var">$row</span>-&gt;title}<span class="html-tag">&lt;/span&gt;</span>
+{/<span
+class="php-keyword1">while</span>}</code></pre>
+
+<pre class="src-html"><code>{<span class="php-keyword1">for</span> <span class="php-var">$i</span> = <span
+class="php-num">0</span>; <span class="php-var">$i</span> &lt; <span class="php-num">10</span>; <span
+class="php-var">$i</span>++}
+    <span class="html-tag">&lt;span&gt;</span>Item #{<span class="php-var">$i</span>}<span
+class="html-tag">&lt;/span&gt;</span>
+{/<span class="php-keyword1">for</span>}</code></pre>
+
+<p>Inside the <code>foreach</code> loop the <code>$iterator</code> variable is initialized. It holds important information about
+the current loop. <a href="//api.nette.org/2/Latte.Runtime.CachingIterator.html">Its API</a> features iteration counter and
+methods identifying odd, even, first and last iteration:</p>
+
+<ul>
+	<li><code>isFirst()</code> – is this the first iteration?</li>
+
+	<li><code>isLast()</code> – is this the last iteration?</li>
+
+	<li><code>getCounter()</code> – iteration counter, starts from 1</li>
+
+	<li><code>isOdd()</code> – is this iteration odd?</li>
+
+	<li><code>isEven()</code> – is this iteration even?</li>
+</ul>
+
+<p>Object behind the <code>$iterator</code> variable has <a
+href="//doc.nette.org/en/php-language-enhancements#toc-properties-getters-and-setters">Nette\Object class characteristics</a>,
+that's why you can write <code>$iterator-&gt;first</code> instead of <code>$iterator-&gt;isFirst()</code> and alike. For
+example:</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">foreach</span> <span class="php-var">$rows</span> <span
+class="php-keyword1">as</span> <span class="php-var">$row</span>}
+    {<span class="php-keyword1">if</span> <span
+class="php-var">$iterator</span>-&gt;<span class="php-keyword1">first</span>}<span class="html-tag">&lt;table&gt;</span>{/<span
+class="php-keyword1">if</span>}
+
+    <span class="html-tag">&lt;tr</span><span class="html-tagin"> id=</span><span
+class="html-quote">&quot;row-{</span><span class="php-var">$iterator</span>-&gt;counter}<span
+class="html-quote">&quot;</span><span class="html-tag">&gt;</span>
+        <span class="html-tag">&lt;td&gt;</span>{<span
+class="php-var">$row</span>-&gt;name}<span class="html-tag">&lt;/td&gt;</span>
+        <span
+class="html-tag">&lt;td&gt;</span>{<span class="php-var">$row</span>-&gt;email}<span class="html-tag">&lt;/td&gt;</span>
+    <span
+class="html-tag">&lt;/tr&gt;</span>
+
+    {<span class="php-keyword1">if</span> <span class="php-var">$iterator</span>-&gt;<span
+class="php-keyword1">last</span>}<span class="html-tag">&lt;/table&gt;</span>{/<span class="php-keyword1">if</span>}
+{/<span
+class="php-keyword1">foreach</span>}</code></pre>
+
+<p><code>{if $iterator-&gt;first}&lt;table&gt;{/if}</code> can be replaced with <code>{first}&lt;table&gt;{/first}</code>.
+Similarly, the condition with <code>last</code> can be also written as <code>{last}&lt;/table&gt;{/last}</code>. Finally, the
+equivalent of <code>{if !$iterator-&gt;last} … {/if}</code> notation (ie. not the last item) is <code>{sep} … {/sep}</code>
+macro. Usually it marks the separator between items – comma, for example. This way the redundant right comma won't print:</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">foreach</span> <span class="php-var">$items</span> <span
+class="php-keyword1">as</span> <span class="php-var">$item</span>} {<span class="php-var">$item</span>} {<span
+class="php-keyword1">sep</span>}, {/<span class="php-keyword1">sep</span>} {/<span
+class="php-keyword1">foreach</span>}</code></pre>
+
+<p>There are two special macros you can use inside the loop – <code>{continueIf ?}</code> and <code>{breakIf ?}</code> which
+jump to the next iteration and end the loop, respectively, if the conditions are met:</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">foreach</span> <span class="php-var">$rows</span> <span
+class="php-keyword1">as</span> <span class="php-var">$row</span>}
+    {<span class="php-keyword1">continueIf</span> <span
+class="php-var">$row</span>-&gt;parent == <span class="php-keyword1">NULL</span>}
+    ...
+{/<span
+class="php-keyword1">foreach</span>}</code></pre>
+
+<h2 style="toc:Variable declaration" id="toc-variable-declaration-var-and-default">Variable declaration <code>{var}</code> and
+<code>{default}</code></h2>
+
+<p>We can declare variables directly in the template by using <code>{var}</code> macro:</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">var</span> <span class="php-var">$name</span> = <span
+class="php-quote">'John Smith'</span>}
+{<span class="php-keyword1">var</span> <span class="php-var">$age</span> = <span
+class="php-num">27</span>}
+
+<span class="latte-comment">{* Multiple declaration *}</span>
+{<span
+class="php-keyword1">var</span> <span class="php-var">$name</span> = <span class="php-quote">'John Smith'</span>, <span
+class="php-var">$age</span> = <span class="php-num">27</span>}</code></pre>
+
+<p>Macro <code>{default}</code> does the same thing, except it only sets the value to nonexistent variables:</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">default</span> <span class="php-var">$lang</span> = <span
+class="php-quote">'cs'</span>}</code></pre>
+
+<h2 style="toc:Capturing to variables" id="toc-capturing-to-variables-capture">Capturing to variables <code>{capture}</code></h2>
+
+<p>By using <code>{capture}</code> macro you can capture the output to a variable:</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">capture</span> <span class="php-var">$var</span>}
+<span
+class="html-tag">&lt;ul&gt;</span>
+        <span class="html-tag">&lt;li&gt;</span>Hello World<span
+class="html-tag">&lt;/li&gt;</span>
+<span class="html-tag">&lt;/ul&gt;</span>
+{/<span class="php-keyword1">capture</span>}
+
+<span
+class="html-tag">&lt;p&gt;</span>Captured: {<span class="php-var">$var</span>}<span
+class="html-tag">&lt;/p&gt;</span></code></pre>
+
+<p>If you want to capture the output only for a <a href="/en/#toc-filters">filter</a> to be applied it is easier to use the filter
+on the <code>{block}</code> instead:</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">block</span>|strip}
+<span class="html-tag">&lt;ul&gt;</span>
+        <span
+class="html-tag">&lt;li&gt;</span>Hello World<span class="html-tag">&lt;/li&gt;</span>
+<span
+class="html-tag">&lt;/ul&gt;</span>
+{/<span class="php-keyword1">block</span>}</code></pre>
+
+<h2 style="toc:File including" id="toc-file-including-include">File including <code>{include}</code></h2>
+
+<p>You can include other templates into the current template. The included file has access to the global variables of the current
+template. Additionally, we can also pass other variables listed in the macro:</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">include</span> <span class="php-quote">'basket.latte'</span>}
+
+{<span
+class="php-keyword1">include</span> <span class="php-quote">'menu.latte'</span>, level =&gt; <span
+class="php-num">3</span>, data =&gt; <span class="php-var">$menu</span>}</code></pre>
+
+<p class="note">In addition to including files the <code>{include}</code> macro is also used to <a
+href="#toc-block-including">include blocks</a>.</p>
+
+<h2 style="toc:Code evaluation" id="toc-code-evaluation-php-expression">Code evaluation <code>{php expression}</code></h2>
+
+<p>This macro evaluates the code written inside but it does't print it.</p>
+
+<h2 id="toc-header-contenttype">Header <code>{contentType}</code></h2>
+
+<p>Switches <a href="/en/#toc-context-aware-escaping">Context-Aware Escaping</a> to the context determined by the parameter so
+that when printing, the variables are escaped using the rules of the context. For example <code>{contentType xml}</code> would
+switch to the XML escaping mode, meanwhile <code>{contentType text}</code> disables escaping completely.</p>
+
+<p>If the parameter is a complete MIME type the correct HTTP header is sent to the browser:</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">contentType</span> application/xml}
+<span
+class="html-tag">&lt;?xml</span><span class="html-tagin"> version=</span><span class="html-quote">&quot;1.0&quot;</span><span
+class="html-tagin">?</span><span class="html-tag">&gt;</span>
+<span class="html-tag">&lt;rss</span><span
+class="html-tagin"> version=</span><span class="html-quote">&quot;2.0&quot;</span><span class="html-tag">&gt;</span>
+    <span
+class="html-tag">&lt;channel&gt;</span>
+        <span class="html-tag">&lt;title&gt;</span>RSS feed<span
+class="html-tag">&lt;/title&gt;</span>
+        <span class="html-tag">&lt;item&gt;</span>
+            ...
+        <span
+class="html-tag">&lt;/item&gt;</span>
+    <span class="html-tag">&lt;/channel&gt;</span>
+<span
+class="html-tag">&lt;/rss&gt;</span></code></pre>
+
+<h2 id="toc-header-status">Header <code>{status}</code></h2>
+
+<p>Sends HTTP status code:</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">status</span> <span class="php-num">500</span>}</code></pre>
+
+<p>If the headers can't be sent an exception is thrown. You can prevent it from being thrown by using a question mark after the
+status code <code>{status 500?}</code>.</p>
+
+<h2 style="toc:Syntax switching" id="toc-syntax-switching-syntax">Syntax switching <code>{syntax}</code></h2>
+
+<p>Macros don't have to be enclosed by simple braces only, we can also use other delimiters, even at runtime. That's the function
+of <code>{syntax …}</code> macro where we can use following parameters:</p>
+
+<ul>
+	<li>latte: <code>{...}</code></li>
+
+	<li>double: <code>{{...}}</code></li>
+
+	<li>asp: <code>&lt;%...%&gt;</code></li>
+
+	<li>python: <code>{% ... %}</code> and <code>{{ ... }}</code></li>
+
+	<li>off: completely disables macro evaluation</li>
+</ul>
+
+<p>By using the n:macro notation we can disable Latte for a JavaScript block only:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;script</span><span class="html-tagin"> n:syntax=</span><span
+class="html-quote">&quot;off&quot;</span><span class="html-tag">&gt;</span><span class="js-out">
+    </span><span
+class="js-keywords1">var</span><span class="js-out"> obj = </span><span class="xlang">{</span><span
+class="php-keyword1">var</span>: <span class="php-num">123</span>}<span class="js-out">; </span><span
+class="js-comment">// this isn't a macro</span><span class="js-out">
+</span><span
+class="html-tag">&lt;/script&gt;</span></code></pre>
+
+<p>Latte mode can easily be used in JavaScript, you just have to avoid the notation above by writing a space after the opening
+brace <code>{ var: 123}</code> or by using quotes around the identifier <code>{'var': 123}</code>.</p>
+
+<h2 id="toc-n-class">n:class</h2>
+
+<p>In a typical situation we could be trying to print an unknown amount of entries from the database as <code>&lt;li&gt;</code>
+elements and mark the last entry and every odd item with corresponding CSS classes for further styling. In case the last line is
+odd as well, we will require both classes, but we want to avoid empty classes like <code>&lt;li class=" "&gt;</code>.</p>
+
+<p>By using <code>n:class</code> macro the problem is rather trivial:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;ul&gt;</span>
+    {<span class="php-keyword1">foreach</span> <span
+class="php-var">$data</span> <span class="php-keyword1">as</span> <span class="php-var">$item</span>}
+    <span
+class="html-tag">&lt;li</span><span class="html-tagin"> n:class=</span><span
+class="html-quote">&quot;$iterator-&gt;odd ? alt, $iterator-&gt;last ? last&quot;</span><span class="html-tag">&gt;</span>{<span
+class="php-var">$item</span>}<span class="html-tag">&lt;/li&gt;</span>
+    {/<span class="php-keyword1">foreach</span>}
+<span
+class="html-tag">&lt;/ul&gt;</span></code></pre>
+
+<p>Or do you need to mark the current menu link with ‘current’ class?</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;a</span><span class="html-tagin"> href=</span><span
+class="html-quote">&quot;#&quot;</span><span class="html-tagin"> n:class=</span><span
+class="html-quote">&quot;$presenter-&gt;isLinkCurrent('Presenter:*') ? current&quot;</span><span
+class="html-tag">&gt;</span></code></pre>
+
+<p>Amazing, huh?</p>
+
+<h2 id="toc-n-attr">n:attr</h2>
+
+<p><code>n:attr</code> macro is able to generate any HTML attribute similarly to the <a href="#toc-n-class">n:class</a>.
+It's mostly suitable in cases when we don't know which attributes we want to print and which not to.</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;input</span><span class="html-tagin"> type=</span><span
+class="html-quote">&quot;checkbox&quot;</span><span class="html-tagin"> n:attr=</span><span
+class="html-quote">&quot;value =&gt; $value, checked =&gt; $checked&quot;</span><span class="html-tag">&gt;</span></code></pre>
+
+<p>Depending on the values of the variables <code>$value</code> and <code>$checked</code> this will print:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;input</span><span class="html-tagin"> type=</span><span
+class="html-quote">&quot;checkbox&quot;</span><span class="html-tag">&gt;</span>
+
+<span
+class="latte-comment">{* $value = 'Hello' *}</span>
+<span class="html-tag">&lt;input</span><span
+class="html-tagin"> type=</span><span class="html-quote">&quot;checkbox&quot;</span><span class="html-tagin"> value=</span><span
+class="html-quote">&quot;Hello&quot;</span><span class="html-tag">&gt;</span>
+
+<span
+class="latte-comment">{* $checked = TRUE *}</span>
+<span class="html-tag">&lt;input</span><span
+class="html-tagin"> type=</span><span class="html-quote">&quot;checkbox&quot;</span><span class="html-tagin"> value=</span><span
+class="html-quote">&quot;Hello&quot;</span><span class="html-tagin"> checked</span><span class="html-tag">&gt;</span></code></pre>
+
+<h2 id="toc-n-ifcontent">n:ifcontent</h2>
+
+<p><code>n:ifcontent</code> macro removes empty tag</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;div&gt;</span>
+    <span class="html-tag">&lt;div</span><span
+class="html-tagin"> class=</span><span class="html-quote">&quot;error&quot;</span><span
+class="html-tagin"> n:ifcontent</span><span class="html-tag">&gt;</span>{<span class="php-var">$error</span>}<span
+class="html-tag">&lt;/div&gt;</span>
+<span class="html-tag">&lt;/div&gt;</span></code></pre>
+
+<p>Depending on the values of the variable <code>$error</code> this will print:</p>
+
+<pre class="src-html"><code><span class="latte-comment">{* $error = '' *}</span>
+<span class="html-tag">&lt;div&gt;</span>
+<span
+class="html-tag">&lt;/div&gt;</span>
+
+<span class="latte-comment">{* $error = 'Required' *}</span>
+<span
+class="html-tag">&lt;div&gt;</span>
+    <span class="html-tag">&lt;div</span><span class="html-tagin"> class=</span><span
+class="html-quote">&quot;error&quot;</span><span class="html-tag">&gt;</span>Required<span
+class="html-tag">&lt;/div&gt;</span>
+<span class="html-tag">&lt;/div&gt;</span></code></pre>
+
+<h2 style="toc:Localization" id="toc-localization-expression">Localization <code>{_expression}</code></h2>
+
+<p>Macro which helps with automated translating in templates. For proper functionality a translator has to be set, see <a
+href="//doc.nette.org/en/localization#toc-template-translation">localization</a>:</p>
+
+<pre class="src-php"><code><span class="php-var">$template</span>-&gt;setTranslator(<span
+class="php-keyword1">new</span> MyTranslator);</code></pre>
+
+<p>At this point every expression written in this macro will be automatically translated:</p>
+
+<pre class="src-html"><code>{_<span class="php-var">$variable</span>}</code></pre>
+
+<p>You can also use an alternative pair notation for chunks of text within a template:</p>
+
+<pre class="src-html"><code>{_}Text to be translated{/_}</code></pre>
+
+<h2 style="toc:Blocks" id="toc-blocks-block-and-define">Blocks <code>{block}</code> and <code>{define}</code></h2>
+
+<p>Block selects a region of the template, for example to apply a filter (see <a href="#toc-capturing-to-variables">example</a>)
+or to name it and reinsert it elsewhere in the template.</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">block</span> sidebar}
+    <span
+class="html-tag">&lt;h3&gt;</span>Menu<span class="html-tag">&lt;/h3&gt;</span>
+    ...
+{/<span
+class="php-keyword1">block</span>}</code></pre>
+
+<p>We can nest the blocks and of course we can write them in <code>n:macro</code> notation:</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">block</span> sidebar}
+    <span
+class="html-tag">&lt;h3&gt;</span>Menu<span class="html-tag">&lt;/h3&gt;</span>
+    ...
+
+    <span
+class="html-tag">&lt;ul</span><span class="html-tagin"> n:block=</span><span class="html-quote">&quot;menulist&quot;</span><span
+class="html-tag">&gt;</span>
+        ...
+    <span class="html-tag">&lt;/ul&gt;</span>
+{/<span
+class="php-keyword1">block</span>}</code></pre>
+
+<p>A block is immediately printed. In case we want to define the block only without printing it we can use <code>{define}</code>
+macro instead of <code>{block}</code>.</p>
+
+<p>As for the name of the block it is allowed to specify it by a variable too: <code>{block $var} … {/block}</code>.</p>
+
+<p>Every block can see the variables of its surroundings. But alternation of the value inside the block will be visible only in
+the block (and in nested blocks of course).</p>
+
+<p>Existence of a block can by tested with <code>{ifset #block}</code> macro.</p>
+
+<h2 style="toc:Block including" id="toc-block-and-template-inclusion-include-block-or-include-mytemplate-latte">Block and template
+inclusion <code>{include block}</code> or <code>{include 'mytemplate.latte'}</code></h2>
+
+<p>Block and template inclusion is performed using <code>{include}</code> macro.</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">include</span> sidebar}</code></pre>
+
+<p>Analogically for templates:</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">include</span> <span
+class="php-quote">'sidebar.latte'</span>}</code></pre>
+
+<p>It is also possible to pass additional parameters:</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">include</span> sidebar, id =&gt; <span
+class="php-num">123</span>, name =&gt; <span class="php-var">$value</span>}</code></pre>
+
+<p>We can include a block by specifying the block name stored in a variable as well (to differentiate from including a file we use
+the hash sign before the block name):</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">include</span> #<span class="php-var">$block$name</span>}</code></pre>
+
+<p>Blocks can also include themselves which is suitable when rendering a tree structured menu.</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">block</span> menu}
+<span class="html-tag">&lt;ul&gt;</span>
+    {<span
+class="php-keyword1">foreach</span> <span class="php-var">$menu</span> <span class="php-keyword1">as</span> <span
+class="php-var">$item</span>}
+    <span class="html-tag">&lt;li&gt;</span>{<span class="php-keyword1">if</span> is_array(<span
+class="php-var">$item</span>)}
+        {<span class="php-keyword1">include</span> menu, menu =&gt; <span
+class="php-var">$item</span>}
+    {<span class="php-keyword1">else</span>}
+        {<span
+class="php-var">$item</span>}
+    {/<span class="php-keyword1">if</span>}<span class="html-tag">&lt;/li&gt;</span>
+    {/<span
+class="php-keyword1">foreach</span>}
+<span class="html-tag">&lt;/ul&gt;</span>
+{/<span
+class="php-keyword1">block</span>}</code></pre>
+
+<p>Instead of <code>{include menu, ...}</code> we can write <code>{include this, ...}</code> where #this points to the
+current block.</p>
+
+<p>If you need to add some code to the previously defined block (e.g. add a link to a new stylesheet), you don't need to redeclare
+and copy whole block. Use <code>{include parent}</code> instead.</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">block</span> styles}
+    {<span
+class="php-keyword1">include</span> parent}
+    <span class="html-tag">&lt;link</span><span class="html-tagin"> href=</span><span
+class="html-quote">&quot;http://url.to.styles.css&quot;</span><span class="html-tagin"> rel=</span><span
+class="html-quote">&quot;stylesheet&quot;</span><span class="html-tag">&gt;</span>
+{/<span
+class="php-keyword1">block</span>}</code></pre>
+
+<h2 style="toc:Template expansion/inheritance" id="toc-template-expansion-inheritance-layout">Template expansion/inheritance
+<code>{layout}</code></h2>
+
+<p>Template expansion (also called inheritance) is a powerful tool which enables us to create even very complicated layouts
+effectively and with no code repetition.</p>
+
+<p>Let's say we have two simple pages. The first one:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;html&gt;</span>
+    <span
+class="html-tag">&lt;head&gt;</span>
+        <span class="html-tag">&lt;title&gt;</span>First page | My web<span
+class="html-tag">&lt;/title&gt;</span>
+    <span class="html-tag">&lt;/head&gt;</span>
+    <span
+class="html-tag">&lt;body&gt;</span>
+        <span class="html-tag">&lt;div</span><span class="html-tagin"> id=</span><span
+class="html-quote">&quot;sidebar&quot;</span><span class="html-tag">&gt;</span>
+            <span
+class="html-tag">&lt;ul&gt;</span>...<span class="html-tag">&lt;/ul&gt;</span>
+        <span
+class="html-tag">&lt;/div&gt;</span>
+
+        <span class="html-tag">&lt;div</span><span class="html-tagin"> id=</span><span
+class="html-quote">&quot;content&quot;</span><span class="html-tag">&gt;</span>
+            <span
+class="html-tag">&lt;p&gt;</span>Lorem Gypsum...<span class="html-tag">&lt;/p&gt;</span>
+        <span
+class="html-tag">&lt;/div&gt;</span>
+    <span class="html-tag">&lt;/body&gt;</span>
+<span
+class="html-tag">&lt;/html&gt;</span></code></pre>
+
+<p>and the second:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;html&gt;</span>
+    <span
+class="html-tag">&lt;head&gt;</span>
+        <span class="html-tag">&lt;title&gt;</span>Second page | My web<span
+class="html-tag">&lt;/title&gt;</span>
+    <span class="html-tag">&lt;/head&gt;</span>
+    <span
+class="html-tag">&lt;body&gt;</span>
+        <span class="html-tag">&lt;div</span><span class="html-tagin"> id=</span><span
+class="html-quote">&quot;sidebar&quot;</span><span class="html-tag">&gt;</span>
+            <span
+class="html-tag">&lt;ul&gt;</span>...<span class="html-tag">&lt;/ul&gt;</span>
+        <span
+class="html-tag">&lt;/div&gt;</span>
+
+        <span class="html-tag">&lt;div</span><span class="html-tagin"> id=</span><span
+class="html-quote">&quot;content&quot;</span><span class="html-tag">&gt;</span>
+            <span
+class="html-tag">&lt;p&gt;</span>Proin eu sem purus. Donec bibendum
+            vestibulum...<span
+class="html-tag">&lt;/p&gt;</span>
+        <span class="html-tag">&lt;/div&gt;</span>
+    <span
+class="html-tag">&lt;/body&gt;</span>
+<span class="html-tag">&lt;/html&gt;</span></code></pre>
+
+<p>The pages vary only by <code>&lt;title&gt;</code> and <code>&lt;div#content&gt;</code> elements, so we'll create a layout file
+which contains all common parts and specifies placeholders, which are nothing more but blocks:</p>
+
+<p>File <code>@layout.latte</code>:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;html&gt;</span>
+    <span
+class="html-tag">&lt;head&gt;</span>
+        <span class="html-tag">&lt;title&gt;</span>{<span
+class="php-keyword1">block</span> title}{/<span class="php-keyword1">block</span>} | My web<span
+class="html-tag">&lt;/title&gt;</span>
+    <span class="html-tag">&lt;/head&gt;</span>
+    <span
+class="html-tag">&lt;body&gt;</span>
+        <span class="html-tag">&lt;div</span><span class="html-tagin"> id=</span><span
+class="html-quote">&quot;sidebar&quot;</span><span class="html-tag">&gt;</span>
+            <span
+class="html-tag">&lt;ul&gt;</span>...<span class="html-tag">&lt;/ul&gt;</span>
+        <span
+class="html-tag">&lt;/div&gt;</span>
+
+        <span class="html-tag">&lt;div</span><span class="html-tagin"> id=</span><span
+class="html-quote">&quot;content&quot;</span><span class="html-tag">&gt;</span>{<span
+class="php-keyword1">block</span> content}{/<span class="php-keyword1">block</span>}<span
+class="html-tag">&lt;/div&gt;</span>
+    <span class="html-tag">&lt;/body&gt;</span>
+<span
+class="html-tag">&lt;/html&gt;</span></code></pre>
+
+<p>In the actual templates we'll point to the layout by using the <code>{layout}</code> macro, so we can minimize the template
+content by only defining the two blocks:</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">layout</span> <span class="php-quote">'@layout.latte'</span>}
+
+{<span
+class="php-keyword1">block</span> title}First page{/<span class="php-keyword1">block</span>}
+
+{<span
+class="php-keyword1">block</span> content}<span class="html-tag">&lt;p&gt;</span>Lorem Gypsum...<span
+class="html-tag">&lt;/p&gt;</span>{/<span class="php-keyword1">block</span>}</code></pre>
+
+<p>The other page will look similar.</p>
+
+<p>Also, there are no limits to the number of levels, there can be as many layers as you want.</p>
+
+<h2 style="toc:Component rendering" id="toc-component-rendering-control">Component rendering <code>{control …}</code></h2>
+
+<p><code>{control}</code> macro renders the presenter component. For better understanding it's good to know how the macro is
+compiled to PHP code.</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">control</span> cartControl}       renders whole cart on the page
+{<span
+class="php-keyword1">control</span> cartControl:small} renders small sidebar cart summary</code></pre>
+
+<p>This compiles to:</p>
+
+<pre class="src-php"><code><span class="php-var">$control</span>-&gt;getComponent(<span
+class="php-quote">'cartControl'</span>)-&gt;render();
+<span class="php-var">$control</span>-&gt;getComponent(<span
+class="php-quote">'cartControl'</span>)-&gt;renderSmall();</code></pre>
+
+<p><code>getComponent()</code> method returns the <code>cartControl</code> component and then the <code>render()</code> or
+<code>renderSmall()</code> method, respectively, is called on it.</p>
+
+<p>We can also add parameters which will be passed to the render method, for example:</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">control</span> cartControl, <span class="php-var">$maxItems</span>, <span
+class="php-var">$showSummary</span>}
+{<span class="php-keyword1">control</span> cartControl, maxItems =&gt; <span
+class="php-num">5</span>, showSummary =&gt; <span class="php-keyword1">true</span>}
+{<span
+class="php-keyword1">control</span> cartControl, [maxItems =&gt; <span class="php-num">5</span>, showSummary =&gt; <span
+class="php-keyword1">true</span>]}
+{<span class="php-keyword1">control</span> cartControl:small, <span
+class="php-var">$maxItems</span>, <span class="php-var">$showSummary</span>}</code></pre>
+
+<p>compiles to:</p>
+
+<pre class="src-php"><code><span class="php-var">$control</span>-&gt;getComponent(<span
+class="php-quote">'cartControl'</span>)-&gt;render(<span class="php-var">$maxItems</span>, <span
+class="php-var">$showSummary</span>);
+<span class="php-var">$control</span>-&gt;getComponent(<span
+class="php-quote">'cartControl'</span>)-&gt;render([<span class="php-quote">'maxItems'</span> =&gt; <span
+class="php-num">5</span>, <span class="php-quote">'showSummary'</span> =&gt; <span class="php-keyword1">true</span>]);
+<span
+class="php-var">$control</span>-&gt;getComponent(<span class="php-quote">'cartControl'</span>)-&gt;render([[<span
+class="php-quote">'maxItems'</span> =&gt; <span class="php-num">5</span>, <span class="php-quote">'showSummary'</span> =&gt; <span
+class="php-keyword1">true</span>]]);
+<span class="php-var">$control</span>-&gt;getComponent(<span
+class="php-quote">'cartControl'</span>)-&gt;renderSmall(<span class="php-var">$maxItems</span>, <span
+class="php-var">$showSummary</span>);</code></pre>
+
+<p class="caution">If anywhere in the parameter part <b><code>=&gt;</code></b> is used, all parameters will be wrapped with an
+array and passed as the first argument.</p>
+
+<p>Rendering of sub-component:</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">control</span> cartControl-someForm}</code></pre>
+
+<p>compiles to:</p>
+
+<pre class="src-php"><code><span class="php-var">$control</span>-&gt;getComponent(<span
+class="php-quote">&quot;cartControl-someForm&quot;</span>)-&gt;render();</code></pre>
+
+<h2 style="toc:Forms" id="toc-forms-form-input-inputerror-label">Forms <code>{form}</code>, <code>{input}</code>,
+<code>{inputError}</code>, <code>{label}</code></h2>
+
+<p>Macros for rendering <a href="//doc.nette.org/en/forms">forms</a> and their elements:</p>
+
+<pre class="src-html"><code>{form myForm}
+<span class="html-tag">&lt;table&gt;</span>
+<span class="html-tag">&lt;tr</span><span
+class="html-tagin"> n:foreach=</span><span class="html-quote">&quot;$form-&gt;controls as $name =&gt; $field&quot;</span><span
+class="html-tag">&gt;</span>
+    <span class="html-tag">&lt;th&gt;</span>{label <span class="php-var">$name</span> /}<span
+class="html-tag">&lt;th&gt;</span>
+    <span class="html-tag">&lt;td&gt;</span>{input <span class="php-var">$name</span>}<span
+class="html-tag">&lt;/td&gt;</span>
+    <span class="html-tag">&lt;td</span><span class="html-tagin"> n:ifcontent</span><span
+class="html-tag">&gt;</span>{inputError <span class="php-var">$name</span>}<span class="html-tag">&lt;/td&gt;</span>
+<span
+class="html-tag">&lt;/tr&gt;</span>
+<span class="html-tag">&lt;/table&gt;</span>
+{/form}</code></pre>
+
+<p><code>{input}</code> macro renders any element including select boxes and textareas. <code>{label}</code> is optionally paired
+macro, ie. <code>{label}Age{/label}</code>, in that case the text is translated too. Macro <code>{inputError}</code> prints error
+message for form input.</p>
+
+<h2 style="toc:Variable dumping" id="toc-variable-dumping-dump">Variable dumping <code>{dump}</code></h2>
+
+<pre class="src-html"><code>{dump <span class="php-var">$name</span>} <span
+class="latte-comment">{* inspects the $name variable *}</span>
+
+{dump}       <span
+class="latte-comment">{* inspects all the defined variables *}</span></code></pre>
+
+<h2 style="toc:debugbreak" id="toc-break-point-debugbreak">Break point <code>{debugbreak}</code></h2>
+
+<p>Specifies the place where code execution will break. It is used for debugging purposes for the programmer to inspect the
+runtime environment and to ensure the code runs as expected. It supports <a href="http://xdebug.org">Xdebug</a> and <a
+href="http://www.nusphere.com/products/php_debugger.htm">PhpEd</a>. Additionally, you can specify a condition when the code
+should break.</p>
+
+<pre class="src-html"><code>{debugbreak} <span class="latte-comment">{* breaks the program *}</span>
+
+{debugbreak <span
+class="php-var">$counter</span> == <span class="php-num">1</span>}  <span
+class="latte-comment">{* breaks the program if the condition is met *}</span></code></pre>
+
+
+		</div>
+
+			<aside class="main">
+		<div>
+			<p><a href="https://github.com/nette/latte">GitHub</a> | <a href="https://api.nette.org/latte/namespace-Latte.html">API</a>
+			<br>composer: <a href="https://packagist.org/packages/latte/latte">latte/latte</a></p>
+
+
+			<ul class="toc">
+				<li class="up" value="0"><a href="#">▲</a></li>
+				<li><a href="#toc-variable-and-expression-printing-expression">Variable and expression printing {expression}</a>
+				</li>
+				<li><a href="#toc-conditions-if-cond-if">Conditions {if $cond} … {/if}</a>
+				</li>
+				<li><a href="#toc-loops-foreach-for-while">Loops {foreach}, {for}, {while}</a>
+				</li>
+				<li><a href="#toc-variable-declaration-var-and-default">Variable declaration {var} and {default}</a>
+				</li>
+				<li><a href="#toc-capturing-to-variables-capture">Capturing to variables {capture}</a>
+				</li>
+				<li><a href="#toc-file-including-include">File including {include}</a>
+				</li>
+				<li><a href="#toc-code-evaluation-php-expression">Code evaluation {php expression}</a>
+				</li>
+				<li><a href="#toc-header-contenttype">Header {contentType}</a>
+				</li>
+				<li><a href="#toc-header-status">Header {status}</a>
+				</li>
+				<li><a href="#toc-syntax-switching-syntax">Syntax switching {syntax}</a>
+				</li>
+				<li><a href="#toc-n-class">n:class</a>
+				</li>
+				<li><a href="#toc-n-attr">n:attr</a>
+				</li>
+				<li><a href="#toc-n-ifcontent">n:ifcontent</a>
+				</li>
+				<li><a href="#toc-localization-expression">Localization {_expression}</a>
+				</li>
+				<li><a href="#toc-blocks-block-and-define">Blocks {block} and {define}</a>
+				</li>
+				<li><a href="#toc-block-and-template-inclusion-include-block-or-include-mytemplate-latte">Block and template inclusion {include block} or {include 'mytemplate.latte'}</a>
+				</li>
+				<li><a href="#toc-template-expansion-inheritance-layout">Template expansion/inheritance {layout}</a>
+				</li>
+				<li><a href="#toc-component-rendering-control">Component rendering {control …}</a>
+				</li>
+				<li><a href="#toc-forms-form-input-inputerror-label">Forms {form}, {input}, {inputError}, {label}</a>
+				</li>
+				<li><a href="#toc-variable-dumping-dump">Variable dumping {dump}</a>
+				</li>
+				<li><a href="#toc-break-point-debugbreak">Break point {debugbreak}</a>
+				</li>
+			</ul>
+		</div>
+	</aside>
+	</div>
+
+	<footer class="main">
+		<p>&copy; 2008, 2016 <a href="https://nettefoundation.com">Nette Foundation</a> | <a href="http://php7.org/guidelines/">PHP Coding Guidelines</a>
+		| <a href="https://nette.org/terms-of-use">Terms of use</a> | If not stated otherwise, the contents are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cz/">Creative Commons CC-BY-SA</a>.</p>
+	</footer>
+
+</div>
+
+<div class="bar"><div>
+
+	<ul class="user" style="opacity:.6">
+		<li><a href="https://addons.nette.org/"><span>Add-ons</span></a>
+		<li><a href="https://pla.nette.org/en/"><span>Planette</span></a>
+		<li><a href="https://forum.nette.org/en/"><span>Forum</span></a>
+		<li><a href="https://blog.nette.org"><span>Blog</span></a>
+		<li><a href="https://nette.org/donate"><span>Donate</span></a>
+		<li>
+		<form action="https://www.google.com/cse" class="search">
+			<input type="hidden" name="cx" value="011549293477758430224:vxofa9ufnhc"><input type="hidden" name="ie" value="UTF-8"><input type="search" name="q" class="text" size="30" placeholder="Search"><input type="image" src="https://files.nette.org/images/search.png" alt="Search">
+		</form>
+		</li>
+	</ul>
+</div></div>
+
+</body>
+</html>

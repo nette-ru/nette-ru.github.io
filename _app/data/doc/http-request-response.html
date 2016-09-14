@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html class="nette-doc">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Nette Foundation; c 2008">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>HTTP Request &amp; Response | Nette Framework</title>
+
+	<link rel="stylesheet" href="https://files.nette.org/css/combined.css?v=1468405828">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://nette.org/opensearch.xml" title="Nette Framework">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://forum.nette.org/opensearch.xml" title="Nette Framework forum">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://api.nette.org/opensearch.xml" title="Nette Framework API">
+	<link rel="canonical" href="/en/2.4/http-request-response">
+	<link rel="image_src" href="https://files.nette.org/images/fb-preview.png">
+
+		<link rel="alternate" hreflang="cs" href="/cs/2.4/http-request-response">
+	<link rel="alternate" hreflang="en" href="/en/2.4/http-request-response">
+</head>
+
+
+<body>
+<script>
+	ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-95238-14','auto'); ga('send','pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+<script src="https://api.nette.org/2.4/elementlist.js" async></script>
+<script src="https://files.nette.org/js/combined.js?v=1468489896" async></script>
+
+<div class="page">
+	<header class="main">
+		<a class="logo" title="Homepage" href="https://nette.org/en/"><span>Homepage</span></a>
+
+		<nav class="main">
+			<ul>
+	<li><a href="//nette.org/en/download">Download</a></li>
+
+	<li class="item-doc"><a href="/en/">Documentation</a></li>
+
+	<li><a href="https://api.nette.org">API</a></li>
+
+	<li><a href="https://github.com/nette">GitHub</a></li>
+</ul>
+
+		</nav>
+	</header>
+
+		<div class="wikimenu">
+	<div>
+		<div><a href="https://github.com/nette/web-content/blob/doc-2.4/en/http-request-response.texy">Edit</a></div>
+		<ul>
+			<li><a href="https://nette.org/en/writing">How to write?</a></li>
+
+			<li><a href="/en/2.4/http-request-response?view=links">Backlinks</a></li>
+
+			<li>Languages: <a href="/cs/2.4/http-request-response">cs</a> <a href="/en/2.4/http-request-response">en</a> </li>
+
+			<li>changed 23. 5. 2016</li>
+
+			<li><a href="/special/sitemap?lang=en">All pages</a></li>
+
+			<li><a href="/special/broken-links?lang=en">Broken links</a></li>
+		</ul>
+	</div>
+
+	<div>
+		<div>Lang</div>
+		<ul>
+			<li><a href="/cs/2.4/http-request-response">cs</a></li>
+			<li><a href="/en/2.4/http-request-response">en</a></li>
+		</ul>
+	</div>
+
+	<div class=versionmenu>
+		<div>Version 2.4</div>
+		<ul>
+			<li><a href="/en/2.3/http-request-response">Version 2.3</a></li>
+			<li><a href="/en/2.2/http-request-response">Version 2.2</a></li>
+			<li><a href="/en/2.1/http-request-response">Version 2.1</a></li>
+			<li><a href="/en/2.0/http-request-response">Version 2.0</a></li>
+		</ul>
+	</div>
+</div>
+
+
+	<div class="main">
+		<div class="content has-sidebar">
+			
+
+			<ul class="breadcrumbs">
+				<li><a href="/en/2.4/">Documentation</a></li>
+				<li>HTTP Request &amp; Response</li>
+			</ul>
+
+
+<h1 id="toc-http-request-response">HTTP Request &amp; Response</h1>
+
+<p class="perex">HTTP request and response are encapsulated in <a
+href="//api.nette.org/2.4/Nette.Http.Request.html">Nette\Http\Request</a> and <a
+href="//api.nette.org/2.4/Nette.Http.Response.html">Response</a> objects which offer comfortable API and also act as sanitization
+filter.</p>
+
+<h2 id="toc-http-request">HTTP Request</h2>
+
+<p>Nette Framework cleans out data sent by user from control and invalid characters. It also removes any <i>magic_quotes</i>.</p>
+
+<p>HTTP request which is an object of class <a href="//api.nette.org/2.4/Nette.Http.Request.html">Nette\Http\Request</a> we don't
+create directly, but we receive it as a service from a <a href="/en/2.4/di-usage">DI container</a>.</p>
+
+<pre class="src-php"><code><span class="php-var">$httpRequest</span> = <span class="php-var">$container</span>-&gt;getByType(<span
+class="php-quote">'Nette\Http\Request'</span>);</code></pre>
+
+<p>The URL of the request is available as <a href="//api.nette.org/2.4/Nette.Http.UrlScript.html">Nette\Http\UrlScript</a>
+instance:</p>
+
+<pre class="src-php"><code><span class="php-var">$url</span> = <span class="php-var">$httpRequest</span>-&gt;getUrl();
+<span
+class="php-keyword1">echo</span> <span class="php-var">$url</span>;       <span
+class="php-comment">// e.g. https://nette.org/en/documentation?action=edit</span>
+<span class="php-keyword1">echo</span> <span
+class="php-var">$url</span>-&gt;host; <span class="php-comment">// nette.org</span></code></pre>
+
+<p>Determine current HTTP method:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">echo</span> <span class="php-var">$httpRequest</span>-&gt;getMethod(); <span
+class="php-comment">// GET, POST, HEAD, PUT</span>
+
+<span class="php-keyword1">if</span> (<span
+class="php-var">$httpRequest</span>-&gt;isMethod(<span class="php-quote">'GET'</span>)) ...</code></pre>
+
+<p>Is the connection encrypted (HTTPS)?</p>
+
+<pre class="src-php"><code><span class="php-keyword1">echo</span> <span
+class="php-var">$httpRequest</span>-&gt;isSecured() ? <span class="php-quote">'yes'</span> : <span
+class="php-quote">'no'</span>;</code></pre>
+
+<p>Is this an AJAX request?</p>
+
+<pre class="src-php"><code><span class="php-keyword1">echo</span> <span class="php-var">$httpRequest</span>-&gt;isAjax() ? <span
+class="php-quote">'yes'</span> : <span class="php-quote">'no'</span>;</code></pre>
+
+<p>What is the user's IP address?</p>
+
+<pre class="src-php"><code><span class="php-keyword1">echo</span> <span
+class="php-var">$httpRequest</span>-&gt;getRemoteAddress(); <span class="php-comment">// user's IP address</span>
+<span
+class="php-keyword1">echo</span> <span class="php-var">$httpRequest</span>-&gt;getRemoteHost();    <span
+class="php-comment">// and its DNS translation</span></code></pre>
+
+<p>What URL the user came from? Returned as <a href="/en/2.4/urls">Nette\Http\Url</a> object.</p>
+
+<pre class="src-php"><code><span class="php-keyword1">echo</span> <span
+class="php-var">$httpRequest</span>-&gt;getReferer()-&gt;host;</code></pre>
+
+<p>Request parameters:</p>
+
+<pre class="src-php"><code><span class="php-var">$get</span> = <span class="php-var">$httpRequest</span>-&gt;getQuery();    <span
+class="php-comment">// array of all URL parameters</span>
+<span class="php-var">$id</span> = <span
+class="php-var">$httpRequest</span>-&gt;getQuery(<span class="php-quote">'id'</span>); <span
+class="php-comment">// returns GET parameter 'id' (or NULL)</span>
+
+<span class="php-var">$post</span> = <span
+class="php-var">$httpRequest</span>-&gt;getPost();    <span class="php-comment">// array of all POST parameters</span>
+<span
+class="php-var">$id</span> = <span class="php-var">$httpRequest</span>-&gt;getPost(<span class="php-quote">'id'</span>);  <span
+class="php-comment">// returns POST parameter 'id' (or NULL)</span>
+
+<span class="php-var">$cookies</span> = <span
+class="php-var">$httpRequest</span>-&gt;getCookies(); <span class="php-comment">// array of all cookies</span>
+<span
+class="php-var">$sessId</span> = <span class="php-var">$httpRequest</span>-&gt;getCookie(<span
+class="php-quote">'sess_id'</span>); <span class="php-comment">// returns the cookie (or NULL)</span></code></pre>
+
+<p>Uploaded files are encapsulated into <a href="//api.nette.org/2.4/Nette.Http.FileUpload.html">Nette\Http\FileUpload</a>
+objects:</p>
+
+<pre class="src-php"><code><span class="php-var">$files</span> = <span class="php-var">$httpRequest</span>-&gt;getFiles(); <span
+class="php-comment">// array of all uploaded files</span>
+
+<span class="php-var">$file</span> = <span
+class="php-var">$httpRequest</span>-&gt;getFile(<span class="php-quote">'avatar'</span>); <span
+class="php-comment">// returns one file</span>
+<span class="php-keyword1">echo</span> <span
+class="php-var">$file</span>-&gt;getName(); <span class="php-comment">// name of the file sent by user</span>
+<span
+class="php-keyword1">echo</span> <span class="php-var">$file</span>-&gt;getSanitizedName(); <span
+class="php-comment">// the name without dangerous characters</span></code></pre>
+
+<p>HTTP headers are also accessible:</p>
+
+<pre class="src-php"><code><span class="php-comment">// returns associative array of HTTP headers</span>
+<span
+class="php-var">$headers</span> = <span class="php-var">$httpRequest</span>-&gt;getHeaders();
+
+<span
+class="php-comment">// returns concrete header (case-insensitive)</span>
+<span class="php-var">$userAgent</span> = <span
+class="php-var">$httpRequest</span>-&gt;getHeader(<span class="php-quote">'User-Agent'</span>);</code></pre>
+
+<p>A useful method is <code>detectLanguage()</code>. You can pass it an array with languages supported by application and it
+returns the one preferred by browser. It is not magic, the method just uses the <code>Accept-Language</code> header.</p>
+
+<pre class="src-php"><code><span
+class="php-comment">// Header sent by browser: Accept-Language: cs,en-us;q=0.8,en;q=0.5,sl;q=0.3</span>
+
+<span
+class="php-var">$langs</span> = [<span class="php-quote">'hu'</span>, <span class="php-quote">'pl'</span>, <span
+class="php-quote">'en'</span>]; <span class="php-comment">// languages supported in application</span>
+
+<span
+class="php-keyword1">echo</span> <span class="php-var">$httpRequest</span>-&gt;detectLanguage(<span
+class="php-var">$langs</span>); <span class="php-comment">// en</span></code></pre>
+
+<h3 id="toc-requestfactory-and-url-filtering">RequestFactory and URL filtering</h3>
+
+<p>Object holding current HTTP request is created by <a
+href="//api.nette.org/2.4/Nette.Http.RequstFactory.html">Nette\Http\RequstFactory</a>. Its behavior can be modified.
+It's possible to clean up URLs from characters that can get into them because of poorly implemented comment systems on various
+other websites by using filters:</p>
+
+<pre class="src-php"><code><span class="php-var">$requestFactory</span> = <span
+class="php-keyword1">new</span> Nette\Http\RequestFactory;
+
+<span class="php-comment">// remove spaces from path</span>
+<span
+class="php-var">$requestFactory</span>-&gt;addUrlFilter(<span class="php-quote">'%20'</span>, <span
+class="php-quote">''</span>, PHP_URL_PATH);
+
+<span
+class="php-comment">// remove dot, comma or right parenthesis form the end of the URL</span>
+<span
+class="php-var">$requestFactory</span>-&gt;addUrlFilter(<span class="php-quote">'[.,)]$'</span>);
+
+<span
+class="php-comment">// clean the path from duplicated slashes (default filter)</span>
+<span
+class="php-var">$requestFactory</span>-&gt;addUrlFilter(<span class="php-quote">'/{2,}'</span>, <span
+class="php-quote">'/'</span>, PHP_URL_PATH);</code></pre>
+
+<p>And then we let the factory generate a new <code>httpRequest</code> and we store it in a system container:</p>
+
+<pre class="src-php"><code><span class="php-comment">// $container is a system container</span>
+<span
+class="php-var">$container</span>-&gt;addService(<span class="php-quote">'httpRequest'</span>, <span
+class="php-var">$requestFactory</span>-&gt;createHttpRequest());</code></pre>
+
+<h2 id="toc-http-response">HTTP response</h2>
+
+<p>HTTP response which is an object of class <a href="//api.nette.org/2.4/Nette.Http.Response.html">Nette\Http\Response</a> we
+don't create directly, but we receive it as a service from a <a href="/en/2.4/di-usage">DI container</a>.</p>
+
+<pre class="src-php"><code><span class="php-var">$httpResponse</span> = <span
+class="php-var">$container</span>-&gt;getByType(<span class="php-quote">'Nette\Http\Response'</span>);</code></pre>
+
+<p>Whether it is still possible to send headers or change the status code tells the <code>isSent()</code> method. If it returns
+TRUE, it won't be possible to send another header or change the status code.</p>
+
+<p class="caution">In that case, any attempt to send header or change code invokes <code>Nette\InvalidStateException</code>.</p>
+
+<p><a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10">Response status code</a> can be sent and retrieved
+this way:</p>
+
+<pre class="src-php"><code><span class="php-var">$httpResponse</span>-&gt;setCode(Nette\Http\Response::S404_NOT_FOUND);
+
+<span
+class="php-keyword1">echo</span> <span class="php-var">$httpResponse</span>-&gt;getCode(); <span
+class="php-comment">// 404</span></code></pre>
+
+<p>For better source code readability it is recommended to use predefined constants instead of actual numbers:</p>
+
+<pre>Http\IResponse::S200_OK
+Http\IResponse::S204_NO_CONTENT
+Http\IResponse::S300_MULTIPLE_CHOICES
+Http\IResponse::S301_MOVED_PERMANENTLY
+Http\IResponse::S302_FOUND
+Http\IResponse::S303_SEE_OTHER
+Http\IResponse::S303_POST_GET
+Http\IResponse::S304_NOT_MODIFIED
+Http\IResponse::S307_TEMPORARY_REDIRECT
+Http\IResponse::S400_BAD_REQUEST
+Http\IResponse::S401_UNAUTHORIZED
+Http\IResponse::S403_FORBIDDEN
+Http\IResponse::S404_NOT_FOUND
+Http\IResponse::S410_GONE
+Http\IResponse::S500_INTERNAL_SERVER_ERROR
+Http\IResponse::S501_NOT_IMPLEMENTED
+Http\IResponse::S503_SERVICE_UNAVAILABLE</pre>
+
+<p>Method <code>setContentType($type, $charset=NULL)</code> changes <code>Content-Type</code> response header:</p>
+
+<pre class="src-php"><code><span class="php-var">$httpResponse</span>-&gt;setContentType(<span
+class="php-quote">'text/plain'</span>, <span class="php-quote">'UTF-8'</span>);</code></pre>
+
+<p>Redirection to another URL is done by <code>redirect($url, $code=302)</code> method. Do not forget to terminate the script
+afterwards!</p>
+
+<pre class="src-php"><code><span class="php-var">$httpResponse</span>-&gt;redirect(<span
+class="php-quote">'http://example.com'</span>);
+<span class="php-keyword1">exit</span>;</code></pre>
+
+<p>To set the document expiration date, we can use <code>setExpiration()</code> method. The parameter is either text data, number
+of seconds or a timestamp:</p>
+
+<pre class="src-php"><code><span class="php-comment">// browser cache expires in one hour</span>
+<span
+class="php-var">$httpResponse</span>-&gt;setExpiration(<span class="php-quote">'+ 1 hours'</span>);</code></pre>
+
+<p>Now we send the HTTP response header:</p>
+
+<pre class="src-php"><code><span class="php-var">$httpResponse</span>-&gt;setHeader(<span class="php-quote">'Pragma'</span>, <span
+class="php-quote">'no-cache'</span>);
+
+<span
+class="php-comment">// or if we want to send the same header more times with different values</span>
+<span
+class="php-var">$httpResponse</span>-&gt;addHeader(<span class="php-quote">'Pragma'</span>, <span
+class="php-quote">'no-cache'</span>);</code></pre>
+
+<p>Sent headers are also available:</p>
+
+<pre class="src-php"><code><span class="php-comment">// returns associative array of headers</span>
+<span
+class="php-var">$headers</span> = <span class="php-var">$httpResponse</span>-&gt;getHeaders();
+
+<span
+class="php-comment">// returns concrete header (case-insensitive)</span>
+<span class="php-var">$pragma</span> = <span
+class="php-var">$httpResponse</span>-&gt;getHeader(<span class="php-quote">'Pragma'</span>);</code></pre>
+
+<p>There are two methods for cookie manipulation: <code>setCookie()</code> and <code>deleteCookie()</code>.</p>
+
+<pre class="src-php"><code><span
+class="php-comment">// setCookie($name, $value, $time, [$path, [$domain, [$secure, [$httpOnly]]]])</span>
+<span
+class="php-var">$httpResponse</span>-&gt;<span class="php-keyword2">setCookie</span>(<span class="php-quote">'lang'</span>, <span
+class="php-quote">'en'</span>, <span class="php-quote">'100 days'</span>); <span class="php-comment">// send cookie</span>
+
+<span
+class="php-comment">// deleteCookie($name, [$path, [$domain, [$secure]]])</span>
+<span
+class="php-var">$httpResponse</span>-&gt;deleteCookie(<span class="php-quote">'lang'</span>); <span
+class="php-comment">// delete cookie</span></code></pre>
+
+<p>These two methods can take more parameters: <code>$path</code> (subdirectory where the cookie will be available),
+<code>$domain</code> and <code>$secure</code>. Their detailed description can be found in PHP manual for <a
+href="http://php.net/setcookie">setcookie</a> function.</p>
+
+
+<div class="paginator">
+	<small><a href="/en/2.4/php-language-enhancements">« PHP Language Enhancements</a></small>
+	<a href="/en/2.4/database">Database »</a>
+</div>
+		</div>
+
+			<aside class="main">
+		<div>
+			<p><a href="https://github.com/nette/http">GitHub</a> | <a href="https://api.nette.org/2.4/namespace-Nette.Http.html">API</a>
+			<br>composer: <a href="https://packagist.org/packages/nette/http">nette/http</a></p>
+
+
+			<ul class="toc">
+				<li class="up" value="0"><a href="#">▲</a></li>
+				<li><a href="#toc-http-request">HTTP Request</a>
+				<ul>
+				
+				<li><a href="#toc-requestfactory-and-url-filtering">RequestFactory and URL filtering</a>
+				</ul>
+				
+				<li><a href="#toc-http-response">HTTP response</a>
+				</li>
+			</ul>
+		</div>
+	</aside>
+	</div>
+
+	<footer class="main">
+		<p>&copy; 2008, 2016 <a href="https://nettefoundation.com">Nette Foundation</a> | <a href="http://php7.org/guidelines/">PHP Coding Guidelines</a>
+		| <a href="https://nette.org/terms-of-use">Terms of use</a> | If not stated otherwise, the contents are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cz/">Creative Commons CC-BY-SA</a>.</p>
+	</footer>
+
+	<div class="docmenu">
+		<div class="column">
+	<h3 id="toc-programmer-s-guide"><img src="//files.nette.org/git/doc-2.4/icon-guides-small.png" alt=""> Programmer's Guide</h3>
+
+	<ul>
+		<li><a href="/en/2.4/forms">Forms</a></li>
+
+		<li><a href="//latte.nette.org/en/">Templates</a>, <a href="//latte.nette.org/en/macros">Latte Macros</a> and <a
+		href="//latte.nette.org/en/filters">Filters</a></li>
+
+		<li><a href="/en/2.4/presenters">MVC Application &amp; Presenters</a></li>
+
+		<li><a href="/en/2.4/configuring">Configuration</a>, <a href="/en/2.4/dependency-injection">Dependency Injection</a>, <a
+		href="/en/2.4/di-usage">Getting Dependencies</a> and <a href="/en/2.4/di-extensions">DI extensions</a></li>
+
+		<li><a href="/en/2.4/components">Components and Controls</a></li>
+
+		<li><a href="/en/2.4/routing">Routing</a></li>
+
+		<li><a href="/en/2.4/access-control">Authentication &amp; Authorization</a></li>
+
+		<li><a href="//tracy.nette.org/en/">Debugging and Error Handling</a>, <a href="//tracy.nette.org/en/extensions">Debugger
+		extensions</a></li>
+
+		<li><a href="/en/2.4/ajax">AJAX</a></li>
+
+		<li><a href="/en/2.4/php-language-enhancements">PHP Language Enhancements</a></li>
+
+		<li><a href="/en/2.4/http-request-response">HTTP request &amp; response</a></li>
+
+		<li><a href="/en/2.4/database">Database</a>, <a href="/en/2.4/database-table">Table</a>, <a
+		href="/en/2.4/database-selection">Selection</a>, <a href="/en/2.4/database-activerow">ActiveRow</a></li>
+
+		<li><a href="/en/2.4/sessions">Sessions</a></li>
+
+		<li><a href="/en/2.4/mailing">Mailing</a></li>
+
+		<li><a href="/en/2.4/images">Image Manipulation</a></li>
+
+		<li><a href="/en/2.4/caching">Caching</a></li>
+
+		<li><a href="/en/2.4/localization">Localization</a></li>
+
+		<li><a href="//tester.nette.org/en/">Testing</a>, <a href="//tester.nette.org/en/testing-with-travis">Continuous
+		integration</a></li>
+
+		<li><a href="/en/2.4/pagination">Pagination</a></li>
+
+		<li><a href="/en/2.4/auto-loading">Auto-loading</a></li>
+
+		<li><a href="/en/2.4/finder">Browsing files on disk</a></li>
+
+		<li><a href="/en/2.4/atomicity">Atomic Operations</a></li>
+
+		<li><a href="/en/2.4/validators">Validation</a></li>
+
+		<li><a href="/en/2.4/strings">Strings</a>, <a href="/en/2.4/arrays">arrays</a>, <a href="/en/2.4/html-elements">HTML elements</a>
+		and <a href="/en/2.4/urls">URLs</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-getting-started"><img src="//files.nette.org/git/doc-2.4/icon-welcome-small.png" alt=""> Getting Started</h3>
+
+	<ul>
+		<li><a href="/en/2.4/getting-started">Introduction to Nette</a></li>
+
+		<li><b><a href="/en/2.4/quickstart">Create First Application!</a></b></li>
+
+		<li><a href="/en/2.4/glossary">Glossary</a></li>
+	</ul>
+
+	<h3 id="toc-general-info"><img src="//files.nette.org/git/doc-2.4/icon-question-small.png" alt=""> General Info</h3>
+
+	<ul>
+		<li><a href="https://api.nette.org/2.4">API Reference</a></li>
+
+		<li><a href="/en/2.4/migration-2-3">Migrating from 2.2 to 2.3</a></li>
+
+		<li><a href="/en/2.4/code-checker">Code-Checker</a></li>
+
+		<li><a href="/en/2.4/vulnerability-protection">Vulnerability Protection</a></li>
+
+		<li><a href="/en/2.4/requirements">Server Requirements</a></li>
+
+		<li><a href="//nette.org/en/license">License</a> and <a href="https://nette.org/contributors">contributors</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-development"><img src="//files.nette.org/git/doc-2.4/icon-ruler-small.png" alt=""> Development</h3>
+
+	<ul>
+		<li><a href="//nette.org/en/contributing">Contributing</a></li>
+
+		<li><a href="//nette.org/en/writing">Writing Documentation</a></li>
+
+		<li><a href="irc://irc.freenode.net/nettefw">IRC #nettefw</a></li>
+
+		<li><a href="/en/2.4/troubleshooting">Troubleshooting</a></li>
+	</ul>
+</div>
+
+	</div>
+</div>
+
+<div class="bar"><div>
+
+	<ul class="user" style="opacity:.6">
+		<li><a href="https://addons.nette.org/"><span>Add-ons</span></a>
+		<li><a href="https://pla.nette.org/en/"><span>Planette</span></a>
+		<li><a href="https://forum.nette.org/en/"><span>Forum</span></a>
+		<li><a href="https://blog.nette.org"><span>Blog</span></a>
+		<li><a href="https://nette.org/donate"><span>Donate</span></a>
+		<li>
+		<form action="https://www.google.com/cse" class="search">
+			<input type="hidden" name="cx" value="011549293477758430224:vxofa9ufnhc"><input type="hidden" name="ie" value="UTF-8"><input type="search" name="q" class="text" size="30" placeholder="Search"><input type="image" src="https://files.nette.org/images/search.png" alt="Search">
+		</form>
+		</li>
+	</ul>
+</div></div>
+
+</body>
+</html>

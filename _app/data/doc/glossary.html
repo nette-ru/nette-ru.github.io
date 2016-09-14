@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html class="nette-doc">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Nette Foundation; c 2008">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Glossary | Nette Framework</title>
+
+	<link rel="stylesheet" href="https://files.nette.org/css/combined.css?v=1468405828">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://nette.org/opensearch.xml" title="Nette Framework">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://forum.nette.org/opensearch.xml" title="Nette Framework forum">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://api.nette.org/opensearch.xml" title="Nette Framework API">
+	<link rel="canonical" href="/en/2.4/glossary">
+	<link rel="image_src" href="https://files.nette.org/images/fb-preview.png">
+
+		<link rel="alternate" hreflang="cs" href="/cs/2.4/glossary">
+	<link rel="alternate" hreflang="en" href="/en/2.4/glossary">
+</head>
+
+
+<body>
+<script>
+	ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-95238-14','auto'); ga('send','pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+<script src="https://api.nette.org/2.4/elementlist.js" async></script>
+<script src="https://files.nette.org/js/combined.js?v=1468489896" async></script>
+
+<div class="page">
+	<header class="main">
+		<a class="logo" title="Homepage" href="https://nette.org/en/"><span>Homepage</span></a>
+
+		<nav class="main">
+			<ul>
+	<li><a href="//nette.org/en/download">Download</a></li>
+
+	<li class="item-doc"><a href="/en/">Documentation</a></li>
+
+	<li><a href="https://api.nette.org">API</a></li>
+
+	<li><a href="https://github.com/nette">GitHub</a></li>
+</ul>
+
+		</nav>
+	</header>
+
+		<div class="wikimenu">
+	<div>
+		<div><a href="https://github.com/nette/web-content/blob/doc-2.4/en/glossary.texy">Edit</a></div>
+		<ul>
+			<li><a href="https://nette.org/en/writing">How to write?</a></li>
+
+			<li><a href="/en/2.4/glossary?view=links">Backlinks</a></li>
+
+			<li>Languages: <a href="/cs/2.4/glossary">cs</a> <a href="/en/2.4/glossary">en</a> </li>
+
+			<li>changed 19. 5. 2016</li>
+
+			<li><a href="/special/sitemap?lang=en">All pages</a></li>
+
+			<li><a href="/special/broken-links?lang=en">Broken links</a></li>
+		</ul>
+	</div>
+
+	<div>
+		<div>Lang</div>
+		<ul>
+			<li><a href="/cs/2.4/glossary">cs</a></li>
+			<li><a href="/en/2.4/glossary">en</a></li>
+		</ul>
+	</div>
+
+	<div class=versionmenu>
+		<div>Version 2.4</div>
+		<ul>
+			<li><a href="/en/2.3/glossary">Version 2.3</a></li>
+			<li><a href="/en/2.2/glossary">Version 2.2</a></li>
+			<li><a href="/en/2.1/glossary">Version 2.1</a></li>
+			<li><a href="/en/2.0/glossary">Version 2.0</a></li>
+		</ul>
+	</div>
+</div>
+
+
+	<div class="main">
+		<div class="content has-sidebar">
+			
+
+			<ul class="breadcrumbs">
+				<li><a href="/en/2.4/">Documentation</a></li>
+				<li>Glossary</li>
+			</ul>
+
+
+<h1 id="toc-glossary">Glossary</h1>
+
+<h2 id="toc-ajax">AJAX</h2>
+
+<p>Asynchronous JavaScript and XML – technology for client-server communication over the HTTP protocol without the need for
+reload of the whole page during each request. Despite the acronym, <a href="#toc-json">JSON</a> format is often used instead
+of XML.</p>
+
+<h2 id="toc-presenter-action">Presenter action</h2>
+
+<p>Logical part of the <a href="#toc-presenter">presenter</a>, performing one action, such as to show a product page, to sign out
+an user etc. One presenter can have more actions.</p>
+
+<h2 id="toc-bom">BOM</h2>
+
+<p>So called <em>byte order mask</em> is a special first character of a file and indicates byte order in the encoding. Some
+editors include it automatically, it's practically invisible, but it causes problems with headers and output sending from withing
+PHP. You can use <a href="/en/2.4/code-checker">Code Checker</a> for bulk removal.</p>
+
+<h2 id="toc-controller">Controller</h2>
+
+<p>Controller processes requests from user and on their basis it calls particular application logic (ie. <a
+href="#toc-model">model</a>), then it calls <a href="#toc-view">view</a> for data rendering. Analogy to controllers are <a
+href="#toc-presenter">presenters</a> in Nette Framework.</p>
+
+<h2 id="toc-escaping">Escaping</h2>
+
+<p>Escaping is conversion of characters with special meaning in given context to another equivalent sequences. Example: We want to
+write quotes into quotes-enclosed string. Because quotes have special meaning in context of the quotes-enclosed string, there is a
+need to use another equivalent sequence. Concrete sequence is determined by the context rules (e.g. <code>\"</code> in
+PHP's quotes-enclosed string, <code>&amp;quot;</code> in HTML attributes etc.).</p>
+
+<h2 id="toc-filter-formerly-helper">Filter (formerly Helper)</h2>
+
+<p>Filter function. In templates, <a href="//latte.nette.org/en/#toc-filters">filter</a> is a function, that helps to alter or
+format data to the output form. Templates have several <a href="//latte.nette.org/en/filters">standard filters</a> predefined.</p>
+
+<h2 id="toc-invalidation">Invalidation</h2>
+
+<p>Notice of a <a href="#toc-snippet">snippet</a> to rerender. In other context also clearing of a cache.</p>
+
+<h2 id="toc-json">JSON</h2>
+
+<p>Data exchange format based on JavaScript syntax (it's its subset). Exact specification can be found at <a
+href="http://www.json.org">www.json.org</a>.</p>
+
+<h2 id="toc-component">Component</h2>
+
+<p>Reusable part of an application. It can be a visual part of a page, as described in the <a
+href="/en/2.4/components">components</a> chapter, or the term can also stand for the class <a
+href="//api.nette.org/2.4/Nette.ComponentModel.Component.html">Component</a> (such a component doesn't have to be visual).</p>
+
+<h2 id="toc-control-characters">Control characters</h2>
+
+<p>Control characters are invisible characters, that can occur in a text and eventually to cause some problems. For their bulk
+removal from files, you can use <a href="/en/2.4/code-checker">Code Checker</a>, for their removal from a variable use function <a
+href="/en/2.4/strings#toc-normalize">Strings::normalize()</a>.</p>
+
+<h2 id="toc-latte">Latte</h2>
+
+<p>One of the most inovative <a href="//latte.nette.org/en/">templating systems</a> ever.</p>
+
+<h2 id="toc-model">Model</h2>
+
+<p>Model represents data and function basis of the whole application. It includes the whole application logic (sometimes also
+reffered to as a “business logic”). It's the <b>M</b> of <b>M</b>VC or MPV. Any user action (loging in, putting stuff to
+basket, change of a database value) represents an action of the model.</p>
+
+<p>Model manages its inner state and provides a public interface. By calling of this interface we can take or change its state.
+Model doesn't know about an existence of <a href="#toc-view">view</a> or <a href="#toc-controller">controller</a>, model is
+totally independent on them.</p>
+
+<h2 id="toc-model-view-controller">Model-View-Controller</h2>
+
+<p>Software architecture, that emerged in GUI applications development to separate the code for the flow control (<a
+href="#toc-controller">controller</a>) from the code of the application logic (<a href="#toc-model">model</a>) and from the data
+rendering code (<a href="#toc-view">view</a>). That way the code is better understandable, it eases the future development and it
+allows to test separate parts separatelly.</p>
+
+<h2 id="toc-model-view-presenter">Model-View-Presenter</h2>
+
+<p>Architecture based on <a href="#toc-model-view-controller">Model-View-Controller</a>.</p>
+
+<h2 id="toc-module">Module</h2>
+
+<p>Module in Nette Framework represents a collection of presenters and templates, eventually also components and models, that
+serve data to a presenter. So it is certain logical part of an application.</p>
+
+<p>For example, an e-shop can have three modules:</p>
+
+<ol>
+	<li>Product catalogue with basket.</li>
+
+	<li>Administration for the customer.</li>
+
+	<li>Administration for the shopkeeper.</li>
+</ol>
+
+<h2 id="toc-namespace">Namespace</h2>
+
+<p>Namespace is a feature of the PHP language from its version 5.3 and some other programming languages as well. It helps to
+avoid names collisions (e.g. two classes with the same name) when using different libraries together. See <a
+href="http://php.net/manual/en/language.namespaces.rationale.php">PHP documentation</a> for further detail.</p>
+
+<h2 id="toc-presenter">Presenter</h2>
+
+<p>Presenter is an object, that takes the <a href="//api.nette.org/2.4/Nette.Application.Request.html">request</a> as translated
+by the router from the HTTP request and generates a <a href="//api.nette.org/2.4/Nette.Application.IResponse.html">response</a>.
+Response can be an HTML page, picture, XML document, file, JSON, redirect or whatever you think of.</p>
+
+<p>By a presenter it is usually meant an descendant of the <a
+href="//api.nette.org/2.4/Nette.Application.UI.Presenter.html">Nette\Application\UI\Presenter</a> class. By requests it runs
+appropriate <a href="/en/2.4/presenters#toc-processing-presenter-action">actions</a> and renders templates.</p>
+
+<h2 id="toc-router">Router</h2>
+
+<p>Bi-directional translator between HTTP request / URL and presenter action. Bi-directional means, that it's not only possible
+to derive a <a href="#toc-presenter-action">presenter action</a> from the HTTP request, but also to generate appropriate URL for
+an action. See more in the chapter about <a href="/en/2.4/routing">URL routing</a>.</p>
+
+<h2 id="toc-snippet">Snippet</h2>
+
+<p>Snippet of a page, that can be separately re-rendered during an <a href="#toc-ajax">AJAX</a> request.</p>
+
+<h2 id="toc-view">View</h2>
+
+<p>View is a layer of application, that is responsible for request results rendering. Usually it uses a templating system and it
+knows, how to render its components or results taken from the model.</p>
+
+
+<div class="paginator">
+	<small><a href="/en/2.4/troubleshooting">« Troubleshooting</a></small>
+	<a href="/en/2.4/requirements">Nette Framework Requirements »</a>
+</div>
+		</div>
+
+			<aside class="main">
+		<div>
+
+
+			<ul class="toc">
+				<li class="up" value="0"><a href="#">▲</a></li>
+				<li><a href="#toc-ajax">AJAX</a>
+				</li>
+				<li><a href="#toc-presenter-action">Presenter action</a>
+				</li>
+				<li><a href="#toc-bom">BOM</a>
+				</li>
+				<li><a href="#toc-controller">Controller</a>
+				</li>
+				<li><a href="#toc-escaping">Escaping</a>
+				</li>
+				<li><a href="#toc-filter-formerly-helper">Filter (formerly Helper)</a>
+				</li>
+				<li><a href="#toc-invalidation">Invalidation</a>
+				</li>
+				<li><a href="#toc-json">JSON</a>
+				</li>
+				<li><a href="#toc-component">Component</a>
+				</li>
+				<li><a href="#toc-control-characters">Control characters</a>
+				</li>
+				<li><a href="#toc-latte">Latte</a>
+				</li>
+				<li><a href="#toc-model">Model</a>
+				</li>
+				<li><a href="#toc-model-view-controller">Model-View-Controller</a>
+				</li>
+				<li><a href="#toc-model-view-presenter">Model-View-Presenter</a>
+				</li>
+				<li><a href="#toc-module">Module</a>
+				</li>
+				<li><a href="#toc-namespace">Namespace</a>
+				</li>
+				<li><a href="#toc-presenter">Presenter</a>
+				</li>
+				<li><a href="#toc-router">Router</a>
+				</li>
+				<li><a href="#toc-snippet">Snippet</a>
+				</li>
+				<li><a href="#toc-view">View</a>
+				</li>
+			</ul>
+		</div>
+	</aside>
+	</div>
+
+	<footer class="main">
+		<p>&copy; 2008, 2016 <a href="https://nettefoundation.com">Nette Foundation</a> | <a href="http://php7.org/guidelines/">PHP Coding Guidelines</a>
+		| <a href="https://nette.org/terms-of-use">Terms of use</a> | If not stated otherwise, the contents are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cz/">Creative Commons CC-BY-SA</a>.</p>
+	</footer>
+
+	<div class="docmenu">
+		<div class="column">
+	<h3 id="toc-programmer-s-guide"><img src="//files.nette.org/git/doc-2.4/icon-guides-small.png" alt=""> Programmer's Guide</h3>
+
+	<ul>
+		<li><a href="/en/2.4/forms">Forms</a></li>
+
+		<li><a href="//latte.nette.org/en/">Templates</a>, <a href="//latte.nette.org/en/macros">Latte Macros</a> and <a
+		href="//latte.nette.org/en/filters">Filters</a></li>
+
+		<li><a href="/en/2.4/presenters">MVC Application &amp; Presenters</a></li>
+
+		<li><a href="/en/2.4/configuring">Configuration</a>, <a href="/en/2.4/dependency-injection">Dependency Injection</a>, <a
+		href="/en/2.4/di-usage">Getting Dependencies</a> and <a href="/en/2.4/di-extensions">DI extensions</a></li>
+
+		<li><a href="/en/2.4/components">Components and Controls</a></li>
+
+		<li><a href="/en/2.4/routing">Routing</a></li>
+
+		<li><a href="/en/2.4/access-control">Authentication &amp; Authorization</a></li>
+
+		<li><a href="//tracy.nette.org/en/">Debugging and Error Handling</a>, <a href="//tracy.nette.org/en/extensions">Debugger
+		extensions</a></li>
+
+		<li><a href="/en/2.4/ajax">AJAX</a></li>
+
+		<li><a href="/en/2.4/php-language-enhancements">PHP Language Enhancements</a></li>
+
+		<li><a href="/en/2.4/http-request-response">HTTP request &amp; response</a></li>
+
+		<li><a href="/en/2.4/database">Database</a>, <a href="/en/2.4/database-table">Table</a>, <a
+		href="/en/2.4/database-selection">Selection</a>, <a href="/en/2.4/database-activerow">ActiveRow</a></li>
+
+		<li><a href="/en/2.4/sessions">Sessions</a></li>
+
+		<li><a href="/en/2.4/mailing">Mailing</a></li>
+
+		<li><a href="/en/2.4/images">Image Manipulation</a></li>
+
+		<li><a href="/en/2.4/caching">Caching</a></li>
+
+		<li><a href="/en/2.4/localization">Localization</a></li>
+
+		<li><a href="//tester.nette.org/en/">Testing</a>, <a href="//tester.nette.org/en/testing-with-travis">Continuous
+		integration</a></li>
+
+		<li><a href="/en/2.4/pagination">Pagination</a></li>
+
+		<li><a href="/en/2.4/auto-loading">Auto-loading</a></li>
+
+		<li><a href="/en/2.4/finder">Browsing files on disk</a></li>
+
+		<li><a href="/en/2.4/atomicity">Atomic Operations</a></li>
+
+		<li><a href="/en/2.4/validators">Validation</a></li>
+
+		<li><a href="/en/2.4/strings">Strings</a>, <a href="/en/2.4/arrays">arrays</a>, <a href="/en/2.4/html-elements">HTML elements</a>
+		and <a href="/en/2.4/urls">URLs</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-getting-started"><img src="//files.nette.org/git/doc-2.4/icon-welcome-small.png" alt=""> Getting Started</h3>
+
+	<ul>
+		<li><a href="/en/2.4/getting-started">Introduction to Nette</a></li>
+
+		<li><b><a href="/en/2.4/quickstart">Create First Application!</a></b></li>
+
+		<li><a href="/en/2.4/glossary">Glossary</a></li>
+	</ul>
+
+	<h3 id="toc-general-info"><img src="//files.nette.org/git/doc-2.4/icon-question-small.png" alt=""> General Info</h3>
+
+	<ul>
+		<li><a href="https://api.nette.org/2.4">API Reference</a></li>
+
+		<li><a href="/en/2.4/migration-2-3">Migrating from 2.2 to 2.3</a></li>
+
+		<li><a href="/en/2.4/code-checker">Code-Checker</a></li>
+
+		<li><a href="/en/2.4/vulnerability-protection">Vulnerability Protection</a></li>
+
+		<li><a href="/en/2.4/requirements">Server Requirements</a></li>
+
+		<li><a href="//nette.org/en/license">License</a> and <a href="https://nette.org/contributors">contributors</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-development"><img src="//files.nette.org/git/doc-2.4/icon-ruler-small.png" alt=""> Development</h3>
+
+	<ul>
+		<li><a href="//nette.org/en/contributing">Contributing</a></li>
+
+		<li><a href="//nette.org/en/writing">Writing Documentation</a></li>
+
+		<li><a href="irc://irc.freenode.net/nettefw">IRC #nettefw</a></li>
+
+		<li><a href="/en/2.4/troubleshooting">Troubleshooting</a></li>
+	</ul>
+</div>
+
+	</div>
+</div>
+
+<div class="bar"><div>
+
+	<ul class="user" style="opacity:.6">
+		<li><a href="https://addons.nette.org/"><span>Add-ons</span></a>
+		<li><a href="https://pla.nette.org/en/"><span>Planette</span></a>
+		<li><a href="https://forum.nette.org/en/"><span>Forum</span></a>
+		<li><a href="https://blog.nette.org"><span>Blog</span></a>
+		<li><a href="https://nette.org/donate"><span>Donate</span></a>
+		<li>
+		<form action="https://www.google.com/cse" class="search">
+			<input type="hidden" name="cx" value="011549293477758430224:vxofa9ufnhc"><input type="hidden" name="ie" value="UTF-8"><input type="search" name="q" class="text" size="30" placeholder="Search"><input type="image" src="https://files.nette.org/images/search.png" alt="Search">
+		</form>
+		</li>
+	</ul>
+</div></div>
+
+</body>
+</html>

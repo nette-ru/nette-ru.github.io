@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html class="nette-www">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Nette Foundation; c 2008">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Writing the Documentation | Nette Framework</title>
+
+	<link rel="stylesheet" href="https://files.nette.org/css/combined.css?v=1468405828">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://nette.org/opensearch.xml" title="Nette Framework">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://forum.nette.org/opensearch.xml" title="Nette Framework forum">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://api.nette.org/opensearch.xml" title="Nette Framework API">
+	<link rel="canonical" href="/en/writing">
+	<link rel="image_src" href="https://files.nette.org/images/fb-preview.png">
+
+		<link rel="alternate" hreflang="cs" href="/cs/writing">
+	<link rel="alternate" hreflang="en" href="/en/writing">
+</head>
+
+
+<body>
+<script>
+	ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-95238-14','auto'); ga('send','pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+<script src="https://api.nette.org/2.4/elementlist.js" async></script>
+<script src="https://files.nette.org/js/combined.js?v=1468489896" async></script>
+
+<div class="page">
+	<header class="main">
+		<a class="logo" title="Homepage" href="/en/"><span>Homepage</span></a>
+
+		<nav class="main">
+			<ul>
+	<li><a href="/en/download">Download</a></li>
+
+	<li class="item-doc"><a href="//doc.nette.org/en/">Documentation</a></li>
+
+	<li><a href="https://api.nette.org">API</a></li>
+
+	<li><a href="https://github.com/nette">GitHub</a></li>
+</ul>
+
+		</nav>
+	</header>
+
+		<div class="wikimenu">
+	<div>
+		<div><a href="https://github.com/nette/web-content/blob/nette.org/www/en/writing.texy">Edit</a></div>
+		<ul>
+			<li><a href="/en/writing">How to write?</a></li>
+
+			<li><a href="/en/writing?view=links">Backlinks</a></li>
+
+			<li>Languages: <a href="/cs/writing">cs</a> <a href="/en/writing">en</a> </li>
+
+			<li>changed 30. 1. 2016</li>
+
+			<li><a href="/special/sitemap?lang=en">All pages</a></li>
+
+			<li><a href="/special/broken-links?lang=en">Broken links</a></li>
+		</ul>
+	</div>
+
+	<div>
+		<div>Lang</div>
+		<ul>
+			<li><a href="/cs/writing">cs</a></li>
+			<li><a href="/en/writing">en</a></li>
+		</ul>
+	</div>
+
+</div>
+
+
+	<div class="main">
+		<div class="content">
+			
+
+
+
+<h1 id="toc-writing-the-documentation">Writing the Documentation</h1>
+
+<p class="perex">Writing the documentation is one of many ways you can help the Nette Framework. Additionally, it is one of the
+most helpful contributions, as you are helping others to learn the framework.</p>
+
+<h2 id="toc-rules-of-writing">Rules of Writing</h2>
+
+<p>The main audience of the documentation is people who are new to the topic. The text of the documentation should comply with the
+following rules:</p>
+
+<ul>
+	<li><b>Start with the simple and common topics, write about the more advanced topics at the end.</b></li>
+
+	<li>Omit the unnecessary information.</li>
+
+	<li>Verify your facts. Test your code before writing an example.</li>
+
+	<li>Be concise. Halve you text, then halve it again.</li>
+
+	<li>Be explanatory. Try explaining the topic to your colleague first.</li>
+</ul>
+
+<p>Keep these rules in mind when you are writing. The documentation is written in <a href="https://texy.info/en/">Texy!</a>, so
+have a look at its <a href="/en/syntax">syntax</a>. You can use documentation editor at <a
+href="https://editor.nette.org/">https://editor.nette.org/</a> to preview your article. This editor also provides live
+preview.</p>
+
+<p>Among the general writing rules listed earlier, please stick to the following:</p>
+
+<ul>
+	<li>Your code should be in compliance with the <a href="/en/coding-standard">Coding Standard</a>.</li>
+
+	<li>Use English names for variables, methods and classes.</li>
+
+	<li>Include the namespaces only on the first mention.</li>
+
+	<li>Try to keep lines of code short and fit them into width of text without scrolling.</li>
+
+	<li>Use highlighting only when necessary.</li>
+
+	<li>Link only to the documentation itself or to the main website (<code>www</code>).</li>
+</ul>
+
+<h2 id="toc-documentation-structure">Documentation Structure</h2>
+
+<p>The documentation is stored at GitHub in the <a href="https://github.com/nette/web-content">nette/web-content</a> repository.
+This repository has several branches according to the version of Nette. For instance, branch <code>doc-2.1</code> corresponds to
+the Nette Framework version 2.1.</p>
+
+<p>Each branch has several directories:</p>
+
+<ul>
+	<li><code>cs</code> and <code>en</code>: contains documentation files for each localization.</li>
+
+	<li><code>files</code>: images, that can be inserted into pages.</li>
+</ul>
+
+<p>File path without the extension matches the page URL on the website. File <code>en/quickstart/single-post.texy</code> will have
+the URL of <code>quickstart/single-post</code> in the corresponding version of the English documentation.</p>
+
+<p>Keep the following rules in mind when creating new pages:</p>
+
+<ul>
+	<li>Maximum depth of the URL is 2, not counting the language, e.g. <code>en/forms/rendering.texy</code>.</li>
+
+	<li>URLs are concise, e.g. page “Atomic Operations” is located at <code>dev.nette.org/en/atomicity</code>.</li>
+
+	<li>URLs are written in English and they are the same across all localizations, e.g. <code>dev.nette.org/cs/forms/rendering</code>
+	and <code>dev.nette.org/en/forms/rendering</code>.</li>
+</ul>
+
+<h2 id="toc-contributing">Contributing</h2>
+
+<p>To contribute to the documentation, an account at <a href="https://github.com">github.com</a> is required. You also need to
+know the basics of git version control system. For an quick introduction you can see <a
+href="http://rogerdudler.github.io/git-guide/">git – the simple guide</a>, or use one of many graphical clients: <a
+href="http://git-scm.com/downloads/guis">GIT – GUI clients</a>.</p>
+
+<p>Before contributing, create your own fork of the <code>nette/web-content</code> repository and clone it. Make the changes in
+the correct branch and commit them. Then push the repository to github.com and send a pull request to the original
+<code>nette/web-content</code> repository.</p>
+
+
+		</div>
+
+			</div>
+
+	<footer class="main">
+		<p>&copy; 2008, 2016 <a href="https://nettefoundation.com">Nette Foundation</a> | <a href="http://php7.org/guidelines/">PHP Coding Guidelines</a>
+		| <a href="https://nette.org/terms-of-use">Terms of use</a> | If not stated otherwise, the contents are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cz/">Creative Commons CC-BY-SA</a>.</p>
+	</footer>
+
+</div>
+
+<div class="bar"><div>
+
+	<ul class="user" style="opacity:.6">
+		<li><a href="https://addons.nette.org/"><span>Add-ons</span></a>
+		<li><a href="https://pla.nette.org/en/"><span>Planette</span></a>
+		<li><a href="https://forum.nette.org/en/"><span>Forum</span></a>
+		<li><a href="https://blog.nette.org"><span>Blog</span></a>
+		<li><a href="https://nette.org/donate"><span>Donate</span></a>
+		<li>
+		<form action="https://www.google.com/cse" class="search">
+			<input type="hidden" name="cx" value="011549293477758430224:vxofa9ufnhc"><input type="hidden" name="ie" value="UTF-8"><input type="search" name="q" class="text" size="30" placeholder="Search"><input type="image" src="https://files.nette.org/images/search.png" alt="Search">
+		</form>
+		</li>
+	</ul>
+</div></div>
+
+</body>
+</html>

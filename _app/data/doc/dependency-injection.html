@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html class="nette-doc">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Nette Foundation; c 2008">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Dependency Injection | Nette Framework</title>
+
+	<link rel="stylesheet" href="https://files.nette.org/css/combined.css?v=1468405828">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://nette.org/opensearch.xml" title="Nette Framework">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://forum.nette.org/opensearch.xml" title="Nette Framework forum">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://api.nette.org/opensearch.xml" title="Nette Framework API">
+	<link rel="canonical" href="/en/2.4/dependency-injection">
+	<link rel="image_src" href="https://files.nette.org/images/fb-preview.png">
+
+		<link rel="alternate" hreflang="cs" href="/cs/2.4/dependency-injection">
+	<link rel="alternate" hreflang="en" href="/en/2.4/dependency-injection">
+</head>
+
+
+<body>
+<script>
+	ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-95238-14','auto'); ga('send','pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+<script src="https://api.nette.org/2.4/elementlist.js" async></script>
+<script src="https://files.nette.org/js/combined.js?v=1468489896" async></script>
+
+<div class="page">
+	<header class="main">
+		<a class="logo" title="Homepage" href="https://nette.org/en/"><span>Homepage</span></a>
+
+		<nav class="main">
+			<ul>
+	<li><a href="//nette.org/en/download">Download</a></li>
+
+	<li class="item-doc"><a href="/en/">Documentation</a></li>
+
+	<li><a href="https://api.nette.org">API</a></li>
+
+	<li><a href="https://github.com/nette">GitHub</a></li>
+</ul>
+
+		</nav>
+	</header>
+
+		<div class="wikimenu">
+	<div>
+		<div><a href="https://github.com/nette/web-content/blob/doc-2.4/en/dependency-injection.texy">Edit</a></div>
+		<ul>
+			<li><a href="https://nette.org/en/writing">How to write?</a></li>
+
+			<li><a href="/en/2.4/dependency-injection?view=links">Backlinks</a></li>
+
+			<li>Languages: <a href="/cs/2.4/dependency-injection">cs</a> <a href="/en/2.4/dependency-injection">en</a> </li>
+
+			<li>changed 23. 5. 2016</li>
+
+			<li><a href="/special/sitemap?lang=en">All pages</a></li>
+
+			<li><a href="/special/broken-links?lang=en">Broken links</a></li>
+		</ul>
+	</div>
+
+	<div>
+		<div>Lang</div>
+		<ul>
+			<li><a href="/cs/2.4/dependency-injection">cs</a></li>
+			<li><a href="/en/2.4/dependency-injection">en</a></li>
+		</ul>
+	</div>
+
+	<div class=versionmenu>
+		<div>Version 2.4</div>
+		<ul>
+			<li><a href="/en/2.3/dependency-injection">Version 2.3</a></li>
+			<li><a href="/en/2.2/dependency-injection">Version 2.2</a></li>
+			<li><a href="/en/2.1/dependency-injection">Version 2.1</a></li>
+			<li><a href="/en/2.0/dependency-injection">Version 2.0</a></li>
+		</ul>
+	</div>
+</div>
+
+
+	<div class="main">
+		<div class="content has-sidebar">
+			
+
+			<ul class="breadcrumbs">
+				<li><a href="/en/2.4/">Documentation</a></li>
+				<li>Dependency Injection</li>
+			</ul>
+
+
+<h1 id="toc-dependency-injection">Dependency Injection</h1>
+
+<div class="perex">
+	<p>Purpose of the Dependecy Injection (DI) is to free classes from the responsibility for obtaining objects that they need for its
+	operation (these objects are called <b>services</b>). To pass them these services on their instantiation instead. We'll
+	talk over:</p>
+
+	<ul>
+		<li>What is the principle of the Dependency Injection.</li>
+
+		<li>How to create dynamic and static DI containers.</li>
+
+		<li>How to lazy-load services.</li>
+	</ul>
+</div>
+
+<h2 id="toc-what-is-dependency-injection">What is Dependency Injection?</h2>
+
+<p>Dependency Injection (DI) is nothing mysterious or baffling. It can be comprehended into one selfish sentence: <b>“Don't seek
+for anything, let someone else do it.”</b> Now let's translate this into programmers' speech. We have a class
+<code>Article</code> that represents a blog post:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> Article
+{
+    <span class="php-keyword1">public</span> <span
+class="php-var">$id</span>;
+    <span class="php-keyword1">public</span> <span class="php-var">$title</span>;
+    <span
+class="php-keyword1">public</span> <span class="php-var">$content</span>;
+
+    <span
+class="php-keyword1">function</span> save()
+    {
+        <span
+class="php-comment">// we'll save into the database</span>
+    }
+
+}</code></pre>
+
+<p>and the usage is this:</p>
+
+<pre class="src-php"><code><span class="php-var">$article</span> = <span class="php-keyword1">new</span> Article;
+<span
+class="php-var">$article</span>-&gt;title = <span class="php-quote">'10 Things You Need to Know About Losing Weight'</span>;
+<span
+class="php-var">$article</span>-&gt;content = <span class="php-quote">'Every year millions of people in ...'</span>;
+<span
+class="php-var">$article</span>-&gt;save();</code></pre>
+
+<p>Method <code>save()</code> saves the article into the database table <code>articles</code>. It's easy to implement using <a
+href="/en/2.4/database">Nette\Database</a>, except one thing: Where is <code>Article</code> supposed to get the database
+connection, ie. an object of the class Connection?</p>
+
+<p>Well, we can place it into some global variable like <code>$GLOBALS['connection']</code> or into some static member of a class.
+But haven't you heard that use of global variables is bad? It's true, global variables are evil and static members are exactly
+the same.</p>
+
+<p>So where else will we get the database connection? DI has the answer: “Don't seek for anything, let someone else do it.” In
+other words, if I need a database, someone give it to me, it's not my job. Hah, it's devious, dear DI! Let's do it:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> Article
+{
+    <span class="php-keyword1">public</span> <span
+class="php-var">$id</span>;
+    <span class="php-keyword1">public</span> <span class="php-var">$title</span>;
+    <span
+class="php-keyword1">public</span> <span class="php-var">$content</span>;
+    <span class="php-keyword1">private</span> <span
+class="php-var">$connection</span>;
+
+    <span class="php-keyword1">function</span> __construct(Nette\Database\Connection <span
+class="php-var">$connection</span>)
+    {
+        <span class="php-var">$this</span>-&gt;connection = <span
+class="php-var">$connection</span>;
+    }
+
+    <span class="php-keyword1">function</span> save()
+    {
+        <span
+class="php-var">$this</span>-&gt;connection-&gt;query(<span class="php-quote">'INSERT INTO articles'</span>, [
+            <span
+class="php-quote">'title'</span> =&gt; <span class="php-var">$this</span>-&gt;title,
+            <span
+class="php-quote">'content'</span> =&gt; <span class="php-var">$this</span>-&gt;content,
+        ]);
+    }
+
+}</code></pre>
+
+<p>Use of the <code>Article</code> class will slightly change:</p>
+
+<pre class="src-php"><code><span class="php-var">$article</span> = <span class="php-keyword1">new</span> Article(<span
+class="php-var">$connection</span>);
+<span class="php-var">$article</span>-&gt;title = ...
+<span
+class="php-var">$article</span>-&gt;content = ...
+<span class="php-var">$article</span>-&gt;save();</code></pre>
+
+<p>Are you asking, where this code takes the <code>$connection</code>? DI gives a straight answer: “Let someone else do it.”
+Database connection will be supplied by he who called the code. And so on, and so on. Sure you say that it's not possible to
+eternalize the delegation of responsibility. That there must be a zero point. And you're right. There's a <i>creator</i> at the
+beginning, he doesn't delegate anything and he creates objects. We call him <b>system container</b>. There's a <a
+href="/en/2.4/configuring">separate chapter</a> about him.</p>
+
+<h3 id="toc-why-are-global-variables-evil">Why are global variables evil?</h3>
+
+<p>Good question. Class <code>Article</code> needs the database connection anyway. But from the first example there's not at all
+evident, from where and how it gets it. User of such code might be surprised, that the article really saves and he asks: “Where
+did it save?” With the second example using DI, the code is self-explaining.</p>
+
+<p>Imagine, that you're exploring some payment gateway and you write an example:</p>
+
+<pre class="src-php"><code><span class="php-var">$cc</span> = <span class="php-keyword1">new</span> CreditCard(<span
+class="php-quote">'4461510140804839'</span>, <span class="php-num">12</span>, <span class="php-num">2013</span>);
+<span
+class="php-var">$cc</span>-&gt;pay(<span class="php-num">1000</span>, CreditCard::DOLLARS);</code></pre>
+
+<p>You run the code, with your card number, and later you'll find, that it really withdrew the money from your account! Shocked
+you stare at the list and lament: “Where is my money, how could that happen, I didn't pair it with any payment gateway!”
+Class <code>CreditCard</code> did it by herself, found one in some global variable, as mysterious, as <code>Article</code> got the
+database connection. Such a thing you're not deducating from the code and you don't even know how to change the gateway to
+another, like testing.</p>
+
+<h3 id="toc-di-means-more-writing">DI means more writing</h3>
+
+<p>You can object, that use of DI means more writing, that for creating of an instance of <code>Article</code> you have to handle
+the database connection and so. That's true, but don't forget the last time, when “less writing” costed you $1000! No, we
+don't want to ease that. Objection is correct an we're gonna add one even bigger: When we find a need for <code>Article</code> to
+cache some data, in harmony with DI it will require one more argument with the cache repository. That would mean to adapt the
+application at many places: At least everywhere, where <code>Article</code> is instantiated.</p>
+
+<p>What now? The thing has a solution: Instead of manual creating of <code>Article</code> object we make a factory, ie. function
+that creates these <code>Article</code> objects. When <code>Article</code> changes the constructor, only the factory has to
+update, nothing more. And where to get the factory in our code? You know… let someone else do it. :-)</p>
+
+<h3 id="toc-di-container-and-services">DI container and services</h3>
+
+<p>By the term “DI container” we mean that factory. More precisely it is an object containing any amount of factories, one for
+each service. What are services? Ordinary objects, like that <code>Connection</code> instance, for instance. Just with the DI
+containers we call them services. Perhaps some consultants invented it to make DI look complicated so they could consult.</p>
+
+<p>Example could be a container, that creates an <code>Article</code> object, but also the required database connection::</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> Container
+{
+    <span
+class="php-keyword1">function</span> createConnection()
+    {
+        <span class="php-keyword1">return</span> <span
+class="php-keyword1">new</span> Nette\Database\Connection(<span class="php-quote">'mysql:'</span>, <span
+class="php-quote">'root'</span>, <span class="php-quote">'***'</span>);
+    }
+
+    <span
+class="php-keyword1">function</span> createArticle()
+    {
+        <span class="php-keyword1">return</span> <span
+class="php-keyword1">new</span> Article(<span class="php-var">$this</span>-&gt;createConnection());
+    }
+
+}</code></pre>
+
+<p>Usage would look as follows:</p>
+
+<pre class="src-php"><code><span class="php-var">$container</span> = <span class="php-keyword1">new</span> Container;
+<span
+class="php-var">$article</span> = <span class="php-var">$container</span>-&gt;createArticle();</code></pre>
+
+<p>Advantage is obvious, we don't need to care, how exactly is the <code>Article</code> instantiated, that's a job for the
+factory. Anyway, the solution has still two drawbacks. First, there's entry data wired into the code, so we're gonna detach them
+into a variable:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> Container
+{
+    <span class="php-keyword1">private</span> <span
+class="php-var">$parameters</span>;
+
+    <span class="php-keyword1">function</span> __construct(<span
+class="php-keyword1">array</span> <span class="php-var">$parameters</span>)
+    {
+        <span
+class="php-var">$this</span>-&gt;parameters = <span class="php-var">$parameters</span>;
+    }
+
+    <span
+class="php-keyword1">function</span> createConnection()
+    {
+        <span class="php-keyword1">return</span> <span
+class="php-keyword1">new</span> Nette\Database\Connection(
+            <span class="php-var">$this</span>-&gt;parameters[<span
+class="php-quote">'dsn'</span>],
+            <span class="php-var">$this</span>-&gt;parameters[<span
+class="php-quote">'user'</span>],
+            <span class="php-var">$this</span>-&gt;parameters[<span
+class="php-quote">'password'</span>]
+        );
+    }
+
+    <span
+class="php-keyword1">function</span> createArticle()
+    {
+        <span class="php-keyword1">return</span> <span
+class="php-keyword1">new</span> Article(<span class="php-var">$this</span>-&gt;createConnection());
+    }
+
+}
+
+<span
+class="php-var">$container</span> = <span class="php-keyword1">new</span> Container([
+    <span
+class="php-quote">'dsn'</span> =&gt; <span class="php-quote">'mysql:'</span>,
+    <span
+class="php-quote">'user'</span> =&gt; <span class="php-quote">'root'</span>,
+    <span
+class="php-quote">'password'</span> =&gt; <span class="php-quote">'***'</span>,
+]);
+<span class="php-var">$article</span> = <span
+class="php-var">$container</span>-&gt;createArticle();</code></pre>
+
+<p>More important drawback is, that always, when we aks for an <code>Article</code> creation, there's gonna start new database
+connection. This needs to be avoided. We'll add method <code>getConnection</code> that will keep once created service for
+next usage:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> Container
+{
+    <span class="php-keyword1">private</span> <span
+class="php-var">$parameters</span>;
+
+    <span class="php-keyword1">private</span> <span
+class="php-var">$services</span> = [];
+
+    <span class="php-keyword1">function</span> __construct(<span
+class="php-keyword1">array</span> <span class="php-var">$parameters</span>)
+    {
+        <span
+class="php-var">$this</span>-&gt;parameters = <span class="php-var">$parameters</span>;
+    }
+
+    <span
+class="php-keyword1">function</span> createConnection()
+    {
+        <span class="php-keyword1">return</span> <span
+class="php-keyword1">new</span> Nette\Database\Connection(
+            <span class="php-var">$this</span>-&gt;parameters[<span
+class="php-quote">'dsn'</span>],
+            <span class="php-var">$this</span>-&gt;parameters[<span
+class="php-quote">'user'</span>],
+            <span class="php-var">$this</span>-&gt;parameters[<span
+class="php-quote">'password'</span>]
+        );
+    }
+
+    <span
+class="php-keyword1">function</span> getConnection()
+    {
+        <span class="php-keyword1">if</span> (!<span
+class="php-keyword1">isset</span>(<span class="php-var">$this</span>-&gt;services[<span
+class="php-quote">'connection'</span>])) {
+            <span class="php-var">$this</span>-&gt;services[<span
+class="php-quote">'connection'</span>] = <span class="php-var">$this</span>-&gt;createConnection();
+        }
+        <span
+class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;services[<span
+class="php-quote">'connection'</span>];
+    }
+
+    <span class="php-keyword1">function</span> createArticle()
+    {
+        <span
+class="php-keyword1">return</span> <span class="php-keyword1">new</span> Article(<span
+class="php-var">$this</span>-&gt;getConnection());
+    }
+
+}</code></pre>
+
+<p>And now we have fully functional DI container. As you see, it's no complicated to write it. It's notable that services alone
+don't know, that tey're created by some container, therefor it is possible to create any PHP object that way. Without touching its
+own source code.</p>
+
+<h2 id="toc-nette-di-container">Nette\DI\Container</h2>
+
+<p>Class <a href="//api.nette.org/2.4/Nette.DI.Container.html">Nette\DI\Container</a> is a flexible implementation of the
+universal DI container. It ensures automatically, that instance of services are created only once.</p>
+
+<p>We can make our own containers either statically, ie. inheriting this class, or dynamically, when we add factories as closures
+or callbacks.</p>
+
+<h3 id="toc-static-container">Static container</h3>
+
+<p>Names of factory methods follow an uniform convention, they consist of the prefix <code>createService</code> + name of the
+service starting with first letter upper-cased. If they are not supposed to be accesible from outside, it is possible to lower
+their visibility to <code>protected</code>. Note that the container has already defined the field <code>$parameters</code> for
+user parameters.</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> MyContainer <span
+class="php-keyword1">extends</span> Nette\DI\Container
+{
+
+    <span class="php-keyword1">protected</span> <span
+class="php-keyword1">function</span> createServiceConnection()
+    {
+        <span class="php-keyword1">return</span> <span
+class="php-keyword1">new</span> Nette\Database\Connection(
+            <span class="php-var">$this</span>-&gt;parameters[<span
+class="php-quote">'dsn'</span>],
+            <span class="php-var">$this</span>-&gt;parameters[<span
+class="php-quote">'user'</span>],
+            <span class="php-var">$this</span>-&gt;parameters[<span
+class="php-quote">'password'</span>]
+        );
+    }
+
+    <span class="php-keyword1">protected</span> <span
+class="php-keyword1">function</span> createServiceArticle()
+    {
+        <span class="php-keyword1">return</span> <span
+class="php-keyword1">new</span> Article(<span class="php-var">$this</span>-&gt;getService(<span
+class="php-quote">'connection'</span>));
+    }
+
+}</code></pre>
+
+<p>Now we create an instance of the container and pass parameters:</p>
+
+<pre class="src-php"><code><span class="php-var">$container</span> = <span class="php-keyword1">new</span> MyContainer([
+    <span
+class="php-quote">'dsn'</span> =&gt; <span class="php-quote">'mysql:'</span>,
+    <span
+class="php-quote">'user'</span> =&gt; <span class="php-quote">'root'</span>,
+    <span
+class="php-quote">'password'</span> =&gt; <span class="php-quote">'***'</span>,
+]);</code></pre>
+
+<p>We get the service by calling the <code>getService</code> method:</p>
+
+<pre class="src-php"><code><span class="php-var">$article</span> = <span class="php-var">$container</span>-&gt;getService(<span
+class="php-quote">'article'</span>);</code></pre>
+
+<p>As have been said, all services are created in one container only once, but it would be more useful, if the container was
+creating always a new instance of <code>Article</code>. It could be achieved easily: Instead of the factory for the service
+<code>article</code> we'll create an ordinary method <code>createArticle</code>:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> MyContainer <span
+class="php-keyword1">extends</span> Nette\DI\Container
+{
+
+    <span
+class="php-keyword1">function</span> createServiceConnection()
+    {
+        <span class="php-keyword1">return</span> <span
+class="php-keyword1">new</span> Nette\Database\Connection(
+            <span class="php-var">$this</span>-&gt;parameters[<span
+class="php-quote">'dsn'</span>],
+            <span class="php-var">$this</span>-&gt;parameters[<span
+class="php-quote">'user'</span>],
+            <span class="php-var">$this</span>-&gt;parameters[<span
+class="php-quote">'password'</span>]
+        );
+    }
+
+    <span
+class="php-keyword1">function</span> createArticle()
+    {
+        <span class="php-keyword1">return</span> <span
+class="php-keyword1">new</span> Article(<span class="php-var">$this</span>-&gt;getService(<span
+class="php-quote">'connection'</span>));
+    }
+
+}
+
+<span class="php-var">$container</span> = <span
+class="php-keyword1">new</span> MyContainer(...);
+
+<span class="php-var">$article</span> = <span
+class="php-var">$container</span>-&gt;createArticle();</code></pre>
+
+<p>From the call of <code>$container-&gt;createArticle()</code> is evident, that a new object is always created. It is then a
+programmer's convention.</p>
+
+<h3 id="toc-dynamic-container">Dynamic container</h3>
+
+<p>We can add services into the <code>Nette\DI\Container</code> even runtime using the <code>addService</code> method. Factories
+can be written as a PHP callbacks or closures. Note that the container itself is passed to them as a parameter so they could
+easily access parameters and other services.</p>
+
+<pre class="src-php"><code><span class="php-var">$container</span> = <span
+class="php-keyword1">new</span> Nette\DI\Container;
+
+<span class="php-var">$container</span>-&gt;addService(<span
+class="php-quote">'connection'</span>, <span class="php-keyword1">function</span>(<span
+class="php-var">$container</span>) {
+    <span class="php-keyword1">return</span> <span
+class="php-keyword1">new</span> Nette\Database\Connection(
+        <span class="php-var">$container</span>-&gt;parameters[<span
+class="php-quote">'dsn'</span>],
+        <span class="php-var">$container</span>-&gt;parameters[<span
+class="php-quote">'user'</span>],
+        <span class="php-var">$container</span>-&gt;parameters[<span
+class="php-quote">'password'</span>]
+    );
+});</code></pre>
+
+<p>When service creation consists just of a simple instantiation, one can pass the class name directly as the second parameter of
+the <code>addService</code> method. And when we have already created the object, we can pass even it.</p>
+
+<p>Besides the <code>addService</code> we've got also <code>hasService</code> for service existence checking and
+<code>removeService</code> serving for its removal.</p>
+
+<h2 id="toc-containers-generating">Containers generating</h2>
+
+<p><a href="/en/2.4/configuring">TODO</a></p>
+
+
+<div class="paginator">
+	<small><a href="/en/2.4/configuring">« Configuring</a></small>
+	<a href="/en/2.4/di-usage">Getting Dependencies »</a>
+</div>
+		</div>
+
+			<aside class="main">
+		<div>
+			<p><a href="https://github.com/nette/di">GitHub</a> | <a href="https://api.nette.org/2.4/namespace-Nette.DI.html">API</a>
+			<br>composer: <a href="https://packagist.org/packages/nette/di">nette/di</a></p>
+
+
+			<ul class="toc">
+				<li class="up" value="0"><a href="#">▲</a></li>
+				<li><a href="#toc-what-is-dependency-injection">What is Dependency Injection?</a>
+				<ul>
+				
+				<li><a href="#toc-why-are-global-variables-evil">Why are global variables evil?</a>
+				</li>
+				<li><a href="#toc-di-means-more-writing">DI means more writing</a>
+				</li>
+				<li><a href="#toc-di-container-and-services">DI container and services</a>
+				</ul>
+				
+				<li><a href="#toc-nette-di-container">Nette\DI\Container</a>
+				<ul>
+				
+				<li><a href="#toc-static-container">Static container</a>
+				</li>
+				<li><a href="#toc-dynamic-container">Dynamic container</a>
+				</ul>
+				
+				<li><a href="#toc-containers-generating">Containers generating</a>
+				</li>
+			</ul>
+		</div>
+	</aside>
+	</div>
+
+	<footer class="main">
+		<p>&copy; 2008, 2016 <a href="https://nettefoundation.com">Nette Foundation</a> | <a href="http://php7.org/guidelines/">PHP Coding Guidelines</a>
+		| <a href="https://nette.org/terms-of-use">Terms of use</a> | If not stated otherwise, the contents are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cz/">Creative Commons CC-BY-SA</a>.</p>
+	</footer>
+
+	<div class="docmenu">
+		<div class="column">
+	<h3 id="toc-programmer-s-guide"><img src="//files.nette.org/git/doc-2.4/icon-guides-small.png" alt=""> Programmer's Guide</h3>
+
+	<ul>
+		<li><a href="/en/2.4/forms">Forms</a></li>
+
+		<li><a href="//latte.nette.org/en/">Templates</a>, <a href="//latte.nette.org/en/macros">Latte Macros</a> and <a
+		href="//latte.nette.org/en/filters">Filters</a></li>
+
+		<li><a href="/en/2.4/presenters">MVC Application &amp; Presenters</a></li>
+
+		<li><a href="/en/2.4/configuring">Configuration</a>, <a href="/en/2.4/dependency-injection">Dependency Injection</a>, <a
+		href="/en/2.4/di-usage">Getting Dependencies</a> and <a href="/en/2.4/di-extensions">DI extensions</a></li>
+
+		<li><a href="/en/2.4/components">Components and Controls</a></li>
+
+		<li><a href="/en/2.4/routing">Routing</a></li>
+
+		<li><a href="/en/2.4/access-control">Authentication &amp; Authorization</a></li>
+
+		<li><a href="//tracy.nette.org/en/">Debugging and Error Handling</a>, <a href="//tracy.nette.org/en/extensions">Debugger
+		extensions</a></li>
+
+		<li><a href="/en/2.4/ajax">AJAX</a></li>
+
+		<li><a href="/en/2.4/php-language-enhancements">PHP Language Enhancements</a></li>
+
+		<li><a href="/en/2.4/http-request-response">HTTP request &amp; response</a></li>
+
+		<li><a href="/en/2.4/database">Database</a>, <a href="/en/2.4/database-table">Table</a>, <a
+		href="/en/2.4/database-selection">Selection</a>, <a href="/en/2.4/database-activerow">ActiveRow</a></li>
+
+		<li><a href="/en/2.4/sessions">Sessions</a></li>
+
+		<li><a href="/en/2.4/mailing">Mailing</a></li>
+
+		<li><a href="/en/2.4/images">Image Manipulation</a></li>
+
+		<li><a href="/en/2.4/caching">Caching</a></li>
+
+		<li><a href="/en/2.4/localization">Localization</a></li>
+
+		<li><a href="//tester.nette.org/en/">Testing</a>, <a href="//tester.nette.org/en/testing-with-travis">Continuous
+		integration</a></li>
+
+		<li><a href="/en/2.4/pagination">Pagination</a></li>
+
+		<li><a href="/en/2.4/auto-loading">Auto-loading</a></li>
+
+		<li><a href="/en/2.4/finder">Browsing files on disk</a></li>
+
+		<li><a href="/en/2.4/atomicity">Atomic Operations</a></li>
+
+		<li><a href="/en/2.4/validators">Validation</a></li>
+
+		<li><a href="/en/2.4/strings">Strings</a>, <a href="/en/2.4/arrays">arrays</a>, <a href="/en/2.4/html-elements">HTML elements</a>
+		and <a href="/en/2.4/urls">URLs</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-getting-started"><img src="//files.nette.org/git/doc-2.4/icon-welcome-small.png" alt=""> Getting Started</h3>
+
+	<ul>
+		<li><a href="/en/2.4/getting-started">Introduction to Nette</a></li>
+
+		<li><b><a href="/en/2.4/quickstart">Create First Application!</a></b></li>
+
+		<li><a href="/en/2.4/glossary">Glossary</a></li>
+	</ul>
+
+	<h3 id="toc-general-info"><img src="//files.nette.org/git/doc-2.4/icon-question-small.png" alt=""> General Info</h3>
+
+	<ul>
+		<li><a href="https://api.nette.org/2.4">API Reference</a></li>
+
+		<li><a href="/en/2.4/migration-2-3">Migrating from 2.2 to 2.3</a></li>
+
+		<li><a href="/en/2.4/code-checker">Code-Checker</a></li>
+
+		<li><a href="/en/2.4/vulnerability-protection">Vulnerability Protection</a></li>
+
+		<li><a href="/en/2.4/requirements">Server Requirements</a></li>
+
+		<li><a href="//nette.org/en/license">License</a> and <a href="https://nette.org/contributors">contributors</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-development"><img src="//files.nette.org/git/doc-2.4/icon-ruler-small.png" alt=""> Development</h3>
+
+	<ul>
+		<li><a href="//nette.org/en/contributing">Contributing</a></li>
+
+		<li><a href="//nette.org/en/writing">Writing Documentation</a></li>
+
+		<li><a href="irc://irc.freenode.net/nettefw">IRC #nettefw</a></li>
+
+		<li><a href="/en/2.4/troubleshooting">Troubleshooting</a></li>
+	</ul>
+</div>
+
+	</div>
+</div>
+
+<div class="bar"><div>
+
+	<ul class="user" style="opacity:.6">
+		<li><a href="https://addons.nette.org/"><span>Add-ons</span></a>
+		<li><a href="https://pla.nette.org/en/"><span>Planette</span></a>
+		<li><a href="https://forum.nette.org/en/"><span>Forum</span></a>
+		<li><a href="https://blog.nette.org"><span>Blog</span></a>
+		<li><a href="https://nette.org/donate"><span>Donate</span></a>
+		<li>
+		<form action="https://www.google.com/cse" class="search">
+			<input type="hidden" name="cx" value="011549293477758430224:vxofa9ufnhc"><input type="hidden" name="ie" value="UTF-8"><input type="search" name="q" class="text" size="30" placeholder="Search"><input type="image" src="https://files.nette.org/images/search.png" alt="Search">
+		</form>
+		</li>
+	</ul>
+</div></div>
+
+</body>
+</html>

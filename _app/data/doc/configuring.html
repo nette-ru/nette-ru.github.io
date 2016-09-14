@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html class="nette-doc">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Nette Foundation; c 2008">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Configuring | Nette Framework</title>
+
+	<link rel="stylesheet" href="https://files.nette.org/css/combined.css?v=1468405828">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://nette.org/opensearch.xml" title="Nette Framework">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://forum.nette.org/opensearch.xml" title="Nette Framework forum">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://api.nette.org/opensearch.xml" title="Nette Framework API">
+	<link rel="canonical" href="/en/2.4/configuring">
+	<link rel="image_src" href="https://files.nette.org/images/fb-preview.png">
+
+		<link rel="alternate" hreflang="cs" href="/cs/2.4/configuring">
+	<link rel="alternate" hreflang="en" href="/en/2.4/configuring">
+</head>
+
+
+<body>
+<script>
+	ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-95238-14','auto'); ga('send','pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+<script src="https://api.nette.org/2.4/elementlist.js" async></script>
+<script src="https://files.nette.org/js/combined.js?v=1468489896" async></script>
+
+<div class="page">
+	<header class="main">
+		<a class="logo" title="Homepage" href="https://nette.org/en/"><span>Homepage</span></a>
+
+		<nav class="main">
+			<ul>
+	<li><a href="//nette.org/en/download">Download</a></li>
+
+	<li class="item-doc"><a href="/en/">Documentation</a></li>
+
+	<li><a href="https://api.nette.org">API</a></li>
+
+	<li><a href="https://github.com/nette">GitHub</a></li>
+</ul>
+
+		</nav>
+	</header>
+
+		<div class="wikimenu">
+	<div>
+		<div><a href="https://github.com/nette/web-content/blob/doc-2.4/en/configuring.texy">Edit</a></div>
+		<ul>
+			<li><a href="https://nette.org/en/writing">How to write?</a></li>
+
+			<li><a href="/en/2.4/configuring?view=links">Backlinks</a></li>
+
+			<li>Languages: <a href="/cs/2.4/configuring">cs</a> <a href="/en/2.4/configuring">en</a> </li>
+
+			<li>changed 23. 5. 2016</li>
+
+			<li><a href="/special/sitemap?lang=en">All pages</a></li>
+
+			<li><a href="/special/broken-links?lang=en">Broken links</a></li>
+		</ul>
+	</div>
+
+	<div>
+		<div>Lang</div>
+		<ul>
+			<li><a href="/cs/2.4/configuring">cs</a></li>
+			<li><a href="/en/2.4/configuring">en</a></li>
+		</ul>
+	</div>
+
+	<div class=versionmenu>
+		<div>Version 2.4</div>
+		<ul>
+			<li><a href="/en/2.3/configuring">Version 2.3</a></li>
+			<li><a href="/en/2.2/configuring">Version 2.2</a></li>
+			<li><a href="/en/2.1/configuring">Version 2.1</a></li>
+			<li><a href="/en/2.0/configuring">Version 2.0</a></li>
+		</ul>
+	</div>
+</div>
+
+
+	<div class="main">
+		<div class="content has-sidebar">
+			
+
+			<ul class="breadcrumbs">
+				<li><a href="/en/2.4/">Documentation</a></li>
+				<li>Configuring</li>
+			</ul>
+
+
+<h1 id="toc-configuring">Configuring</h1>
+
+<div class="perex">
+	<p>System container is a DI container holding all the services and parameters needed for the application to run. Soon you will be
+	able to:</p>
+
+	<ul>
+		<li>create the system container</li>
+
+		<li>configure your application using NEON files</li>
+
+		<li>handle production and development modes</li>
+
+		<li>create and use your own container extensions</li>
+	</ul>
+</div>
+
+<p><em>This page is still being prepared</em></p>
+
+<p>System container is a static <a href="/en/2.4/dependency-injection#toc-nette-di-container">Dependency Injection container</a>,
+that holds all services and parameters the application needs. This means not only services of the framework itself, but of each
+library you have decided to use. Take a look at an example of such <a href="/en/2.4/configuring/systemcontainer">system
+container</a>.</p>
+
+<p>Developers learned that writing containers is a very tedious work. And it surely gets difficult to manage the application as it
+grows. Nette will do the work for you! With a simple configuration language we will describe services of the application and the
+framework will generate the PHP code. In all seriousness – the container linked above was generated this way as well.</p>
+
+<h2 id="toc-configurator">Configurator</h2>
+
+<p>The task of code generation is given to <a href="//api.nette.org/2.4/Nette.Configurator.html">Nette\Configurator</a> class. The
+compilation process is triggered only once and its result is cached. For that reason we need to choose a directory for storing
+this code.</p>
+
+<pre class="src-php"><code><span class="php-var">$configurator</span> = <span
+class="php-keyword1">new</span> Nette\Configurator;
+<span
+class="php-var">$configurator</span>-&gt;setTempDirectory(__DIR__ . <span class="php-quote">'/../temp'</span>);</code></pre>
+
+<p>Now we just add a path to the config file:</p>
+
+<pre class="src-php"><code><span class="php-var">$configurator</span>-&gt;addConfig(__DIR__ . <span
+class="php-quote">'/config/config.neon'</span>);</code></pre>
+
+<p>And getting container's instance is the simplest one:</p>
+
+<pre class="src-php"><code><span class="php-comment">// returns SystemContainer instance</span>
+<span
+class="php-var">$container</span> = <span class="php-var">$configurator</span>-&gt;createContainer();</code></pre>
+
+<h3 id="toc-environment">Environment</h3>
+
+<p>Configurator attempts to detect if the application is running on production or development server. As long as the client's IP
+address is 127.0.0.1, server will be considered as developmental. We cannot find out which environment is used, but it doesn't
+care since it is used only for loading section from the configuration file. We can define it by a second parameter of
+<code>addConfig()</code>.</p>
+
+<pre class="src-php"><code><span class="php-var">$environment</span> = Nette\Configurator::detectDebugMode(<span
+class="php-quote">'your ip address'</span>)
+    ? <span class="php-var">$configurator</span>::DEVELOPMENT
+    : <span
+class="php-var">$configurator</span>::PRODUCTION;
+
+<span class="php-var">$configurator</span>-&gt;addConfig(__DIR__ . <span
+class="php-quote">'/config/config.neon'</span>, <span class="php-var">$environment</span>);</code></pre>
+
+<p>We can pass any string by <code>$environment</code>, not only the <code>production</code> or <code>development</code>. By this,
+we can ask <code>Configurator</code> to load any section of configuration file. But a right detection is up to you (for example by
+system variable <code>getenv('COMPUTERNAME')</code> or server's hostname <code>$_SERVER['SERVER_NAME']</code>).</p>
+
+<h3 id="toc-development-mode">Development mode</h3>
+
+<p>A little bit different thing is an application running mode. We can access a <code>production</code> server as a
+<code>developer</code> and we want activate a Tracy debugger. The running mode is distinguished by the same principle as
+environment above, by client's IP address. We get the mode by <a
+href="//api.nette.org/2.4/Nette.Configurator.html#_isDebugMode">isDebugMode()</a> and set the mode by <a
+href="//api.nette.org/2.4/Nette.Configurator.html#_setDebugMode">setDebugMode()</a>. It is useful when we enable debugger by <a
+href="//api.nette.org/2.4/Nette.Configurator.html#_enableDebugger">enableDebugger()</a> which must be placed after the mode
+setting.</p>
+
+<pre class="src-php"><code><span class="php-comment">// activates Tracy debugger for listed IP adresses</span>
+<span
+class="php-var">$configurator</span>-&gt;setDebugMode([<span class="php-quote">'90.180.45.360'</span>, <span
+class="php-quote">'90.180.45.361'</span>]);
+<span class="php-comment">// or for anyone</span>
+<span
+class="php-var">$configurator</span>-&gt;setDebugMode(); <span class="php-comment">// = TRUE</span>
+<span
+class="php-comment">// or for no one</span>
+<span class="php-var">$configurator</span>-&gt;setDebugMode(<span
+class="php-var">$configurator</span>::NONE); <span class="php-comment">// = FALSE</span>
+
+<span
+class="php-var">$configurator</span>-&gt;enableDebugger(__DIR__ . <span class="php-quote">'/../log'</span>);</code></pre>
+
+<h3 id="toc-class-auto-loading">Class Auto-loading</h3>
+
+<p>To compile the container, <code>Configurator</code> needs to load all the classes mentioned in a configuration files. It is
+handy to have <a href="/en/2.4/auto-loading">auto-loading</a> at your disposal and Configurator offers a method creating an
+instance of <code>RobotLoader</code>. We add only directories we wish to be indexed and activate the loader. Do not forget to
+place this code before calling <code>createContainer()</code>.</p>
+
+<pre class="src-php"><code><span
+class="php-var">$configurator</span>-&gt;createRobotLoader()
+    -&gt;addDirectory(__DIR__)
+    -&gt;register();</code></pre>
+
+<h2 id="toc-framework-configuration">Framework configuration</h2>
+
+<p>Configuration is usually written in NEON format. Have fun trying out the syntax at <a
+href="http://ne-on.org">http://ne-on.org</a>. Many features of Nette Framework can be set up in configuration file.</p>
+
+<h3 id="toc-http-proxies">HTTP proxies</h3>
+
+<p>You can define your http proxy, so that HTTP request's remote address and remote host will be correct.</p>
+
+<pre class="src-neon"><code><span class="neon-section">http</span><span class="neon-sep">:</span><span
+class="neon-section">
+    </span><span class="neon-key">proxy</span><span class="neon-sep">:</span><span
+class="neon-value"> </span><span class="neon-num">127.0.0.1</span><span class="neon-value">  </span><span
+class="neon-comment"># ip address, range, hostname or array of these values</span></code></pre>
+
+<h3 id="toc-sessions">Sessions</h3>
+
+<p>Here you can set all <a href="http://php.net/session.configuration">directives</a> (in camelCase format).</p>
+
+<pre class="src-neon"><code><span class="neon-section">session</span><span class="neon-sep">:</span><span
+class="neon-section">
+    </span><span class="neon-key">autoStart</span><span class="neon-sep">:</span><span
+class="neon-value"> true  </span><span class="neon-comment"># default is smart</span>
+    <span
+class="neon-key">expiration</span><span class="neon-sep">:</span><span class="neon-value"> </span><span
+class="neon-num">10</span><span class="neon-value"> days</span>
+    <span class="neon-key">name</span><span
+class="neon-sep">:</span><span class="neon-value"> ...</span>
+    ...</code></pre>
+
+<p class="tip"><code>autoStart: smart</code> is recommended. It automatically starts the session only if it already exists.</p>
+
+<p>Read more on <a href="/en/2.4/sessions#toc-session-configuration">session configuration</a>.</p>
+
+<h3 id="toc-application">Application</h3>
+
+<pre class="src-neon"><code><span class="neon-section">application</span><span class="neon-sep">:</span><span
+class="neon-section">
+    </span><span class="neon-key">debugger</span><span class="neon-sep">:</span><span
+class="neon-value"> true  </span><span class="neon-comment"># debugger bar panel</span>
+    <span
+class="neon-key">catchExceptions</span><span class="neon-sep">:</span><span class="neon-value"> </span><span
+class="neon-var">%productionMode%</span>
+    <span class="neon-key">errorPresenter</span><span class="neon-sep">:</span><span
+class="neon-value"> </span><span class="neon-key">Front</span><span class="neon-sep">:</span><span
+class="neon-value">Error</span>
+    <span class="neon-key">mapping</span><span class="neon-sep">:</span><span
+class="neon-value">  </span><span class="neon-comment"># mapping between presenter name and presenter class</span>
+        <span
+class="neon-key">Front</span><span class="neon-sep">:</span><span class="neon-value"> App\*Module\*Presenter</span></code></pre>
+
+<h3 id="toc-routing">Routing</h3>
+
+<pre class="src-neon"><code><span class="neon-section">routing</span><span class="neon-sep">:</span><span
+class="neon-section">
+    </span><span class="neon-key">debugger</span><span class="neon-sep">:</span><span
+class="neon-value"> true  </span><span class="neon-comment"># debugger bar panel</span>
+    <span
+class="neon-section">routes</span><span class="neon-sep">:</span><span class="neon-section">
+            </span><span
+class="neon-key">index.php</span><span class="neon-sep">:</span><span class="neon-value"> </span><span
+class="neon-key">Dashboard</span><span class="neon-sep">:</span><span
+class="neon-value">default</span>
+            '&lt;presenter&gt;/&lt;action&gt;[/&lt;id&gt;]': <span
+class="neon-key">Dashboard</span><span class="neon-sep">:</span><span class="neon-value">default</span></code></pre>
+
+<p><a href="/en/2.4/routing#toc-route-for-prettier-urls">Routes</a> are in <code>mask: action</code> format.</p>
+
+<h3 id="toc-security">Security</h3>
+
+<pre class="src-neon"><code><span class="neon-section">security</span><span class="neon-sep">:</span><span
+class="neon-section">
+    </span><span class="neon-key">debugger</span><span class="neon-sep">:</span><span
+class="neon-value"> true  </span><span class="neon-comment"># debugger bar panel</span>
+
+    <span
+class="neon-section">users</span><span class="neon-sep">:</span><span class="neon-section">
+        </span><span
+class="neon-key">johndoe</span><span class="neon-sep">:</span><span class="neon-value"> secretpassword</span>
+
+    <span
+class="neon-section">roles</span><span class="neon-sep">:</span><span class="neon-section">
+        guest</span><span
+class="neon-sep">:</span><span class="neon-section">
+        member</span><span class="neon-sep">:</span><span
+class="neon-section">
+        </span><span class="neon-key">admin</span><span class="neon-sep">:</span><span
+class="neon-value"> </span><span class="neon-sep">[</span><span class="neon-value">member]  </span><span
+class="neon-comment"># admin extends member</span>
+
+    <span class="neon-section">resources</span><span
+class="neon-sep">:</span><span class="neon-section">
+        </span><span class="neon-key">file</span><span
+class="neon-sep">:</span></code></pre>
+
+<p>By filling in <code>users</code> option you create <code>SimpleAuthenticator</code>, by defining <code>roles</code> or
+<code>resources</code> you create <code>Nette\Security\Permission</code> authorizator. More in <a
+href="/en/2.4/access-control">User Authorization and Privileges</a>.</p>
+
+<h4 id="toc-http-headers">HTTP headers</h4>
+
+<pre class="src-neon"><code><span class="neon-section">http</span><span class="neon-sep">:</span><span
+class="neon-section">
+    </span><span class="neon-key">frames</span><span class="neon-sep">:</span><span
+class="neon-value"> ... </span><span class="neon-comment"># ovlivňuje hlavičku X-Frame-Options</span></code></pre>
+
+<p>For security reasons Nette Framework sends HTTP header <code>X-Frame-Options: SAMEORIGIN</code> by default, so that the page
+can be embedded in iframe only from pages on the same domain. This behavior may be unwanted in certain situations (for example if
+you are developing a facebook application). You can override this setting by <code>frames: yes</code>,
+<code>frames: http://allowed-host.com</code> or <code>frames: no</code>.</p>
+
+<h3 id="toc-mailing">Mailing</h3>
+
+<p>Default mailer is <code>SendmailMailer</code>. By setting <code>smtp</code> you activate <code>SmtpMailer</code>.</p>
+
+<pre class="src-neon"><code><span class="neon-section">mail</span><span class="neon-sep">:</span><span
+class="neon-section">
+    </span><span class="neon-key">smtp</span><span class="neon-sep">:</span><span
+class="neon-value"> true  </span><span class="neon-comment"># use SmtpMailer instead of SendmailMailer</span>
+    <span
+class="neon-comment"># optional settings</span>
+    <span class="neon-key">host</span><span class="neon-sep">:</span><span
+class="neon-value"> ...</span>
+    <span class="neon-key">port</span><span class="neon-sep">:</span><span
+class="neon-value"> ...</span>
+    <span class="neon-key">username</span><span class="neon-sep">:</span><span
+class="neon-value"> ...</span>
+    <span class="neon-key">password</span><span class="neon-sep">:</span><span
+class="neon-value"> ...</span>
+    <span class="neon-key">secure</span><span class="neon-sep">:</span><span
+class="neon-value"> </span><span class="neon-comment"># possible values are ssl or null</span>
+    <span
+class="neon-key">timeout</span><span class="neon-sep">:</span><span class="neon-value"> ...</span></code></pre>
+
+<h3 id="toc-database">Database</h3>
+
+<p>You can define multiple database connections, if you do so you can set which one will be <a
+href="/en/2.4/configuring#toc-auto-wiring">automatically injected</a> to your services by the <code>autowired</code> option. The
+following code shows how to set up one connection called <code>default</code>.</p>
+
+<pre class="src-neon"><code><span class="neon-section">database</span><span class="neon-sep">:</span><span
+class="neon-section">
+    default</span><span class="neon-sep">:</span><span class="neon-section">
+        </span><span
+class="neon-key">dsn</span><span class="neon-sep">:</span><span class="neon-value"> </span><span
+class="neon-quote">&quot;sqlite2:</span><span class="neon-var">%appDir%</span><span
+class="neon-quote">/models/demo.db&quot;</span>
+        <span class="neon-key">user</span><span class="neon-sep">:</span><span
+class="neon-value"> ...</span>
+        <span class="neon-key">password</span><span class="neon-sep">:</span><span
+class="neon-value"> ...</span>
+        <span class="neon-key">options</span><span class="neon-sep">:</span><span
+class="neon-value"> </span><span class="neon-sep">[</span><span class="neon-key">PDO</span><span class="neon-sep">::</span><span
+class="neon-value">M</span><span class="neon-key">YSQL_ATTR_COMPRESS</span><span class="neon-value"> </span><span
+class="neon-sep">=</span><span class="neon-value"> true]</span>
+        <span class="neon-key">debugger</span><span
+class="neon-sep">:</span><span class="neon-value"> false  </span><span
+class="neon-comment"># debugger bar panel</span>
+        <span class="neon-key">explain</span><span class="neon-sep">:</span><span
+class="neon-value"> false   </span><span class="neon-comment"># explain queries in debugger bar</span>
+        <span
+class="neon-key">reflection</span><span class="neon-sep">:</span><span class="neon-value"> discovered  </span><span
+class="neon-comment"># or static or classname, default is discovered</span>
+        <span class="neon-key">autowired</span><span
+class="neon-sep">:</span><span class="neon-value"> true</span></code></pre>
+
+<p>This creates service <code>@nette.database.default</code> and sets reflection and cache for you.</p>
+
+<h3 id="toc-forms">Forms</h3>
+
+<p>You can change default validation error messages.</p>
+
+<pre class="src-neon"><code><span class="neon-section">forms</span><span class="neon-sep">:</span><span
+class="neon-section">
+    messages</span><span class="neon-sep">:</span><span class="neon-section">
+        </span><span
+class="neon-key">EQUAL</span><span class="neon-sep">:</span><span class="neon-value"> </span><span
+class="neon-quote">'Please enter %s.'</span>
+        <span class="neon-key">FILLED</span><span class="neon-sep">:</span><span
+class="neon-value"> </span><span class="neon-quote">'Please complete mandatory field.'</span>
+        <span
+class="neon-key">MIN_LENGTH</span><span class="neon-sep">:</span><span class="neon-value"> </span><span
+class="neon-quote">'Please enter a value of at least %d characters.'</span>
+        <span class="neon-key">EMAIL</span><span
+class="neon-sep">:</span><span class="neon-value"> </span><span
+class="neon-quote">'%label must be valid e-mail'</span></code></pre>
+
+<h3 id="toc-latte">Latte</h3>
+
+<p>You can turn on and off XHTML rendering mode and register custom macros.</p>
+
+<pre class="src-neon"><code><span class="neon-section">latte</span><span class="neon-sep">:</span><span
+class="neon-section">
+    </span><span class="neon-key">xhtml</span><span class="neon-sep">:</span><span
+class="neon-value"> yes  </span><span class="neon-comment"># default is no</span>
+    <span
+class="neon-section">macros</span><span class="neon-sep">:</span><span class="neon-section">
+        </span><span
+class="neon-sep">-</span><span class="neon-value"> App\MyLatteMacros::register  </span><span
+class="neon-comment"># static method, classname or callable</span></code></pre>
+
+<h3 id="toc-di-container">DI container</h3>
+
+<pre class="src-neon"><code><span class="neon-section">di</span><span class="neon-sep">:</span><span
+class="neon-section">
+    </span><span class="neon-key">debugger</span><span class="neon-sep">:</span><span
+class="neon-value"> true  </span><span class="neon-comment">#debugger bar panel</span>
+    <span
+class="neon-key">accessors</span><span class="neon-sep">:</span><span class="neon-value"> true  </span><span
+class="neon-comment">#enables $container-&gt;serviceName shortcut</span></code></pre>
+
+<h3 id="toc-tracy-debugger">Tracy debugger</h3>
+
+<pre class="src-neon"><code><span class="neon-section">tracy</span><span class="neon-sep">:</span><span
+class="neon-section">
+    </span><span class="neon-key">email</span><span class="neon-sep">:</span><span
+class="neon-value"> webmaster@example.com  </span><span class="neon-comment"># for sending error logs</span>
+    <span
+class="neon-key">strictMode</span><span class="neon-sep">:</span><span class="neon-value"> TRUE</span>
+    <span
+class="neon-key">editor</span><span class="neon-sep">:</span><span class="neon-value"> ...</span>
+    <span
+class="neon-key">browser</span><span class="neon-sep">:</span><span class="neon-value"> ...</span>
+
+    <span
+class="neon-key">bar</span><span class="neon-sep">:</span><span class="neon-value">  </span><span
+class="neon-comment"># debugger bar panels</span>
+        <span class="neon-sep">-</span><span
+class="neon-value"> Nette\Bridges\DITracy\ContainerPanel  </span><span
+class="neon-comment"># alias of DI container bar</span>
+        <span class="neon-sep">-</span><span
+class="neon-value"> IncludePanel</span>
+        <span class="neon-sep">-</span><span
+class="neon-value"> XDebugHelper('myIdeKey')</span>
+        <span class="neon-sep">-</span><span
+class="neon-value"> MyPanel(@MyService)</span>
+
+    <span class="neon-key">blueScreen</span><span class="neon-sep">:</span><span
+class="neon-value">  </span><span class="neon-comment"># blue screen panels</span>
+        <span class="neon-sep">-</span><span
+class="neon-value"> </span><span class="neon-key">DoctrinePanel</span><span class="neon-sep">::</span><span
+class="neon-value">renderException</span></code></pre>
+
+<h3 id="toc-low-level-modifications">Low-level modifications</h3>
+
+<p>All these settings affect final DI container. Compared to direct definition in <code>services</code> section it provides
+shorter and more straightaway syntax. If you need to tune these services by yourself, you can redefine them:</p>
+
+<pre class="src-neon"><code><span class="neon-section">services</span><span class="neon-sep">:</span><span
+class="neon-section">
+    mail.mailer</span><span class="neon-sep">:</span><span class="neon-section">
+        </span><span
+class="neon-key">class</span><span class="neon-sep">:</span><span class="neon-value"> MySmtpMailer</span>
+
+    <span
+class="neon-section">application.presenterFactory</span><span class="neon-sep">:</span><span
+class="neon-section">
+        </span><span class="neon-key">class</span><span class="neon-sep">:</span><span
+class="neon-value"> MyPresenterFactory</span></code></pre>
+
+<p>Or create new services extending the default ones:</p>
+
+<pre class="src-neon"><code><span class="neon-section">services</span><span class="neon-sep">:</span><span
+class="neon-section">
+    myConnection </span><span class="neon-sep">&lt;</span><span
+class="neon-section"> nette.database.default</span><span class="neon-sep">:</span><span
+class="neon-section">
+        setup</span><span class="neon-sep">:</span><span class="neon-section">
+            $</span><span
+class="neon-key">onQuery</span><span class="neon-sep">:</span><span class="neon-value"> </span><span
+class="neon-sep">[</span><span class="neon-value"> </span><span class="neon-ref">@logger</span><span
+class="neon-sep">::</span><span class="neon-value">log ]</span></code></pre>
+
+<h2 id="toc-custom-services">Custom services</h2>
+
+<h3 id="toc-services-definitions">Services definitions</h3>
+
+<pre class="src-neon"><code><span class="neon-section">services</span><span class="neon-sep">:</span><span
+class="neon-section">
+    </span><span class="neon-key">database</span><span class="neon-sep">:</span><span
+class="neon-value"> Nette\Database\Connection(</span><span class="neon-var">%dsn%</span><span class="neon-value">, </span><span
+class="neon-var">%user%</span><span class="neon-value">, </span><span class="neon-var">%password%</span><span
+class="neon-value">)</span>
+
+<span class="neon-comment"># or multi-lines</span>
+    <span
+class="neon-section">database</span><span class="neon-sep">:</span><span class="neon-section">
+        </span><span
+class="neon-key">factory</span><span class="neon-sep">:</span><span class="neon-value"> Nette\Database\Connection(</span><span
+class="neon-var">%dsn%</span><span class="neon-value">, </span><span class="neon-var">%user%</span><span
+class="neon-value">, </span><span class="neon-var">%password%</span><span class="neon-value">)</span>
+
+<span
+class="neon-comment"># or more multi-lines :-)</span>
+    <span class="neon-section">database</span><span
+class="neon-sep">:</span><span class="neon-section">
+        </span><span class="neon-key">class</span><span
+class="neon-sep">:</span><span class="neon-value"> Nette\Database\Connection</span>
+        <span
+class="neon-key">arguments</span><span class="neon-sep">:</span><span class="neon-value"> </span><span
+class="neon-sep">[</span><span class="neon-var">%dsn%</span><span class="neon-sep">,</span><span class="neon-value"> </span><span
+class="neon-var">%user%</span><span class="neon-sep">,</span><span class="neon-value"> </span><span
+class="neon-var">%password%</span><span class="neon-sep">]</span></code></pre>
+
+<p>Generates:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">function</span> createServiceDatabase()
+{
+    <span
+class="php-keyword1">return</span> <span class="php-keyword1">new</span> Nette\Database\Connection(
+        <span
+class="php-var">$this</span>-&gt;parameters[<span class="php-quote">'dsn'</span>],
+        <span
+class="php-var">$this</span>-&gt;parameters[<span class="php-quote">'user'</span>],
+        <span
+class="php-var">$this</span>-&gt;parameters[<span class="php-quote">'password'</span>]
+    );
+}</code></pre>
+
+<p>Service definition:</p>
+
+<pre class="src-neon"><code><span class="neon-section">services</span><span class="neon-sep">:</span><span
+class="neon-section">
+    database</span><span class="neon-sep">:</span><span class="neon-section">
+        </span><span
+class="neon-key">class</span><span class="neon-sep">:</span><span
+class="neon-value"> Nette\Database\Connection</span>
+        <span class="neon-key">factory</span><span
+class="neon-sep">:</span><span class="neon-value"> </span><span class="neon-key">DbFactory</span><span
+class="neon-sep">::</span><span class="neon-value">createConnection</span></code></pre>
+
+<p><code>DbFactory::createConnection</code>:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> DbFactory
+{
+    <span class="php-keyword1">static</span> <span
+class="php-keyword1">function</span> createConnection(Nette\DI\Container <span
+class="php-var">$container</span>)
+    {
+        ...
+    }
+}</code></pre>
+
+<p>Generates:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">function</span> createServiceDatabase()
+{
+    <span
+class="php-keyword1">return</span> DbFactory::createConnection(<span class="php-var">$this</span>);
+}</code></pre>
+
+<h3 id="toc-setup">Setup</h3>
+
+<pre class="src-neon"><code><span class="neon-section">services</span><span class="neon-sep">:</span><span
+class="neon-section">
+    database</span><span class="neon-sep">:</span><span class="neon-section">
+        </span><span
+class="neon-key">class</span><span class="neon-sep">:</span><span class="neon-value"> Nette\Database\Connection(</span><span
+class="neon-var">%dsn%</span><span class="neon-value">, </span><span class="neon-var">%user%</span><span
+class="neon-value">, </span><span class="neon-var">%password%</span><span class="neon-value">)</span>
+        <span
+class="neon-section">setup</span><span class="neon-sep">:</span><span class="neon-section">
+            </span><span
+class="neon-sep">-</span><span class="neon-value"> setCacheStorage(@cacheStorage)</span></code></pre>
+
+<p>Generates:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">function</span> createServiceDatabase()
+{
+    <span
+class="php-var">$service</span> = <span class="php-keyword1">new</span> Nette\Database\Connection(...);
+    <span
+class="php-var">$service</span>-&gt;setCacheStorage(<span class="php-var">$this</span>-&gt;cacheStorage);
+    <span
+class="php-keyword1">return</span> <span class="php-var">$service</span>;
+}</code></pre>
+
+<p>Autowiring feature adds dependencies automatically, so they don't even have to be mentioned:</p>
+
+<pre class="src-neon"><code><span class="neon-section">setup</span><span class="neon-sep">:</span><span
+class="neon-section">
+    </span><span class="neon-sep">-</span><span class="neon-value"> setCacheStorage</span></code></pre>
+
+<p>In case the <code>cacheStorage</code> service does not exist, it is possible to use a result of a call as a parameter:</p>
+
+<pre class="src-neon"><code><span class="neon-section">setup</span><span class="neon-sep">:</span><span
+class="neon-section">
+    </span><span class="neon-sep">-</span><span
+class="neon-value"> setCacheStorage( Factory::createStorage() )</span>
+
+<span
+class="neon-comment"># or a method of other service:</span>
+    <span class="neon-sep">-</span><span
+class="neon-value"> setCacheStorage( @factory::createStorage() )</span></code></pre>
+
+<p>Alternatively a newly created class instance:</p>
+
+<pre class="src-neon"><code><span class="neon-section">setup</span><span class="neon-sep">:</span><span
+class="neon-section">
+    </span><span class="neon-sep">-</span><span
+class="neon-value"> setCacheStorage( Nette\Caching\Storages\FileStorage(</span><span class="neon-var">%tempDir%</span><span
+class="neon-value">) )</span>
+
+<span
+class="neon-comment"># generates: $service-&gt;setCacheStorage(new Nette\Caching\Storages\FileStorage(...));</span></code></pre>
+
+<p>You can also set a value of a property:</p>
+
+<p>substitutions</p>
+
+<pre class="src-neon"><code><span class="neon-section">setup</span><span class="neon-sep">:</span><span
+class="neon-section">
+    </span><span class="neon-sep">-</span><span
+class="neon-value"> $substitutions( [db: test] )</span>
+
+<span
+class="neon-comment"># generates: $service-&gt;substitutions = ['db' =&gt; 'test'];</span></code></pre>
+
+<p>Full example:</p>
+
+<pre class="src-neon"><code><span class="neon-section">parameters</span><span class="neon-sep">:</span><span
+class="neon-section">
+    database</span><span class="neon-sep">:</span><span class="neon-section">
+        </span><span
+class="neon-key">driver</span><span class="neon-sep">:</span><span class="neon-value"> mysql</span>
+        <span
+class="neon-key">host</span><span class="neon-sep">:</span><span class="neon-value"> localhost</span>
+        <span
+class="neon-key">dbname</span><span class="neon-sep">:</span><span class="neon-value"> test</span>
+        <span
+class="neon-key">user</span><span class="neon-sep">:</span><span class="neon-value"> jim</span>
+        <span
+class="neon-key">password</span><span class="neon-sep">:</span><span class="neon-value"> beam</span>
+        <span
+class="neon-section">substitutions</span><span class="neon-sep">:</span><span class="neon-section">
+            </span><span
+class="neon-key">db</span><span class="neon-sep">:</span><span class="neon-value"> test</span>
+
+<span
+class="neon-section">services</span><span class="neon-sep">:</span><span class="neon-section">
+    database</span><span
+class="neon-sep">:</span><span class="neon-section">
+        </span><span class="neon-key">class</span><span
+class="neon-sep">:</span><span class="neon-value"> Nette\Database\Connection(</span>
+            '%database.driver%:<span
+class="neon-key">host</span><span class="neon-sep">=</span><span
+class="neon-value">%database.host%;dbname=%database.dbname%',</span>
+            %database.user%, %database.password%, null,
+            Nette\Database\Reflection\DiscoveredReflection()
+        )
+        <span
+class="neon-section">setup</span><span class="neon-sep">:</span><span class="neon-section">
+            </span><span
+class="neon-sep">-</span><span class="neon-value"> setCacheStorage</span>
+            <span class="neon-sep">-</span><span
+class="neon-value"> $substitutions( %database.substitutions% )</span></code></pre>
+
+<h3 id="toc-anonymous-services">Anonymous services</h3>
+
+<p>Time after time there are services that are in fact not referenced anywhere else in config files. Naming these services in this
+case is not necessary. To define an anonymous service, use the following syntax:</p>
+
+<pre class="src-neon"><code><span class="neon-section">services</span><span class="neon-sep">:</span><span
+class="neon-section">
+    </span><span class="neon-sep">-</span><span class="neon-value"> Simple\Service</span>
+
+    <span
+class="neon-sep">-</span><span class="neon-value">
+        </span><span class="neon-key">class</span><span
+class="neon-sep">:</span><span class="neon-value"> Complex\Service</span>
+        <span class="neon-section">setup</span><span
+class="neon-sep">:</span><span class="neon-section">
+            </span><span class="neon-sep">-</span><span
+class="neon-value"> setLang(</span><span class="neon-var">%lang%</span><span class="neon-value">)</span></code></pre>
+
+<p>To refer to such anonymous service you will need to use the fully qualified class name instead.</p>
+
+<pre class="src-neon"><code><span class="neon-section">services</span><span class="neon-sep">:</span><span
+class="neon-section">
+    </span><span class="neon-key">router</span><span class="neon-sep">:</span><span
+class="neon-value"> </span><span class="neon-ref">@App</span><span class="neon-value">\</span><span
+class="neon-key">RouterFactory</span><span class="neon-sep">::</span><span class="neon-value">createRouter</span></code></pre>
+
+<p>Keep in mind that from a nature of anonymous services, it is not possible to register more than one of the same type, because
+it would lead to an ambiguity.</p>
+
+<h3 id="toc-service-definitions-inheritance">Service definitions inheritance</h3>
+
+<pre class="src-neon"><code><span class="neon-section">services</span><span class="neon-sep">:</span><span
+class="neon-section">
+    dev_database </span><span class="neon-sep">&lt;</span><span
+class="neon-section"> database
+        setup</span><span class="neon-sep">:</span><span
+class="neon-section">
+            </span><span class="neon-sep">-</span><span
+class="neon-value"> Diagnostics\ConnectionPanel::initialize</span></code></pre>
+
+<h2 id="toc-auto-wiring">Auto-wiring</h2>
+
+<p>Auto-wiring feature can automatically pass dependencies into constructor and methods of the service. It uses typehinting and
+<code>@return</code> annotations. There can be only one service matching the type in the container, otherwise an exception is
+thrown.</p>
+
+<p>To define more than one service of the same type we need to exclude them from auto-wiring:</p>
+
+<pre class="src-neon"><code><span class="neon-section">services</span><span class="neon-sep">:</span><span
+class="neon-section">
+    cacheStorage</span><span class="neon-sep">:</span><span class="neon-section">
+        </span><span
+class="neon-key">class</span><span class="neon-sep">:</span><span
+class="neon-value"> Nette\Caching\Storages\FileStorage(</span><span class="neon-var">%tempDir%</span><span
+class="neon-value">)</span>
+
+    <span class="neon-section">tempCacheStorage</span><span class="neon-sep">:</span><span
+class="neon-section">
+        </span><span class="neon-key">class</span><span class="neon-sep">:</span><span
+class="neon-value"> Nette\Caching\Storages\DevNullStorage</span>
+        <span class="neon-key">autowired</span><span
+class="neon-sep">:</span><span class="neon-value"> no</span></code></pre>
+
+<p>When modifying the Nette Framework's core services we need to make sure the container is aware of the classes we want to use.
+That means using fully qualified class names in <code>@return</code> annotations or set the FQ class name with
+<code>class</code> entry.</p>
+
+<h2 id="toc-multiple-configuration-files">Multiple configuration files</h2>
+
+<p>Use <code>includes</code> section to add more configuration files.</p>
+
+<pre class="src-neon"><code><span class="neon-section">includes</span><span class="neon-sep">:</span><span
+class="neon-section">
+    </span><span class="neon-sep">-</span><span class="neon-value"> parameters.php</span>
+    <span
+class="neon-sep">-</span><span class="neon-value"> services.neon</span>
+    <span class="neon-sep">-</span><span
+class="neon-value"> presenters.neon</span></code></pre>
+
+<p>Configuration merging process assigns the highest priority to the file containing <code>includes</code> section and the lowest
+priority to the first included file. To prevent merging of a certain array use exclamation mark right after the name of
+the array:</p>
+
+<pre class="src-neon"><code>argument!: [1, 2, 3]</code></pre>
+
+
+<div class="paginator">
+	<small><a href="/en/2.4/presenters">« MVC Applications &amp; Presenters</a></small>
+	<a href="/en/2.4/dependency-injection">Dependency Injection »</a>
+</div>
+		</div>
+
+			<aside class="main">
+		<div>
+			<p><a href="https://github.com/nette/nette">GitHub</a> | <a href="https://api.nette.org/2.4/namespace-Nette.html">API</a>
+			<br>composer: <a href="https://packagist.org/packages/nette/nette">nette/nette</a></p>
+
+
+			<ul class="toc">
+				<li class="up" value="0"><a href="#">▲</a></li>
+				<li><a href="#toc-configurator">Configurator</a>
+				<ul>
+				
+				<li><a href="#toc-environment">Environment</a>
+				</li>
+				<li><a href="#toc-development-mode">Development mode</a>
+				</li>
+				<li><a href="#toc-class-auto-loading">Class Auto-loading</a>
+				</ul>
+				
+				<li><a href="#toc-framework-configuration">Framework configuration</a>
+				<ul>
+				
+				<li><a href="#toc-http-proxies">HTTP proxies</a>
+				</li>
+				<li><a href="#toc-sessions">Sessions</a>
+				</li>
+				<li><a href="#toc-application">Application</a>
+				</li>
+				<li><a href="#toc-routing">Routing</a>
+				</li>
+				<li><a href="#toc-security">Security</a>
+				<ul>
+				
+				<li><a href="#toc-http-headers">HTTP headers</a>
+				</ul>
+				
+				<li><a href="#toc-mailing">Mailing</a>
+				</li>
+				<li><a href="#toc-database">Database</a>
+				</li>
+				<li><a href="#toc-forms">Forms</a>
+				</li>
+				<li><a href="#toc-latte">Latte</a>
+				</li>
+				<li><a href="#toc-di-container">DI container</a>
+				</li>
+				<li><a href="#toc-tracy-debugger">Tracy debugger</a>
+				</li>
+				<li><a href="#toc-low-level-modifications">Low-level modifications</a>
+				</ul>
+				
+				<li><a href="#toc-custom-services">Custom services</a>
+				<ul>
+				
+				<li><a href="#toc-services-definitions">Services definitions</a>
+				</li>
+				<li><a href="#toc-setup">Setup</a>
+				</li>
+				<li><a href="#toc-anonymous-services">Anonymous services</a>
+				</li>
+				<li><a href="#toc-service-definitions-inheritance">Service definitions inheritance</a>
+				</ul>
+				
+				<li><a href="#toc-auto-wiring">Auto-wiring</a>
+				</li>
+				<li><a href="#toc-multiple-configuration-files">Multiple configuration files</a>
+				</li>
+			</ul>
+		</div>
+	</aside>
+	</div>
+
+	<footer class="main">
+		<p>&copy; 2008, 2016 <a href="https://nettefoundation.com">Nette Foundation</a> | <a href="http://php7.org/guidelines/">PHP Coding Guidelines</a>
+		| <a href="https://nette.org/terms-of-use">Terms of use</a> | If not stated otherwise, the contents are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cz/">Creative Commons CC-BY-SA</a>.</p>
+	</footer>
+
+	<div class="docmenu">
+		<div class="column">
+	<h3 id="toc-programmer-s-guide"><img src="//files.nette.org/git/doc-2.4/icon-guides-small.png" alt=""> Programmer's Guide</h3>
+
+	<ul>
+		<li><a href="/en/2.4/forms">Forms</a></li>
+
+		<li><a href="//latte.nette.org/en/">Templates</a>, <a href="//latte.nette.org/en/macros">Latte Macros</a> and <a
+		href="//latte.nette.org/en/filters">Filters</a></li>
+
+		<li><a href="/en/2.4/presenters">MVC Application &amp; Presenters</a></li>
+
+		<li><a href="/en/2.4/configuring">Configuration</a>, <a href="/en/2.4/dependency-injection">Dependency Injection</a>, <a
+		href="/en/2.4/di-usage">Getting Dependencies</a> and <a href="/en/2.4/di-extensions">DI extensions</a></li>
+
+		<li><a href="/en/2.4/components">Components and Controls</a></li>
+
+		<li><a href="/en/2.4/routing">Routing</a></li>
+
+		<li><a href="/en/2.4/access-control">Authentication &amp; Authorization</a></li>
+
+		<li><a href="//tracy.nette.org/en/">Debugging and Error Handling</a>, <a href="//tracy.nette.org/en/extensions">Debugger
+		extensions</a></li>
+
+		<li><a href="/en/2.4/ajax">AJAX</a></li>
+
+		<li><a href="/en/2.4/php-language-enhancements">PHP Language Enhancements</a></li>
+
+		<li><a href="/en/2.4/http-request-response">HTTP request &amp; response</a></li>
+
+		<li><a href="/en/2.4/database">Database</a>, <a href="/en/2.4/database-table">Table</a>, <a
+		href="/en/2.4/database-selection">Selection</a>, <a href="/en/2.4/database-activerow">ActiveRow</a></li>
+
+		<li><a href="/en/2.4/sessions">Sessions</a></li>
+
+		<li><a href="/en/2.4/mailing">Mailing</a></li>
+
+		<li><a href="/en/2.4/images">Image Manipulation</a></li>
+
+		<li><a href="/en/2.4/caching">Caching</a></li>
+
+		<li><a href="/en/2.4/localization">Localization</a></li>
+
+		<li><a href="//tester.nette.org/en/">Testing</a>, <a href="//tester.nette.org/en/testing-with-travis">Continuous
+		integration</a></li>
+
+		<li><a href="/en/2.4/pagination">Pagination</a></li>
+
+		<li><a href="/en/2.4/auto-loading">Auto-loading</a></li>
+
+		<li><a href="/en/2.4/finder">Browsing files on disk</a></li>
+
+		<li><a href="/en/2.4/atomicity">Atomic Operations</a></li>
+
+		<li><a href="/en/2.4/validators">Validation</a></li>
+
+		<li><a href="/en/2.4/strings">Strings</a>, <a href="/en/2.4/arrays">arrays</a>, <a href="/en/2.4/html-elements">HTML elements</a>
+		and <a href="/en/2.4/urls">URLs</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-getting-started"><img src="//files.nette.org/git/doc-2.4/icon-welcome-small.png" alt=""> Getting Started</h3>
+
+	<ul>
+		<li><a href="/en/2.4/getting-started">Introduction to Nette</a></li>
+
+		<li><b><a href="/en/2.4/quickstart">Create First Application!</a></b></li>
+
+		<li><a href="/en/2.4/glossary">Glossary</a></li>
+	</ul>
+
+	<h3 id="toc-general-info"><img src="//files.nette.org/git/doc-2.4/icon-question-small.png" alt=""> General Info</h3>
+
+	<ul>
+		<li><a href="https://api.nette.org/2.4">API Reference</a></li>
+
+		<li><a href="/en/2.4/migration-2-3">Migrating from 2.2 to 2.3</a></li>
+
+		<li><a href="/en/2.4/code-checker">Code-Checker</a></li>
+
+		<li><a href="/en/2.4/vulnerability-protection">Vulnerability Protection</a></li>
+
+		<li><a href="/en/2.4/requirements">Server Requirements</a></li>
+
+		<li><a href="//nette.org/en/license">License</a> and <a href="https://nette.org/contributors">contributors</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-development"><img src="//files.nette.org/git/doc-2.4/icon-ruler-small.png" alt=""> Development</h3>
+
+	<ul>
+		<li><a href="//nette.org/en/contributing">Contributing</a></li>
+
+		<li><a href="//nette.org/en/writing">Writing Documentation</a></li>
+
+		<li><a href="irc://irc.freenode.net/nettefw">IRC #nettefw</a></li>
+
+		<li><a href="/en/2.4/troubleshooting">Troubleshooting</a></li>
+	</ul>
+</div>
+
+	</div>
+</div>
+
+<div class="bar"><div>
+
+	<ul class="user" style="opacity:.6">
+		<li><a href="https://addons.nette.org/"><span>Add-ons</span></a>
+		<li><a href="https://pla.nette.org/en/"><span>Planette</span></a>
+		<li><a href="https://forum.nette.org/en/"><span>Forum</span></a>
+		<li><a href="https://blog.nette.org"><span>Blog</span></a>
+		<li><a href="https://nette.org/donate"><span>Donate</span></a>
+		<li>
+		<form action="https://www.google.com/cse" class="search">
+			<input type="hidden" name="cx" value="011549293477758430224:vxofa9ufnhc"><input type="hidden" name="ie" value="UTF-8"><input type="search" name="q" class="text" size="30" placeholder="Search"><input type="image" src="https://files.nette.org/images/search.png" alt="Search">
+		</form>
+		</li>
+	</ul>
+</div></div>
+
+</body>
+</html>

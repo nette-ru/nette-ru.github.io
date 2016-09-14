@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html class="nette-doc">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Nette Foundation; c 2008">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Getting Started | Nette Framework</title>
+
+	<link rel="stylesheet" href="https://files.nette.org/css/combined.css?v=1468405828">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://nette.org/opensearch.xml" title="Nette Framework">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://forum.nette.org/opensearch.xml" title="Nette Framework forum">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://api.nette.org/opensearch.xml" title="Nette Framework API">
+	<link rel="canonical" href="/en/2.4/quickstart/getting-started">
+	<link rel="image_src" href="https://files.nette.org/images/fb-preview.png">
+
+		<link rel="alternate" hreflang="cs" href="/cs/2.4/quickstart/getting-started">
+	<link rel="alternate" hreflang="en" href="/en/2.4/quickstart/getting-started">
+</head>
+
+
+<body>
+<script>
+	ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-95238-14','auto'); ga('send','pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+<script src="https://api.nette.org/2.4/elementlist.js" async></script>
+<script src="https://files.nette.org/js/combined.js?v=1468489896" async></script>
+
+<div class="page">
+	<header class="main">
+		<a class="logo" title="Homepage" href="https://nette.org/en/"><span>Homepage</span></a>
+
+		<nav class="main">
+			<ul>
+	<li><a href="//nette.org/en/download">Download</a></li>
+
+	<li class="item-doc"><a href="/en/">Documentation</a></li>
+
+	<li><a href="https://api.nette.org">API</a></li>
+
+	<li><a href="https://github.com/nette">GitHub</a></li>
+</ul>
+
+		</nav>
+	</header>
+
+		<div class="wikimenu">
+	<div>
+		<div><a href="https://github.com/nette/web-content/blob/doc-2.4/en/quickstart/getting-started.texy">Edit</a></div>
+		<ul>
+			<li><a href="https://nette.org/en/writing">How to write?</a></li>
+
+			<li><a href="/en/2.4/quickstart/getting-started?view=links">Backlinks</a></li>
+
+			<li>Languages: <a href="/cs/2.4/quickstart/getting-started">cs</a> <a href="/en/2.4/quickstart/getting-started">en</a> </li>
+
+			<li>changed 11. 7. 2016</li>
+
+			<li><a href="/special/sitemap?lang=en">All pages</a></li>
+
+			<li><a href="/special/broken-links?lang=en">Broken links</a></li>
+		</ul>
+	</div>
+
+	<div>
+		<div>Lang</div>
+		<ul>
+			<li><a href="/cs/2.4/quickstart/getting-started">cs</a></li>
+			<li><a href="/en/2.4/quickstart/getting-started">en</a></li>
+		</ul>
+	</div>
+
+	<div class=versionmenu>
+		<div>Version 2.4</div>
+		<ul>
+			<li><a href="/en/2.3/quickstart/getting-started">Version 2.3</a></li>
+			<li><a href="/en/2.2/quickstart/getting-started">Version 2.2</a></li>
+			<li><a href="/en/2.1/quickstart/getting-started">Version 2.1</a></li>
+			<li><a href="/en/2.0/quickstart/getting-started">Version 2.0</a></li>
+		</ul>
+	</div>
+</div>
+
+
+	<div class="main">
+		<div class="content has-sidebar">
+			
+
+			<ul class="breadcrumbs">
+				<li><a href="/en/2.4/">Documentation</a></li>
+				<li><a href="/en/2.4/quickstart">QuickStart</a></li>
+				<li>Getting Started</li>
+			</ul>
+
+
+<h1 id="toc-getting-started">Getting Started</h1>
+
+<p class="perex">Meet Nette Framework and create your first application.</p>
+
+<p>The very first thing you should do is check if your server satisfies the <a href="/en/2.4/requirements">requirements</a> of
+Nette Framework. It should most likely be fine, but just to be sure we won't start with broken environment.</p>
+
+<p>You can download Nette Framework <a href="//nette.org/en/download">manually</a>, but the recommended way of starting a new
+project is using <a href="/en/2.4/composer">Composer</a>. If you don't know Composer, you should definitely start with that.
+It's really simple and useful tool, check out <a href="http://getcomposer.org/doc/">their documentation</a>.</p>
+
+<p>With Composer, you can download and install the application skeleton known as Web Project including Nette Framework very
+easily. To do so, find your web root directory (e.g. <code>/var/www</code> or <code>C:\InetPub</code>) in your command line and
+execute the following command:</p>
+
+<pre>composer create-project nette/web-project nette-blog</pre>
+
+<p>Web Project will be downloaded into <code>nette-blog</code> directory.</p>
+
+<p class="note">If you couldn't use Composer, <a href="https://github.com/nette/web-project/archive/full.zip">download</a> and
+extract the archive and copy it to root directory of web server and rename to <code>nette-blog</code>. The entire framework is
+located in the <code>vendor</code> folder.</p>
+
+<p>If you're developing on Mac OS X or Linux (or any other Unix based system), you need to configure write privileges to the web
+server.</p>
+
+<pre>cd nette-blog &amp;&amp; chmod -R a+rw temp log</pre>
+
+<h2 id="toc-the-welcome-page">The Welcome Page</h2>
+
+<p>At this moment, the welcome page of the Web Project should be running. Try it by opening your browser and going to the
+following URL:</p>
+
+<pre>http://localhost/nette-blog/www/</pre>
+
+<p>and you should see the Nette Framework welcome page:</p>
+
+<div><img src="//files.nette.org/git/doc-2.4/welcome-620.jpg" alt=""></div>
+
+<p>The application works and you can now start making changes to it.</p>
+
+<h2 id="toc-web-project-s-content">Web Project's Content</h2>
+
+<p>Web Project has the following structure:</p>
+
+<pre><b>www/</b>                      ← web root directory
+└── <b>nette-blog/</b>
+    ├── <b>app/</b>              ← application directory
+    │   ├── <b>config/</b>       ← configuration files
+    │   ├── <b>presenters/</b>   ← presenter classes
+    │   │   └── <b>templates/</b>← templates
+    │   ├── <b>router/</b>       ← configuration of URL addresses
+    │   └── <b>bootstrap.php</b> ← boot file
+    ├── <b>log/</b>              ← here you can find error message logs
+    ├── <b>temp/</b>             ← place for temporary files (cache, sessions, etc.)
+    │
+    ├── <b>vendor/</b>           ← libraries for your application
+    │   └── <b>nette/</b>        ← like your favorite framework :-)
+    │
+    └── <b>www/</b>              ← local web root - this is the only directory accessible from the web</pre>
+
+<p>Directory <code>www</code> is supposed to store images, JavaScript, CSS, and other publicly available files. This is the only
+directory directly accessible from the browser, so you can point the root directory of your web server here (you can configure it
+in Apache, but let’s do it later as it’s not important right now).</p>
+
+<p>The most important directory for you is <code>app/</code>. You can find <code>bootstrap.php</code> file there, which loads the
+framework and configures the application. It activates <a href="/en/2.4/auto-loading">autoloading</a> and sets up the <a
+href="//tracy.nette.org/en/">debugger</a> and <a href="/en/2.4/routing">routes</a>.</p>
+
+<h2 id="toc-cleanup">Cleanup</h2>
+
+<p>The Web Project contains welcome page, which we can remove – feel free to delete the
+<code>app/presenters/templates/Homepage/default.latte</code> file and replace it with text “Hello world!”.</p>
+
+<div><img src="//files.nette.org/git/doc-2.4/quick-hello.png" alt=""></div>
+
+<h2 id="toc-tracy-debugger">Tracy (debugger)</h2>
+
+<p>An extremely important tool for development is <a href="//tracy.nette.org/en/">a debugger called Tracy</a>. Try to make some
+errors in your <code>app/presenters/HomepagePresenter.php</code> file (e.g. remove a letter from the word <code>class</code> in
+code) and see what happens. A red-screen page will pop up with understandable error description.</p>
+
+<div><img src="//files.nette.org/git/doc-2.4/debugger-620.png" alt="debugger screen"></div>
+
+<p>Tracy will significantly help you while hunting down errors. Also note the floating Debugger bar in the bottom right corner,
+which informs you about important runtime data.</p>
+
+<div><img src="//files.nette.org/git/doc-2.4/quick-tracy-info.png" alt=""></div>
+
+<p>In the production mode, Tracy is, of course, disabled and does not reveal any sensitive information. All error are saved into
+<code>log/</code> directory instead. Just try it out. In <code>app/bootstrap.php</code>, find the following piece of code,
+uncomment the line and change the method call parameter to <code>FALSE</code>, so it looks like this:</p>
+
+<pre class="src-php"><code><span class="php-comment">// Enable Nette Debugger for error visualization &amp; logging</span>
+<span
+class="php-var">$configurator</span>-&gt;setDebugMode(<span class="php-keyword1">FALSE</span>);
+<span
+class="php-var">$configurator</span>-&gt;enableDebugger(__DIR__ . <span class="php-quote">'/../log'</span>);</code></pre>
+
+<p>After refreshing the web page, the red-screen page will be replaced with user-friendly message:</p>
+
+<div><img src="//files.nette.org/git/doc-2.4/server-error-620.png" alt="error screen"></div>
+
+<p>Now look into the <code>log/</code> directory. You can find the error log there (in exception.log file) and also the page with
+error message (saved in an HTML file with name starting with <code>exception</code>).</p>
+
+<p>Comment line <code>// $configurator-&gt;setDebugMode(FALSE);</code> again. Tracy automatically enables debug mode on
+<code>localhost</code> environment and disables it elsewhere.</p>
+
+<p>Now, we can fix the bug and continue designing our application.</p>
+
+
+<div class="paginator">
+	
+	<a href="/en/2.4/quickstart/home-page">Home Page »</a>
+</div>
+		</div>
+
+			<aside class="main">
+		<div>
+
+
+			<ul class="toc">
+				<li class="up" value="0"><a href="#">▲</a></li>
+				<li><a href="#toc-the-welcome-page">The Welcome Page</a>
+				</li>
+				<li><a href="#toc-web-project-s-content">Web Project's Content</a>
+				</li>
+				<li><a href="#toc-cleanup">Cleanup</a>
+				</li>
+				<li><a href="#toc-tracy-debugger">Tracy (debugger)</a>
+				</li>
+			</ul>
+		</div>
+	</aside>
+	</div>
+
+	<footer class="main">
+		<p>&copy; 2008, 2016 <a href="https://nettefoundation.com">Nette Foundation</a> | <a href="http://php7.org/guidelines/">PHP Coding Guidelines</a>
+		| <a href="https://nette.org/terms-of-use">Terms of use</a> | If not stated otherwise, the contents are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cz/">Creative Commons CC-BY-SA</a>.</p>
+	</footer>
+
+	<div class="docmenu">
+		<div class="column">
+	<h3 id="toc-programmer-s-guide"><img src="//files.nette.org/git/doc-2.4/icon-guides-small.png" alt=""> Programmer's Guide</h3>
+
+	<ul>
+		<li><a href="/en/2.4/forms">Forms</a></li>
+
+		<li><a href="//latte.nette.org/en/">Templates</a>, <a href="//latte.nette.org/en/macros">Latte Macros</a> and <a
+		href="//latte.nette.org/en/filters">Filters</a></li>
+
+		<li><a href="/en/2.4/presenters">MVC Application &amp; Presenters</a></li>
+
+		<li><a href="/en/2.4/configuring">Configuration</a>, <a href="/en/2.4/dependency-injection">Dependency Injection</a>, <a
+		href="/en/2.4/di-usage">Getting Dependencies</a> and <a href="/en/2.4/di-extensions">DI extensions</a></li>
+
+		<li><a href="/en/2.4/components">Components and Controls</a></li>
+
+		<li><a href="/en/2.4/routing">Routing</a></li>
+
+		<li><a href="/en/2.4/access-control">Authentication &amp; Authorization</a></li>
+
+		<li><a href="//tracy.nette.org/en/">Debugging and Error Handling</a>, <a href="//tracy.nette.org/en/extensions">Debugger
+		extensions</a></li>
+
+		<li><a href="/en/2.4/ajax">AJAX</a></li>
+
+		<li><a href="/en/2.4/php-language-enhancements">PHP Language Enhancements</a></li>
+
+		<li><a href="/en/2.4/http-request-response">HTTP request &amp; response</a></li>
+
+		<li><a href="/en/2.4/database">Database</a>, <a href="/en/2.4/database-table">Table</a>, <a
+		href="/en/2.4/database-selection">Selection</a>, <a href="/en/2.4/database-activerow">ActiveRow</a></li>
+
+		<li><a href="/en/2.4/sessions">Sessions</a></li>
+
+		<li><a href="/en/2.4/mailing">Mailing</a></li>
+
+		<li><a href="/en/2.4/images">Image Manipulation</a></li>
+
+		<li><a href="/en/2.4/caching">Caching</a></li>
+
+		<li><a href="/en/2.4/localization">Localization</a></li>
+
+		<li><a href="//tester.nette.org/en/">Testing</a>, <a href="//tester.nette.org/en/testing-with-travis">Continuous
+		integration</a></li>
+
+		<li><a href="/en/2.4/pagination">Pagination</a></li>
+
+		<li><a href="/en/2.4/auto-loading">Auto-loading</a></li>
+
+		<li><a href="/en/2.4/finder">Browsing files on disk</a></li>
+
+		<li><a href="/en/2.4/atomicity">Atomic Operations</a></li>
+
+		<li><a href="/en/2.4/validators">Validation</a></li>
+
+		<li><a href="/en/2.4/strings">Strings</a>, <a href="/en/2.4/arrays">arrays</a>, <a href="/en/2.4/html-elements">HTML elements</a>
+		and <a href="/en/2.4/urls">URLs</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-getting-started"><img src="//files.nette.org/git/doc-2.4/icon-welcome-small.png" alt=""> Getting Started</h3>
+
+	<ul>
+		<li><a href="/en/2.4/getting-started">Introduction to Nette</a></li>
+
+		<li><b><a href="/en/2.4/quickstart">Create First Application!</a></b></li>
+
+		<li><a href="/en/2.4/glossary">Glossary</a></li>
+	</ul>
+
+	<h3 id="toc-general-info"><img src="//files.nette.org/git/doc-2.4/icon-question-small.png" alt=""> General Info</h3>
+
+	<ul>
+		<li><a href="https://api.nette.org/2.4">API Reference</a></li>
+
+		<li><a href="/en/2.4/migration-2-3">Migrating from 2.2 to 2.3</a></li>
+
+		<li><a href="/en/2.4/code-checker">Code-Checker</a></li>
+
+		<li><a href="/en/2.4/vulnerability-protection">Vulnerability Protection</a></li>
+
+		<li><a href="/en/2.4/requirements">Server Requirements</a></li>
+
+		<li><a href="//nette.org/en/license">License</a> and <a href="https://nette.org/contributors">contributors</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-development"><img src="//files.nette.org/git/doc-2.4/icon-ruler-small.png" alt=""> Development</h3>
+
+	<ul>
+		<li><a href="//nette.org/en/contributing">Contributing</a></li>
+
+		<li><a href="//nette.org/en/writing">Writing Documentation</a></li>
+
+		<li><a href="irc://irc.freenode.net/nettefw">IRC #nettefw</a></li>
+
+		<li><a href="/en/2.4/troubleshooting">Troubleshooting</a></li>
+	</ul>
+</div>
+
+	</div>
+</div>
+
+<div class="bar"><div>
+
+	<ul class="user" style="opacity:.6">
+		<li><a href="https://addons.nette.org/"><span>Add-ons</span></a>
+		<li><a href="https://pla.nette.org/en/"><span>Planette</span></a>
+		<li><a href="https://forum.nette.org/en/"><span>Forum</span></a>
+		<li><a href="https://blog.nette.org"><span>Blog</span></a>
+		<li><a href="https://nette.org/donate"><span>Donate</span></a>
+		<li>
+		<form action="https://www.google.com/cse" class="search">
+			<input type="hidden" name="cx" value="011549293477758430224:vxofa9ufnhc"><input type="hidden" name="ie" value="UTF-8"><input type="search" name="q" class="text" size="30" placeholder="Search"><input type="image" src="https://files.nette.org/images/search.png" alt="Search">
+		</form>
+		</li>
+	</ul>
+</div></div>
+
+</body>
+</html>

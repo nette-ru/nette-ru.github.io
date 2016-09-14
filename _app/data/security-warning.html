@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html class="nette-www">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Nette Foundation; c 2008">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Security warning | Nette Framework</title>
+
+	<link rel="stylesheet" href="https://files.nette.org/css/combined.css?v=1468405828">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://nette.org/opensearch.xml" title="Nette Framework">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://forum.nette.org/opensearch.xml" title="Nette Framework forum">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://api.nette.org/opensearch.xml" title="Nette Framework API">
+	<link rel="canonical" href="/en/security-warning">
+	<link rel="image_src" href="https://files.nette.org/images/fb-preview.png">
+
+		<link rel="alternate" hreflang="cs" href="/cs/security-warning">
+	<link rel="alternate" hreflang="en" href="/en/security-warning">
+</head>
+
+
+<body>
+<script>
+	ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-95238-14','auto'); ga('send','pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+<script src="https://api.nette.org/2.4/elementlist.js" async></script>
+<script src="https://files.nette.org/js/combined.js?v=1468489896" async></script>
+
+<div class="page">
+	<header class="main">
+		<a class="logo" title="Homepage" href="/en/"><span>Homepage</span></a>
+
+		<nav class="main">
+			<ul>
+	<li><a href="/en/download">Download</a></li>
+
+	<li class="item-doc"><a href="//doc.nette.org/en/">Documentation</a></li>
+
+	<li><a href="https://api.nette.org">API</a></li>
+
+	<li><a href="https://github.com/nette">GitHub</a></li>
+</ul>
+
+		</nav>
+	</header>
+
+		<div class="wikimenu">
+	<div>
+		<div><a href="https://github.com/nette/web-content/blob/nette.org/www/en/security-warning.texy">Edit</a></div>
+		<ul>
+			<li><a href="/en/writing">How to write?</a></li>
+
+			<li><a href="/en/security-warning?view=links">Backlinks</a></li>
+
+			<li>Languages: <a href="/cs/security-warning">cs</a> <a href="/en/security-warning">en</a> </li>
+
+			<li>changed 30. 1. 2016</li>
+
+			<li><a href="/special/sitemap?lang=en">All pages</a></li>
+
+			<li><a href="/special/broken-links?lang=en">Broken links</a></li>
+		</ul>
+	</div>
+
+	<div>
+		<div>Lang</div>
+		<ul>
+			<li><a href="/cs/security-warning">cs</a></li>
+			<li><a href="/en/security-warning">en</a></li>
+		</ul>
+	</div>
+
+</div>
+
+
+	<div class="main">
+		<div class="content">
+			
+
+
+
+<h1 id="toc-security-warning">Security warning</h1>
+
+<p class="perex">**It is extremely important that the <code>config.neon</code> and the entire directory <code>app</code>,
+<code>log</code> &amp; etc is not accessible from a web browser. If these directories will not be protect against direct access
+from the Internet, anyone will be able to see your passwords and other sensitive information.</p>
+
+<p>How to determine whether file is protected? Simply try to open it in the browser. If your site is located at
+<code>http://example.com</code> and <code>config.neon</code> is placed in the directory <code>app</code>, try to open the URL
+<code>http://example.com/app/config.neon</code>. The browser should show page not found error. If it shows the contents of the
+configuration file, there is a serious security hole and you need to fix it.</p>
+
+<p>To protect critical files from being accessed from the web is your responsibility. How to do it?</p>
+
+<h2 id="toc-htaccess-file">.htaccess file</h2>
+
+<p>The text file <code>.htaccess</code> is used to modify some configuration options of web server. For example, restricting
+access to certain files or directories. It works on Apache servers.</p>
+
+<p>Make sure that there is a file <code>.htaccess</code> in directories <code>app</code>, <code>log</code> &amp; etc with the
+following content:</p>
+
+<pre>Order Allow,Deny
+Deny from all</pre>
+
+<h2 id="toc-host-administration">Host administration</h2>
+
+<p>Some hosts provide the ability to restrict access to the directories in its web interface. Disable access to the whole
+directories <code>app</code>, <code>log</code> &amp; etc.</p>
+
+<h2 id="toc-directory-structure">Directory Structure</h2>
+
+<p>If your web application uses a directory structure, where directories <code>app</code>, <code>log</code> &amp; etc are not
+available from a web browser, there is no need to set anything else.</p>
+
+
+		</div>
+
+			</div>
+
+	<footer class="main">
+		<p>&copy; 2008, 2016 <a href="https://nettefoundation.com">Nette Foundation</a> | <a href="http://php7.org/guidelines/">PHP Coding Guidelines</a>
+		| <a href="https://nette.org/terms-of-use">Terms of use</a> | If not stated otherwise, the contents are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cz/">Creative Commons CC-BY-SA</a>.</p>
+	</footer>
+
+</div>
+
+<div class="bar"><div>
+
+	<ul class="user" style="opacity:.6">
+		<li><a href="https://addons.nette.org/"><span>Add-ons</span></a>
+		<li><a href="https://pla.nette.org/en/"><span>Planette</span></a>
+		<li><a href="https://forum.nette.org/en/"><span>Forum</span></a>
+		<li><a href="https://blog.nette.org"><span>Blog</span></a>
+		<li><a href="https://nette.org/donate"><span>Donate</span></a>
+		<li>
+		<form action="https://www.google.com/cse" class="search">
+			<input type="hidden" name="cx" value="011549293477758430224:vxofa9ufnhc"><input type="hidden" name="ie" value="UTF-8"><input type="search" name="q" class="text" size="30" placeholder="Search"><input type="image" src="https://files.nette.org/images/search.png" alt="Search">
+		</form>
+		</li>
+	</ul>
+</div></div>
+
+</body>
+</html>

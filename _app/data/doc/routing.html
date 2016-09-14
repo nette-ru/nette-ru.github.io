@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html class="nette-doc">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Nette Foundation; c 2008">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>URL Routing | Nette Framework</title>
+
+	<link rel="stylesheet" href="https://files.nette.org/css/combined.css?v=1468405828">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://nette.org/opensearch.xml" title="Nette Framework">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://forum.nette.org/opensearch.xml" title="Nette Framework forum">
+	<link rel="search" type="application/opensearchdescription+xml" href="https://api.nette.org/opensearch.xml" title="Nette Framework API">
+	<link rel="canonical" href="/en/2.4/routing">
+	<link rel="image_src" href="https://files.nette.org/images/fb-preview.png">
+
+		<link rel="alternate" hreflang="cs" href="/cs/2.4/routing">
+	<link rel="alternate" hreflang="en" href="/en/2.4/routing">
+</head>
+
+
+<body>
+<script>
+	ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-95238-14','auto'); ga('send','pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+<script src="https://api.nette.org/2.4/elementlist.js" async></script>
+<script src="https://files.nette.org/js/combined.js?v=1468489896" async></script>
+
+<div class="page">
+	<header class="main">
+		<a class="logo" title="Homepage" href="https://nette.org/en/"><span>Homepage</span></a>
+
+		<nav class="main">
+			<ul>
+	<li><a href="//nette.org/en/download">Download</a></li>
+
+	<li class="item-doc"><a href="/en/">Documentation</a></li>
+
+	<li><a href="https://api.nette.org">API</a></li>
+
+	<li><a href="https://github.com/nette">GitHub</a></li>
+</ul>
+
+		</nav>
+	</header>
+
+		<div class="wikimenu">
+	<div>
+		<div><a href="https://github.com/nette/web-content/blob/doc-2.4/en/routing.texy">Edit</a></div>
+		<ul>
+			<li><a href="https://nette.org/en/writing">How to write?</a></li>
+
+			<li><a href="/en/2.4/routing?view=links">Backlinks</a></li>
+
+			<li>Languages: <a href="/cs/2.4/routing">cs</a> <a href="/en/2.4/routing">en</a> </li>
+
+			<li>changed 13. 7. 2016</li>
+
+			<li><a href="/special/sitemap?lang=en">All pages</a></li>
+
+			<li><a href="/special/broken-links?lang=en">Broken links</a></li>
+		</ul>
+	</div>
+
+	<div>
+		<div>Lang</div>
+		<ul>
+			<li><a href="/cs/2.4/routing">cs</a></li>
+			<li><a href="/en/2.4/routing">en</a></li>
+		</ul>
+	</div>
+
+	<div class=versionmenu>
+		<div>Version 2.4</div>
+		<ul>
+			<li><a href="/en/2.3/routing">Version 2.3</a></li>
+			<li><a href="/en/2.2/routing">Version 2.2</a></li>
+			<li><a href="/en/2.1/routing">Version 2.1</a></li>
+			<li><a href="/en/2.0/routing">Version 2.0</a></li>
+		</ul>
+	</div>
+</div>
+
+
+	<div class="main">
+		<div class="content has-sidebar">
+			
+
+			<ul class="breadcrumbs">
+				<li><a href="/en/2.4/">Documentation</a></li>
+				<li>URL Routing</li>
+			</ul>
+
+
+<h1 id="toc-url-routing">URL Routing</h1>
+
+<div class="perex">
+	<p>Routing is a two-way conversion between URL and presenter action. <i>Two-way</i> means we can both determine what presenter URL
+	links to, but also vice versa: generate URL for given action. This article contains:</p>
+
+	<ul>
+		<li>how to define routes and create links</li>
+
+		<li>a few notes about SEO redirection</li>
+
+		<li>how to debug defined routes</li>
+
+		<li>how to create your own router</li>
+	</ul>
+</div>
+
+<h2 id="toc-what-is-routing">What is Routing?</h2>
+
+<p>Routing is a <b>two-way conversion</b> between <b>URL</b> and an <b>application request</b>.</p>
+
+<ul>
+	<li><code>Nette\Http\IRequest</code> (includes URL) → <code>Nette\Application\Request</code></li>
+
+	<li><code>Nette\Application\Request</code> → absolute URL</li>
+</ul>
+
+<p>Thanks to bidirectional routing you don't have to hardcode URLs into templates anymore, you simply link to <a
+href="/en/2.4/presenters#toc-handling-presenter-actions">presenters' actions</a> and framework generates the URLs for you:</p>
+
+<pre class="src-html"><code><span
+class="latte-comment">{* creates a link to presenter 'Product' and action 'detail' *}</span>
+<span
+class="html-tag">&lt;a</span><span class="html-tagin"> n:href=</span><span
+class="html-quote">&quot;Product:detail $productId&quot;</span><span class="html-tag">&gt;</span>product detail<span
+class="html-tag">&lt;/a&gt;</span></code></pre>
+
+<p>Learn more about <a href="/en/2.4/presenters#toc-link-creation">creating links</a>.</p>
+
+<p>Routing is a <b>separate application layer</b>. This allows you to very efficiently manipulate with the URL structure without
+the need to modify the application itself. It's simple to change routes anytime, while keeping the original addresses preserved
+and automatically redirect to the new variants. So hey, who's got that? :-)</p>
+
+<h2 id="toc-simplerouter">SimpleRouter</h2>
+
+<p>Desired URL format is set by a <i>router</i>. The most plain implementation of router is <a
+href="//api.nette.org/2.4/Nette.Application.Routers.SimpleRouter.html">SimpleRouter</a>. It can be used when there's no need for
+a specific URL format, when <code>mod_rewrite</code> (or alternatives) is not available or when we simply do not want to bother
+with user-friendly URLs yet.</p>
+
+<p>Generated addresses will look like this:</p>
+
+<pre>http://example.com/?presenter=Product&amp;action=detail&amp;id=123</pre>
+
+<p>The first parameter of the <code>SimpleRouter</code> constructor is a default presenter action, ie. action to be executed if we
+open e.g. <code>http://example.com/</code> without additional parameters.</p>
+
+<pre class="src-php"><code><span class="php-comment">// defaults to presenter 'Homepage' and action 'default'</span>
+<span
+class="php-var">$router</span> = <span class="php-keyword1">new</span> Nette\Application\Routers\SimpleRouter(<span
+class="php-quote">'Homepage:default'</span>);</code></pre>
+
+<p>The second constructor parameter is optional and is used to pass additional <a href="#toc-flags">flags</a> (only
+<code>SimpleRouter::ONE_WAY</code> for unidirectional route).</p>
+
+<p>The recommended way to configure application to use <code>SimpleRouter</code> is to use <a
+href="/en/2.4/configuring#toc-services-definitions">configuration file</a> (e.g. <code>config.neon</code>):</p>
+
+<pre class="src-neon"><code><span class="neon-section">services</span><span class="neon-sep">:</span><span
+class="neon-section">
+    </span><span class="neon-key">application.router</span><span class="neon-sep">:</span><span
+class="neon-value"> Nette\Application\Routers\SimpleRouter('Homepage:default')</span></code></pre>
+
+<h2 style="toc:Route" id="toc-route-for-prettier-urls">Route: for prettier URLs</h2>
+
+<p>Human-friendly URLs (also more cool &amp; prettier) are easier to remember and do help <abbr
+title="search engine optimalization" class="about">SEO</abbr>. Nette Framework keeps current trends in mind and fully meets
+developers' desires.</p>
+
+<p class="note">All requests must be handled by <code>index.php</code> file. This can be accomplished e.g. by using Apache module
+<code>mod_rewrite</code> or Nginx's <code>try_files</code> directive (see <a
+href="/en/2.4/troubleshooting#toc-how-to-configure-a-server-for-nice-urls">how to configure a server for nice URLs</a>).</p>
+
+<p>Class <a href="//api.nette.org/2.4/Nette.Application.Routers.Route.html">Route</a> is able to create addresses in pretty much
+any format one can though of. Let's start with a simple example, generating the following pretty URL for action
+<code>Product:default</code> with <code>id = 123</code>:</p>
+
+<pre>http://example.com/product/detail/123</pre>
+
+<p>The following snippet creates a <code>Route</code> object, passing path mask as the first argument and specifying default
+action in the second argument. We may pass additional <a href="#toc-flags">flags</a> using the third argument.</p>
+
+<pre class="src-php"><code><span class="php-comment">// action defaults to presenter Homepage and action default</span>
+<span
+class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'&lt;presenter&gt;/&lt;action&gt;[/&lt;id&gt;]'</span>, <span
+class="php-quote">'Homepage:default'</span>);
+
+<span class="php-comment">// alternatively written using an array</span>
+<span
+class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'&lt;presenter&gt;/&lt;action&gt;[/&lt;id&gt;]'</span>, [
+    <span
+class="php-quote">'presenter'</span> =&gt; <span class="php-quote">'Homepage'</span>,
+    <span
+class="php-quote">'action'</span>    =&gt; <span class="php-quote">'default'</span>
+]);</code></pre>
+
+<p>This route is usable by all presenters and actions. Accepts paths such as <code>/article/edit/10</code> or
+<code>/catalog/list</code>, because the <code>id</code> part is wrapped in square brackets, which marks it as <a
+href="#toc-optional-sequences">optional</a>.</p>
+
+<p>Because other parameters (<code>presenter</code> and <code>action</code>) do have default values (<code>Homepage</code> and
+<code>default</code>), they are optional too. If their value is the same as the default one, they are skipped while URL is
+generated. Link to <code>Product:default</code> generates only <code>http://example.com/product</code> and link to
+<code>Homepage:default</code> generates only <code>http://example.com/</code>.</p>
+
+<h3 id="toc-path-mask">Path Mask</h3>
+
+<p>The simplest path mask consists only of a <b>static URL</b> and a target presenter action.</p>
+
+<pre class="src-php"><code><span class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'products'</span>, <span class="php-quote">'Products:default'</span>);</code></pre>
+
+<p>Most real masks however contain some <b>parameters</b>. Parameters are enclosed in angle brackets (e.g.
+<code>&lt;year&gt;</code>) and are passed to the target presenter.</p>
+
+<pre class="src-php"><code><span class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'history/&lt;year&gt;'</span>, <span class="php-quote">'History:view'</span>);</code></pre>
+
+<p>Mask can also contain traditional GET arguments (query after a question mark). Neither validation expressions nor more complex
+structures are supported in this part of path mask, but you can set what key belongs to which variable:</p>
+
+<pre class="src-php"><code><span
+class="php-comment">// use GET parameter &quot;cat&quot; as a &quot;categoryId&quot; in our application</span>
+<span
+class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'&lt;presenter&gt;/&lt;action&gt; ? id=&lt;productId&gt; &amp; cat=&lt;categoryId&gt;'</span>, ...);</code></pre>
+
+<p class="note">The parameters before a question mark are called <em>path parameters</em> and the parameters after a question mark
+are called <em>query parameters</em>.</p>
+
+<p>Mask can not only describe path relative to application document root (web root), but can as well contain path relative to
+server document root (starts with a single slash) or absolute path with domain (starts with a double slash).</p>
+
+<pre class="src-php"><code><span class="php-comment">// relative to application document root (www directory)</span>
+<span
+class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'&lt;presenter&gt;/&lt;action&gt;'</span>, ...);
+
+<span
+class="php-comment">// relative to server document root</span>
+<span class="php-var">$route</span> = <span
+class="php-keyword1">new</span> Route(<span class="php-quote">'/&lt;presenter&gt;/&lt;action&gt;'</span>, ...);
+
+<span
+class="php-comment">// absolute path including hostname</span>
+<span class="php-var">$route</span> = <span
+class="php-keyword1">new</span> Route(<span
+class="php-quote">'//&lt;subdomain&gt;.example.com/&lt;presenter&gt;/&lt;action&gt;'</span>, ...);</code></pre>
+
+<p>Absolute path mask may utilize the following variables:</p>
+
+<ul>
+	<li><code>%tld%</code> = top level domain, e.g. <code>com</code> or <code>org</code></li>
+
+	<li><code>%sld%</code> = second level domain, e.g. at <code>example.com</code> return <code>example</code></li>
+
+	<li><code>%domain%</code> = second level domain, e.g. <code>example.com</code></li>
+
+	<li><code>%basePath%</code></li>
+</ul>
+
+<pre class="src-php"><code><span class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'//www.%domain%/%basePath%/&lt;presenter&gt;/&lt;action&gt;'</span>, ...);
+<span
+class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'//www.%sld%.%tld/%basePath%/&lt;presenter&gt;/&lt;action'</span>, ...);</code></pre>
+
+<h3 id="toc-route-collection">Route Collection</h3>
+
+<p>Because we usually define more than one route, we wrap them into a <a
+href="//api.nette.org/2.4/Nette.Application.Routers.RouteList.html">RouteList</a>.</p>
+
+<pre class="src-php"><code><span class="php-keyword1">use</span> Nette\Application\Routers\RouteList;
+<span
+class="php-keyword1">use</span> Nette\Application\Routers\Route;
+
+<span class="php-var">$router</span> = <span
+class="php-keyword1">new</span> RouteList();
+<span class="php-var">$router</span>[] = <span
+class="php-keyword1">new</span> Route(<span class="php-quote">'rss.xml'</span>, <span class="php-quote">'Feed:rss'</span>);
+<span
+class="php-var">$router</span>[] = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'article/&lt;id&gt;'</span>, <span class="php-quote">'Article:view'</span>);
+<span
+class="php-var">$router</span>[] = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'&lt;presenter&gt;/&lt;action&gt;[/&lt;id&gt;]'</span>, <span
+class="php-quote">'Homepage:default'</span>);</code></pre>
+
+<p class="note">Unlike other frameworks, Nette does not require routes to be named.</p>
+
+<p class="caution">It's important in which order are the routes defined as they are evaluated from top to bottom. The rule of
+thumb here is that routes are declared from the <b>most specific at the top</b> to the <b>most vague at the bottom</b>.</p>
+
+<p>Keep in mind that huge amount of routes can negatively affect application speed, mostly when generating links. It's worth to
+keep routes as simple as possible.</p>
+
+<p class="note">If no route is found, a <a
+href="//api.nette.org/2.4/Nette.Application.BadRequestException.html">BadRequestException</a> is thrown, which is shown as
+404 Not Found to the user.</p>
+
+<h3 id="toc-router-factory">Router Factory</h3>
+
+<p>The recommended way to configure the application router is to write a factory (located e.g. in
+<code>app/router/RouterFactory.php</code>) and register it to <a href="/en/2.4/configuring">system DI container</a> in a
+configuration file (located e.g. in <code>app/config/config.neon</code>).</p>
+
+<p><b>File app/router/RouterFactory.php</b>:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;?php</span><span
+class="html-tagin">
+namespace App;
+
+use Nette\Application\Routers\RouteList,
+    Nette\Application\Routers\Route;
+
+class RouterFactory
+{</span>
+    <span
+class="php-comment">/**
+     * @return \Nette\Application\IRouter
+     */</span>
+    public function createRouter()
+    {
+        <span
+class="php-var">$router</span> = <span class="php-keyword1">new</span> RouteList();
+        <span
+class="php-var">$router</span>[] = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'&lt;presenter&gt;/&lt;action&gt;'</span>, <span
+class="php-quote">'Homepage:default'</span>);
+        return <span class="php-var">$router</span>;
+    }<span
+class="html-tagin">
+}</span></code></pre>
+
+<p class="note">The <code>@return</code> annotation is important and required for getting the code to work.</p>
+
+<p><b>File app/config/config.neon</b>:</p>
+
+<pre class="src-neon"><code><span class="neon-section">services</span><span class="neon-sep">:</span><span
+class="neon-section">
+    </span><span class="neon-key">routerFactory</span><span class="neon-sep">:</span><span
+class="neon-value"> App\RouterFactory</span>
+    <span class="neon-key">router</span><span class="neon-sep">:</span><span
+class="neon-value"> </span><span class="neon-ref">@routerFactory</span><span class="neon-sep">::</span><span
+class="neon-value">createRouter</span></code></pre>
+
+<h3 id="toc-default-values">Default Values</h3>
+
+<p>Each parameter may have defined a default value in the mask:</p>
+
+<pre class="src-php"><code><span class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'&lt;presenter=Homepage&gt;/&lt;action=default&gt;/&lt;id=&gt;'</span>);</code></pre>
+
+<p>Or utilizing an array:</p>
+
+<pre class="src-php"><code><span class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'&lt;presenter&gt;/&lt;action&gt;/&lt;id&gt;'</span>, [
+    <span
+class="php-quote">'presenter'</span> =&gt; <span class="php-quote">'Homepage'</span>,
+    <span
+class="php-quote">'action'</span> =&gt; <span class="php-quote">'default'</span>,
+    <span
+class="php-quote">'id'</span> =&gt; <span class="php-keyword1">NULL</span>,
+]);
+
+<span
+class="php-comment">// equals to the following complex notation</span>
+<span class="php-var">$route</span> = <span
+class="php-keyword1">new</span> Route(<span class="php-quote">'&lt;presenter&gt;/&lt;action&gt;/&lt;id&gt;'</span>, [
+    <span
+class="php-quote">'presenter'</span> =&gt; [
+        Route::VALUE =&gt; <span
+class="php-quote">'Homepage'</span>,
+    ],
+    <span class="php-quote">'action'</span> =&gt; [
+        Route::VALUE =&gt; <span
+class="php-quote">'default'</span>,
+    ],
+    <span class="php-quote">'id'</span> =&gt; [
+        Route::VALUE =&gt; <span
+class="php-keyword1">NULL</span>,
+    ],
+]);</code></pre>
+
+<p>Default values for <code>&lt;presenter&gt;</code> and <code>&lt;action&gt;</code> can also be written as a string in the second
+constructor parameter.</p>
+
+<pre class="src-php"><code><span class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'&lt;presenter&gt;/&lt;action&gt;/&lt;id=&gt;'</span>, <span
+class="php-quote">'Homepage:default'</span>);</code></pre>
+
+<h3 id="toc-validation-expressions">Validation Expressions</h3>
+
+<p>Each parameter may have defined a <b>regular expression</b> which it needs to match. This regular expression is checked both
+when matching and generating URL. For example let's set <code>id</code> to be only numerical, using <code>\d+</code> regexp:</p>
+
+<pre class="src-php"><code><span
+class="php-comment">// regexp can be defined directly in the path mask after parameter name</span>
+<span
+class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'&lt;presenter&gt;/&lt;action&gt;[/&lt;id \d+&gt;]'</span>, <span
+class="php-quote">'Homepage:default'</span>);
+
+<span class="php-comment">// equals to the following complex notation</span>
+<span
+class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'&lt;presenter&gt;/&lt;action&gt;[/&lt;id&gt;]'</span>, [
+    <span
+class="php-quote">'presenter'</span> =&gt; <span class="php-quote">'Homepage'</span>,
+    <span
+class="php-quote">'action'</span> =&gt; <span class="php-quote">'default'</span>,
+    <span
+class="php-quote">'id'</span> =&gt; [
+        Route::<span class="php-keyword2">PATTERN</span> =&gt; <span
+class="php-quote">'\d+'</span>,
+    ],
+]);</code></pre>
+
+<p class="note">Default validation expression for path parameters is <code>[^/]+</code>, meaning all characters but a slash. If a
+parameter is supposed to match a slash as well, we can set the regular expression to <code>.+</code>.</p>
+
+<h3 id="toc-optional-sequences">Optional Sequences</h3>
+
+<p>Square brackets denote optional parts of mask. Any part of mask may be set as optional, including those containing
+parameters:</p>
+
+<pre class="src-php"><code><span class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'[&lt;lang [a-z]{2}&gt;/]&lt;name&gt;'</span>, <span class="php-quote">'Article:view'</span>);
+
+<span
+class="php-comment">// Accepted URLs:      Parameters:</span>
+<span
+class="php-comment">//   /en/download        action =&gt; view, lang =&gt; en, name =&gt; download</span>
+<span
+class="php-comment">//   /download           action =&gt; view, lang =&gt; NULL, name =&gt; download</span></code></pre>
+
+<p>Obviously, if a parameter is inside an optional sequence, it's optional too and defaults to <code>NULL</code>. Sequence should
+define it's surroundings, in this case a slash which must follow a parameter, if set. The technique may be used for example for
+optional language subdomains:</p>
+
+<pre class="src-php"><code><span class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'//[&lt;lang=en&gt;.]%domain%/&lt;presenter&gt;/&lt;action&gt;'</span>, ...);</code></pre>
+
+<p>Sequences may be freely nested and combined:</p>
+
+<pre class="src-php"><code><span class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(
+    <span
+class="php-quote">'[&lt;lang [a-z]{2}&gt;[-&lt;sublang&gt;]/]&lt;name&gt;[/page-&lt;page=0&gt;]'</span>,
+    <span
+class="php-quote">'Homepage:default'</span>
+);
+
+<span class="php-comment">// Accepted URLs:</span>
+<span
+class="php-comment">//   /cs/hello</span>
+<span class="php-comment">//   /en-us/hello</span>
+<span
+class="php-comment">//   /hello</span>
+<span class="php-comment">//   /hello/page-12</span></code></pre>
+
+<p>URL generator tries to keep the URL as short as possible (while unique), so what can be omitted is not used. That's why
+<code>index[.html]</code> route generates <code>/index</code>. This behavior can be inverted by writing an exclamation mark after
+the leftmost square bracket that denotes the respective optional sequence:</p>
+
+<pre class="src-php"><code><span class="php-comment">// accepts both /hello and /hello.html, generates /hello</span>
+<span
+class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'&lt;name&gt;[.html]'</span>);
+
+<span
+class="php-comment">// accepts both /hello and /hello.html, generates /hello.html</span>
+<span
+class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'&lt;name&gt;[!.html]'</span>);</code></pre>
+
+<p>Optional parameters (ie. parameters having default value) without square brackets do behave as if wrapped like this:</p>
+
+<pre class="src-php"><code><span class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'&lt;presenter=Homepage&gt;/&lt;action=default&gt;/&lt;id=&gt;'</span>);
+
+<span
+class="php-comment">// equals to:</span>
+<span class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'[&lt;presenter=Homepage&gt;/[&lt;action=default&gt;/[&lt;id&gt;]]]'</span>);</code></pre>
+
+<p>If we would like to change how the rightmost slashes are generated, that is instead of <code>/homepage/</code> get a
+<code>/homepage</code>, we can adjust the route:</p>
+
+<pre class="src-php"><code><span class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'[&lt;presenter=Homepage&gt;[/&lt;action=default&gt;[/&lt;id&gt;]]]'</span>);</code></pre>
+
+<h3 id="toc-flags">Flags</h3>
+
+<p><code>Route</code> default behavior can be altered by several flags which can be passed as the third constructor parameter.</p>
+
+<p><b>ONE_WAY flag</b> – One way routes are usually used to preserve old URLs functionality, when an application is rewritten.
+Flag <code>Route::ONE_WAY</code> marks routes, which are not used for URL generation.</p>
+
+<pre class="src-php"><code><span class="php-comment">// old URL /product-info?id=123, new URL /product/123</span>
+<span
+class="php-var">$router</span>[] = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'product-info'</span>, <span class="php-quote">'Product:detail'</span>, Route::ONE_WAY);
+<span
+class="php-var">$router</span>[] = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'product/&lt;id&gt;'</span>, <span class="php-quote">'Product:detail'</span>);</code></pre>
+
+<h3 id="toc-filters-and-translation">Filters and Translation</h3>
+
+<p>It's a good practice to write source code in English, but what if you need your application to run in a different environment?
+Simple routes such as:</p>
+
+<pre class="src-php"><code><span class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'&lt;presenter&gt;/&lt;action&gt;/&lt;id&gt;'</span>, [
+    <span
+class="php-quote">'presenter'</span> =&gt; <span class="php-quote">'Homepage'</span>,
+    <span
+class="php-quote">'action'</span> =&gt; <span class="php-quote">'default'</span>,
+    <span
+class="php-quote">'id'</span> =&gt; <span class="php-keyword1">NULL</span>,
+]);</code></pre>
+
+<p>will generate English URLs, such as <code>/product/detail/123</code>, <code>/cart</code> or <code>/catalog/view</code>. If we
+would like to translate those URLs, we can use a <i>dictionary</i> defined under <code>Route::FILTER_TABLE</code> key. We'd extend
+the route so:</p>
+
+<pre class="src-php"><code><span class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'&lt;presenter&gt;/&lt;action&gt;/&lt;id&gt;'</span>, [
+    <span
+class="php-quote">'presenter'</span> =&gt; [
+        Route::VALUE =&gt; <span class="php-quote">'Homepage'</span>, <span
+class="php-comment">// default value</span>
+        Route::FILTER_TABLE =&gt; [
+            <span
+class="php-comment">// translated string in URL =&gt; presenter</span>
+            <span
+class="php-quote">'produkt'</span> =&gt; <span class="php-quote">'Product'</span>,
+            <span
+class="php-quote">'einkaufswagen'</span> =&gt; <span class="php-quote">'Cart'</span>,
+            <span
+class="php-quote">'katalog'</span> =&gt; <span class="php-quote">'Catalog'</span>,
+        ],
+    ],
+    <span
+class="php-quote">'action'</span> =&gt; [
+        Route::VALUE =&gt; <span
+class="php-quote">'default'</span>,
+        Route::FILTER_TABLE =&gt; [
+            <span
+class="php-quote">'sehen'</span> =&gt; <span class="php-quote">'view'</span>,
+        ],
+    ],
+    <span
+class="php-quote">'id'</span> =&gt; <span class="php-keyword1">NULL</span>,
+]);</code></pre>
+
+<p class="tip">Multiple keys under <code>Route::FILTER_TABLE</code> may have the same value. That's how aliases are created. The
+last value is the canonical one (used for generating links).</p>
+
+<p>Dictionaries may be applied to any path parameter. If a translation is not found, the original (non-translated) value is used.
+The route by default accepts both translated (e.g. <code>/einkaufswagen</code>) and original (e.g. <code>/cart</code>) URLs. If
+you would like to accept only translated URLs, you need to add <code>Route::FILTER_STRICT =&gt; TRUE</code> to the route
+definition.</p>
+
+<p>Besides setting dictionaries as arrays, it's possible to set <b>input and output filters</b>. Input and output filter are
+callbacks defined under <code>Route::FILTER_IN</code> and <code>Route::FILTER_OUT</code> keys respectively.</p>
+
+<pre class="src-php"><code><span class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'&lt;presenter=Homepage&gt;/&lt;action=default&gt;'</span>, [
+    <span
+class="php-quote">'action'</span> =&gt; [
+        Route::FILTER_IN =&gt; <span class="php-keyword1">function</span>(<span
+class="php-var">$action</span>) {
+            <span class="php-keyword1">return</span> <span
+class="php-keyword2">strrev</span>(<span class="php-var">$action</span>);
+        },
+        Route::FILTER_OUT =&gt; <span
+class="php-keyword1">function</span>(<span class="php-var">$action</span>) {
+            <span
+class="php-keyword1">return</span> <span class="php-keyword2">strrev</span>(<span
+class="php-var">$action</span>);
+        },
+    ],
+]);</code></pre>
+
+<p>The <b>input filter</b> accepts value from URL and should return a value which will be passed to a presenter. The <b>output
+filter</b> accepts value from presenter and should return a value which will be used in URL. If any of those filters is unable to
+filter the value (usually because it is invalid), it should return <code>NULL</code>.</p>
+
+<h3 id="toc-global-filters">Global filters</h3>
+
+<p>Besides filters for specific parameters, you can also define <b>global filters</b> which accepts an associative array with all
+parameters and returns an array with filtered parameters. Global filters are defined under <code>NULL</code> key.</p>
+
+<pre class="src-php"><code><span class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'&lt;presenter&gt;/&lt;action&gt;'</span>, [
+    <span class="php-quote">'presenter'</span> =&gt; <span
+class="php-quote">'Homepage'</span>,
+    <span class="php-quote">'action'</span> =&gt; <span
+class="php-quote">'default'</span>,
+    <span class="php-keyword1">NULL</span> =&gt; [
+        Route::FILTER_IN =&gt; <span
+class="php-keyword1">function</span>(<span class="php-keyword1">array</span> <span
+class="php-var">$params</span>) {
+            <span class="php-comment">// ...</span>
+            <span
+class="php-keyword1">return</span> <span class="php-var">$params</span>;
+        },
+        Route::FILTER_OUT =&gt; <span
+class="php-keyword1">function</span>(<span class="php-keyword1">array</span> <span
+class="php-var">$params</span>) {
+            <span class="php-comment">// ...</span>
+            <span
+class="php-keyword1">return</span> <span class="php-var">$params</span>;
+        },
+    ],
+]);</code></pre>
+
+<p class="tip">You can use <em>global filters</em> to filter certain parameter based on a value of another parameter, e.g.
+translate <code>&lt;presenter&gt;</code> and <code>&lt;action&gt;</code> based on <code>&lt;lang&gt;</code>.</p>
+
+<h3 id="toc-foo-parameters">Foo Parameters</h3>
+
+<p>Foo parameters are basically unnamed parameters which allow you to match a regular expression. The following route matches
+<code>/index</code>, <code>/index.html</code>, <code>/index.htm</code> and <code>/index.php</code>:</p>
+
+<pre class="src-php"><code><span class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'index&lt;? \.html?|\.php|&gt;'</span>, <span class="php-quote">'Homepage:default'</span>);</code></pre>
+
+<p>It's also possible to explicitly define a string which will be used for URL generation (similar to setting default value for
+real parameters). The string must be placed directly after the question mark. The following route is similar to the previous one,
+but generates <code>/index.html</code> instead of <code>/index</code>, because the string <code>.html</code> is set as a
+“default value”.</p>
+
+<pre class="src-php"><code><span class="php-var">$route</span> = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'index&lt;?.html \.html?|\.php|&gt;'</span>, <span class="php-quote">'Homepage:default'</span>);</code></pre>
+
+<h3 id="toc-modules">Modules</h3>
+
+<p>In Nette we can split presenters into modules. Therefore we need to work with those modules in routes. We can use
+<code>module</code> parameter in <code>Route</code> class:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">new</span> Route(<span
+class="php-quote">'admin/&lt;presenter&gt;/&lt;action&gt;'</span>, [
+    <span class="php-quote">'module'</span> =&gt; <span
+class="php-quote">'Admin'</span>
+]);</code></pre>
+
+<p>If we have more routes that we want to group together in a module, we can use <code>RouteList</code> with the first
+parameter:</p>
+
+<pre class="src-php"><code><span class="php-var">$adminRouter</span> = <span class="php-keyword1">new</span> RouteList(<span
+class="php-quote">'Admin'</span>);
+<span class="php-var">$adminRouter</span>[] = <span class="php-keyword1">new</span> Route(<span
+class="php-quote">'admin/&lt;presenter&gt;/&lt;action&gt;'</span>);</code></pre>
+
+<h2 id="toc-routing-debugger">Routing Debugger</h2>
+
+<p>Working with routes may seem a bit magical at first. That's why you'll appreciate the value of Routing Debugger. It's a <a
+href="//tracy.nette.org/en/">Debugger</a> bar panel which gives you a list of all parameters a router got and a list of all
+defined routes. It also shows on which presenter and action you are currently on.</p>
+
+<div><img src="//files.nette.org/git/doc-2.4/routing-debugger.png" alt=""></div>
+
+<p>Routing debugger is enabled by default if the application runs in a debug mode. You can however disable it in a
+configuration file:</p>
+
+<pre class="src-neon"><code><span class="neon-section">routing</span><span class="neon-sep">:</span><span
+class="neon-section">
+    </span><span class="neon-key">debugger</span><span class="neon-sep">:</span><span
+class="neon-value"> off </span><span class="neon-comment"># on by default</span></code></pre>
+
+<h2 id="toc-seo-and-canonicalization">SEO and Canonicalization</h2>
+
+<p>Framework increases SEO (search engine optimization) as it prevents multiple URLs to link to different content (without a
+proper redirect). If more than one addresses link to the same target (<code>/index</code> and <code>/index.html</code>), framework
+choses the first (makes it canonical) and redirects the other one to it with an HTTP code 301. Thanks to that your page won't
+have duplicities on search engines and their rank won't be split.</p>
+
+<p>This whole process is called canonicalization. Default (canonical) URL is the one router generates, that is the first route in
+<a href="#toc-route-collection">collection</a> which does not return <code>NULL</code> and does not have a <code>ONE_WAY</code> <a
+href="#toc-flags">flag</a>.</p>
+
+<p>Canonicalization is done by <a href="//api.nette.org/2.4/Nette.Application.UI.Presenter.html">Presenter</a> and it's switched
+on by default. You may disable it by setting <a
+href="//api.nette.org/2.4/Nette.Application.UI.Presenter.html#$autoCanonicalize">Presenter::$autoCanonicalize</a> to
+<code>FALSE</code>, e.g. in <code>startup()</code>.</p>
+
+<p class="note">Ajax and POST requests are not redirected as user would suffer either a data loss, or it would yield no additional
+SEO value.</p>
+
+<h2 id="toc-modularity">Modularity</h2>
+
+<p>If we want to add separate modules into our application that have their own routes, for example a discussion forum, we may
+define routes elsewhere, possibly in <code>createRoutes()</code> method:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">class</span> Forum
+{
+    <span class="php-keyword1">static</span> <span
+class="php-keyword1">function</span> createRoutes(<span class="php-var">$router</span>, <span
+class="php-var">$prefix</span>)
+    {
+        <span class="php-var">$router</span>[] = <span
+class="php-keyword1">new</span> Route(<span class="php-var">$prefix</span> . <span class="php-quote">'index.php'</span>, <span
+class="php-quote">'Forum:Homepage:default'</span>);
+        <span class="php-var">$router</span>[] = <span
+class="php-keyword1">new</span> Route(<span class="php-var">$prefix</span> . <span class="php-quote">'admin.php'</span>, <span
+class="php-quote">'Forum:Admin:default'</span>);
+        ...
+    }
+}</code></pre>
+
+<p>“Routing-in” the forum into existing application can be as easy as calling this method: (<code>bootstrap.php</code>)</p>
+
+<pre class="src-php"><code><span class="php-var">$router</span> = <span class="php-keyword1">new</span> RouteList;
+<span
+class="php-comment">// our routes</span>
+...
+
+<span class="php-comment">// adding forum module</span>
+Forum::createRoutes(<span
+class="php-var">$router</span>, <span class="php-quote">'//forum.example.com/'</span>);
+
+<span
+class="php-var">$container</span>-&gt;addService(<span class="php-quote">'router'</span>, <span
+class="php-var">$router</span>);</code></pre>
+
+<h2 id="toc-custom-router">Custom Router</h2>
+
+<p>If these offered routes do not fit your needs, you may create your own router and add it to your <em>router collection</em>.
+Router is nothing more than an implementation of <a href="//api.nette.org/2.4/Nette.Application.IRouter.html">IRouter</a> with
+it's two methods:</p>
+
+<pre class="src-php"><code><span class="php-keyword1">use</span> Nette\Application\Request <span
+class="php-keyword1">as</span> AppRequest;
+<span class="php-keyword1">use</span> Nette\Http\IRequest <span
+class="php-keyword1">as</span> HttpRequest;
+<span class="php-keyword1">use</span> Nette\Http\Url;
+
+<span
+class="php-keyword1">class</span> MyRouter <span class="php-keyword1">implements</span> Nette\Application\IRouter
+{
+    <span
+class="php-keyword1">function</span> match(HttpRequest <span class="php-var">$httpRequest</span>)
+    {
+        <span
+class="php-comment">// ...</span>
+    }
+
+    <span class="php-keyword1">function</span> constructUrl(AppRequest <span
+class="php-var">$appRequest</span>, Url <span class="php-var">$refUrl</span>)
+    {
+        <span
+class="php-comment">// ...</span>
+    }
+}</code></pre>
+
+<p>Method <code>match</code> does process an <a href="//api.nette.org/2.4/Nette.Http.Request.html">HttpRequest</a> (which offers
+more than just a <a href="//api.nette.org/2.4/Nette.Http.Url.html">Url</a>) into an internal <a
+href="//api.nette.org/2.4/Nette.Application.Request.html">Nette\Application\Request</a> which contains presenter name and
+it's parameters. If the HTTP request could not be processed, it should return <code>NULL</code>.</p>
+
+<p>Method <code>constructUrl</code> generates an absolute URL from application request, possibly utilizing information from
+<code>$refUrl</code> argument.</p>
+
+<p>Possibilities of custom routers are unlimited, for example it's possible to implement a router based on database records.</p>
+
+
+<div class="paginator">
+	<small><a href="/en/2.4/components">« Components</a></small>
+	<a href="/en/2.4/access-control">User Authorization and Privileges »</a>
+</div>
+		</div>
+
+			<aside class="main">
+		<div>
+			<p><a href="https://github.com/nette/application">GitHub</a> | <a href="https://api.nette.org/2.4/namespace-Nette.Application.html">API</a>
+			<br>composer: <a href="https://packagist.org/packages/nette/application">nette/application</a></p>
+
+
+			<ul class="toc">
+				<li class="up" value="0"><a href="#">▲</a></li>
+				<li><a href="#toc-what-is-routing">What is Routing?</a>
+				</li>
+				<li><a href="#toc-simplerouter">SimpleRouter</a>
+				</li>
+				<li><a href="#toc-route-for-prettier-urls">Route: for prettier URLs</a>
+				<ul>
+				
+				<li><a href="#toc-path-mask">Path Mask</a>
+				</li>
+				<li><a href="#toc-route-collection">Route Collection</a>
+				</li>
+				<li><a href="#toc-router-factory">Router Factory</a>
+				</li>
+				<li><a href="#toc-default-values">Default Values</a>
+				</li>
+				<li><a href="#toc-validation-expressions">Validation Expressions</a>
+				</li>
+				<li><a href="#toc-optional-sequences">Optional Sequences</a>
+				</li>
+				<li><a href="#toc-flags">Flags</a>
+				</li>
+				<li><a href="#toc-filters-and-translation">Filters and Translation</a>
+				</li>
+				<li><a href="#toc-global-filters">Global filters</a>
+				</li>
+				<li><a href="#toc-foo-parameters">Foo Parameters</a>
+				</li>
+				<li><a href="#toc-modules">Modules</a>
+				</ul>
+				
+				<li><a href="#toc-routing-debugger">Routing Debugger</a>
+				</li>
+				<li><a href="#toc-seo-and-canonicalization">SEO and Canonicalization</a>
+				</li>
+				<li><a href="#toc-modularity">Modularity</a>
+				</li>
+				<li><a href="#toc-custom-router">Custom Router</a>
+				</li>
+			</ul>
+		</div>
+	</aside>
+	</div>
+
+	<footer class="main">
+		<p>&copy; 2008, 2016 <a href="https://nettefoundation.com">Nette Foundation</a> | <a href="http://php7.org/guidelines/">PHP Coding Guidelines</a>
+		| <a href="https://nette.org/terms-of-use">Terms of use</a> | If not stated otherwise, the contents are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cz/">Creative Commons CC-BY-SA</a>.</p>
+	</footer>
+
+	<div class="docmenu">
+		<div class="column">
+	<h3 id="toc-programmer-s-guide"><img src="//files.nette.org/git/doc-2.4/icon-guides-small.png" alt=""> Programmer's Guide</h3>
+
+	<ul>
+		<li><a href="/en/2.4/forms">Forms</a></li>
+
+		<li><a href="//latte.nette.org/en/">Templates</a>, <a href="//latte.nette.org/en/macros">Latte Macros</a> and <a
+		href="//latte.nette.org/en/filters">Filters</a></li>
+
+		<li><a href="/en/2.4/presenters">MVC Application &amp; Presenters</a></li>
+
+		<li><a href="/en/2.4/configuring">Configuration</a>, <a href="/en/2.4/dependency-injection">Dependency Injection</a>, <a
+		href="/en/2.4/di-usage">Getting Dependencies</a> and <a href="/en/2.4/di-extensions">DI extensions</a></li>
+
+		<li><a href="/en/2.4/components">Components and Controls</a></li>
+
+		<li><a href="/en/2.4/routing">Routing</a></li>
+
+		<li><a href="/en/2.4/access-control">Authentication &amp; Authorization</a></li>
+
+		<li><a href="//tracy.nette.org/en/">Debugging and Error Handling</a>, <a href="//tracy.nette.org/en/extensions">Debugger
+		extensions</a></li>
+
+		<li><a href="/en/2.4/ajax">AJAX</a></li>
+
+		<li><a href="/en/2.4/php-language-enhancements">PHP Language Enhancements</a></li>
+
+		<li><a href="/en/2.4/http-request-response">HTTP request &amp; response</a></li>
+
+		<li><a href="/en/2.4/database">Database</a>, <a href="/en/2.4/database-table">Table</a>, <a
+		href="/en/2.4/database-selection">Selection</a>, <a href="/en/2.4/database-activerow">ActiveRow</a></li>
+
+		<li><a href="/en/2.4/sessions">Sessions</a></li>
+
+		<li><a href="/en/2.4/mailing">Mailing</a></li>
+
+		<li><a href="/en/2.4/images">Image Manipulation</a></li>
+
+		<li><a href="/en/2.4/caching">Caching</a></li>
+
+		<li><a href="/en/2.4/localization">Localization</a></li>
+
+		<li><a href="//tester.nette.org/en/">Testing</a>, <a href="//tester.nette.org/en/testing-with-travis">Continuous
+		integration</a></li>
+
+		<li><a href="/en/2.4/pagination">Pagination</a></li>
+
+		<li><a href="/en/2.4/auto-loading">Auto-loading</a></li>
+
+		<li><a href="/en/2.4/finder">Browsing files on disk</a></li>
+
+		<li><a href="/en/2.4/atomicity">Atomic Operations</a></li>
+
+		<li><a href="/en/2.4/validators">Validation</a></li>
+
+		<li><a href="/en/2.4/strings">Strings</a>, <a href="/en/2.4/arrays">arrays</a>, <a href="/en/2.4/html-elements">HTML elements</a>
+		and <a href="/en/2.4/urls">URLs</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-getting-started"><img src="//files.nette.org/git/doc-2.4/icon-welcome-small.png" alt=""> Getting Started</h3>
+
+	<ul>
+		<li><a href="/en/2.4/getting-started">Introduction to Nette</a></li>
+
+		<li><b><a href="/en/2.4/quickstart">Create First Application!</a></b></li>
+
+		<li><a href="/en/2.4/glossary">Glossary</a></li>
+	</ul>
+
+	<h3 id="toc-general-info"><img src="//files.nette.org/git/doc-2.4/icon-question-small.png" alt=""> General Info</h3>
+
+	<ul>
+		<li><a href="https://api.nette.org/2.4">API Reference</a></li>
+
+		<li><a href="/en/2.4/migration-2-3">Migrating from 2.2 to 2.3</a></li>
+
+		<li><a href="/en/2.4/code-checker">Code-Checker</a></li>
+
+		<li><a href="/en/2.4/vulnerability-protection">Vulnerability Protection</a></li>
+
+		<li><a href="/en/2.4/requirements">Server Requirements</a></li>
+
+		<li><a href="//nette.org/en/license">License</a> and <a href="https://nette.org/contributors">contributors</a></li>
+	</ul>
+</div>
+
+<div class="column">
+	<h3 id="toc-development"><img src="//files.nette.org/git/doc-2.4/icon-ruler-small.png" alt=""> Development</h3>
+
+	<ul>
+		<li><a href="//nette.org/en/contributing">Contributing</a></li>
+
+		<li><a href="//nette.org/en/writing">Writing Documentation</a></li>
+
+		<li><a href="irc://irc.freenode.net/nettefw">IRC #nettefw</a></li>
+
+		<li><a href="/en/2.4/troubleshooting">Troubleshooting</a></li>
+	</ul>
+</div>
+
+	</div>
+</div>
+
+<div class="bar"><div>
+
+	<ul class="user" style="opacity:.6">
+		<li><a href="https://addons.nette.org/"><span>Add-ons</span></a>
+		<li><a href="https://pla.nette.org/en/"><span>Planette</span></a>
+		<li><a href="https://forum.nette.org/en/"><span>Forum</span></a>
+		<li><a href="https://blog.nette.org"><span>Blog</span></a>
+		<li><a href="https://nette.org/donate"><span>Donate</span></a>
+		<li>
+		<form action="https://www.google.com/cse" class="search">
+			<input type="hidden" name="cx" value="011549293477758430224:vxofa9ufnhc"><input type="hidden" name="ie" value="UTF-8"><input type="search" name="q" class="text" size="30" placeholder="Search"><input type="image" src="https://files.nette.org/images/search.png" alt="Search">
+		</form>
+		</li>
+	</ul>
+</div></div>
+
+</body>
+</html>
